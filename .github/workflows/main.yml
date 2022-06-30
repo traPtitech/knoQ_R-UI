@@ -15,6 +15,8 @@ jobs:
         with:
           node-version: 17
           cache: npm
+      - name: npm ci
+        run: npm ci
   lint:
     name: run lint
     runs-on: ubuntu-latest
@@ -28,6 +30,8 @@ jobs:
         with:
           node-version: 17
           cache: npm
+      - name: npm ci
+        run: npm ci
       - name: lint
         run: npm run lint --max-warnings=0
 
@@ -43,5 +47,7 @@ jobs:
         with:
           node-version: 17
           cache: npm
+      - name: npm ci
+        run: npm ci
       - name: build
         run: npm run build
