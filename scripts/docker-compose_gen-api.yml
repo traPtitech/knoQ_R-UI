@@ -1,0 +1,11 @@
+version: "3"
+services:
+  openapi-generator:
+    image: openapitools/openapi-generator-cli
+    volumes:
+      - ../src/api/generated:/generated
+    command: |
+      generate 
+        -g typescript-axios 
+        -o /generated 
+        -i https://raw.githubusercontent.com/traPtitech//knoQ/master/docs/swagger.yaml
