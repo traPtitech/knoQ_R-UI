@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.title">knoQ meeting</div>
+  <div :class="$style.h1">第60回 knoQ meeting</div>
 </template>
 
 <script setup lang="ts"></script>
