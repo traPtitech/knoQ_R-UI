@@ -14,7 +14,7 @@
 import { computed } from "@vue/reactivity";
 import mdiPaths from "../../assets/mdi";
 
-const props = withDefaults(defineProps<{ name: string }>(), {});
+const props = defineProps<{ name: string }>();
 
 const path = computed(() => mdiPaths[props.name]);
 </script>
