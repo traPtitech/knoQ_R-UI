@@ -1,15 +1,15 @@
 <template>
-  <div :class="$style.date">
-    <span>8/29(日) 20:00</span>
-    >
-    <span>8/29(日) 23:00</span>
-  </div>
+  <div :class="$style.date">{{ props.time_start }}</div>
+  >
+  <div :class="$style.date">{{ props.time_end }}</div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const props = defineProps<{ time_start: string; time_end: string }>();
+</script>
 
 <style lang="scss" module>
 .date {
-  font-size: 24pt;
+  font-size: 24px;
 }
 </style>
