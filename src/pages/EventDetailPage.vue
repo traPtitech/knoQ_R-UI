@@ -15,7 +15,10 @@
   <h2>管理者</h2>
   <event-admins :admins="test_event.admins" />
   <h2>自分の参加予定</h2>
-  <event-attendance-me :me="test_me" />
+  <event-attendance-me
+    :myAttendance="myAttendance!"
+    @change="onChangeMyAttendance"
+  />
   <h2>参加者</h2>
   <event-attendance :attendees="test_event.attendees" />
 </template>
@@ -24,16 +27,48 @@
 import EventName from "../components/EventDetail/EventName.vue";
 import EventDate from "../components/EventDetail/EventDate.vue";
 import EventPlace from "../components/EventDetail/EventPlace.vue";
-import { ResponseEventDetail, ResponseUser } from "../api/generated";
+import {
+  RequestScheduleScheduleEnum,
+  ResponseEventDetail,
+} from "../api/generated";
 import EventDescription from "../components/EventDetail/EventDescription.vue";
 import EventGroup from "../components/EventDetail/EventGroup.vue";
 import EventAdmins from "../components/EventDetail/EventAdmins.vue";
 import EventAttendanceMe from "../components/EventDetail/EventAttendanceMe.vue";
 import EventAttendance from "../components/EventDetail/EventAttendance.vue";
+import { computed, ref } from "vue";
+import { meStore } from "../store/me";
+import api from "../api";
 
-//const props = defineProps<{
-//  event: ResponseEventDetail;
-//}>();
+const event = ref<ResponseEventDetail | null>(null);
+const { me } = meStore();
+
+const myAttendance = computed(() => {
+  if (!event.value) {
+    return null;
+  }
+  return event.value.attendees.find(({ userId }) => userId === me?.userId)
+    ?.schedule;
+});
+
+const onChangeMyAttendance = async (
+  attendance: RequestScheduleScheduleEnum
+) => {
+  try {
+    if (!event.value) {
+      return;
+    }
+    await api.events.updateSchedule(event.value.eventId, {
+      schedule: attendance,
+    });
+    const { data } = await api.events.getEventDetail(event.value.eventId);
+    event.value = data;
+  } catch (err) {
+    console.error(err);
+    alert("参加予定を登録できませんでした");
+  }
+};
+
 const test_event: ResponseEventDetail = {
   eventId: "ba83e5ad-49fe-4e2a-b112-221bb879784a",
   name: "第63回　knoQ meeting",
@@ -109,15 +144,6 @@ const test_event: ResponseEventDetail = {
   ],
   createdAt: "2022-09-17T19:58:59+09:00",
   updatedAt: "2022-09-17T19:58:59+09:00",
-};
-
-const test_me: ResponseUser = {
-  userId: "48bf1ce8-3cf4-4470-8ac9-96a9d2fea3f4",
-  name: "itt",
-  displayName: "itt",
-  icon: "https://q.trap.jp/api/v3/public/icon/itt",
-  privileged: true,
-  state: 1,
 };
 </script>
 

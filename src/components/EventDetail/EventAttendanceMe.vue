@@ -1,12 +1,26 @@
 <template>
-  <user-icon :user-name="props.me.name" />
-  {{ props.me.name }}
+  <user-icon :user-name="me?.name!" />
+  {{ me?.name }}
+  {{ props.myAttendance }}
+  <button @click="emit('change', RequestScheduleScheduleEnum.Absent)">
+    出席
+  </button>
 </template>
 
 <script setup lang="ts">
-import { ResponseUser } from "../../api/generated";
+import { RequestScheduleScheduleEnum } from "../../api/generated";
+import { meStore } from "../../store/me";
 import UserIcon from "../UI/UserIcon.vue";
-const props = defineProps<{ me: ResponseUser }>();
+
+const props = defineProps<{
+  myAttendance: RequestScheduleScheduleEnum;
+}>();
+
+const emit = defineEmits<{
+  /*eslint-disable no-unused-vars*/
+  (e: "change", newAttendance: RequestScheduleScheduleEnum): void;
+}>();
+const { me } = meStore();
 </script>
 
 <style lang="scss" module></style>
