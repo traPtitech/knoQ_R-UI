@@ -1,9 +1,17 @@
 <template>
-  <div>{{ props.description }}</div>
+<div v-html="md.render(description)" />
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ description: String }>();
-</script>
+import MarkdownIt from "markdown-it";
+const props = defineProps<{ description: string }>();
 
+const md = new MarkdownIt(
+  {
+    breaks: true,
+    linkify: true,
+  }
+)
+
+</script>
 <style lang="scss" module></style>
