@@ -1,6 +1,6 @@
 <template>
   <div v-for="admin in props.admins" :key="admin">
-    <user-icon user-name="itt" />
+    <user-icon :user-name="admin" />
   </div>
 </template>
 

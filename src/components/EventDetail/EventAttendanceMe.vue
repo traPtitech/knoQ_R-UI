@@ -2,7 +2,7 @@
   <user-icon :user-name="me?.name!" />
   {{ me?.name }}
   {{ props.myAttendance }}
-  <button @click="emit('change', RequestScheduleScheduleEnum.Absent)">
+  <button @click="emits('change', RequestScheduleScheduleEnum.Absent)">
     出席
   </button>
 </template>
@@ -16,7 +16,7 @@ const props = defineProps<{
   myAttendance: RequestScheduleScheduleEnum;
 }>();
 
-const emit = defineEmits<{
+const emits = defineEmits<{
   /*eslint-disable no-unused-vars*/
   (e: "change", newAttendance: RequestScheduleScheduleEnum): void;
 }>();
