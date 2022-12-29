@@ -28,7 +28,7 @@
     <body :class="$style.section">
       管理者
     </body>
-    <EventAdmins :admins="admins!" />
+    <EventAdmins v-if="admins" :admins="admins" />
 
     <div v-if="canAttend">
       <body :class="$style.section">
@@ -43,7 +43,7 @@
     <body :class="$style.section">
       参加者
     </body>
-    <EventAttendance :attendees="attendees!" />
+    <EventAttendance v-if="attendees" :attendees="attendees" />
   </div>
 </template>
 
