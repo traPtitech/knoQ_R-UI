@@ -2,20 +2,30 @@ import { defineStore } from "pinia";
 import api, { ResponseUser } from "../api";
 import { ref } from "vue";
 
-export const meStore = defineStore("me", () => {
-  const me = ref<ResponseUser | undefined>(undefined);
-  const fetchMe = async () => {
+export const usersStore = defineStore("users", () => {
+  const users = ref<Map<string, ResponseUser>>(new Map());
+  const fetchUsers = async () => {
     try {
-      const { data } = await api.users.getMe();
-      me.value = data;
-      return data;
-    } catch {
-      me.value = undefined;
-      return undefined;
+      const { data } = await api.users.getUsers(false);
+      const tmp = new Map<string, ResponseUser>();
+      data.forEach((user) => {
+        tmp.set(user.userId, user);
+      });
+      users.value = tmp;
+    } catch (e) {
+      console.error(e);
     }
   };
+  const getUser = (userId: string) => {
+    if (users.value.size === 0) {
+      fetchUsers();
+    }
+    return users.value.get(userId);
+  };
+
   return {
-    me,
-    fetchMe,
+    users,
+    fetchUsers,
+    getUser,
   };
 });

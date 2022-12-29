@@ -1,18 +1,15 @@
 <template>
   <RouterLink :to="tagPath" :class="$style.link">
-    <span :class="$style.tag">{{ tag.name }}</span>
+    <span :class="$style.tag">{{ props.name }}</span>
   </RouterLink>
 </template>
 
 <script setup lang="ts">
-import { ResponseTag } from "../../../api/generated";
 import { computed } from "vue";
 import { RouterLink } from "vue-router";
 
-const props = defineProps<{ tag: ResponseTag }>();
-const tagPath = computed(() => {
-  return `/events?tags=${props.tag.tagId}`;
-});
+const props = defineProps<{ id: string; name: string }>();
+const tagPath = computed(() => `/events?tags=${props.id}`);
 </script>
 
 <style lang="scss" module>
