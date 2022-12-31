@@ -1,49 +1,38 @@
 <template>
-  <div v-if="loadState === 'loading'">loading {{ eventId }}</div>
+  <div v-if="loadState === 'loading'">loading</div>
   <div v-else-if="loadState === 'error'">not found</div>
-  <div v-else-if="event">
+  <div v-else>
     <EventName :event_name="event.name" />
     <TagList :tags="tags" />
-
-    <body :class="$style.section">
-      日時
-    </body>
-    <EventDate :time_start="event.timeStart" :time_end="event.timeEnd" />
-
-    <body :class="$style.section">
-      場所
-    </body>
-    <EventPlace :place="event.place" />
-
-    <body :class="$style.section">
-      説明
-    </body>
-    <EventDescription :description="event.description" />
-
-    <body :class="$style.section">
-      グループ
-    </body>
-    <EventGroup :groupId="event.group.groupId" :groupName="event.group.name" />
-
-    <body :class="$style.section">
-      管理者
-    </body>
-    <EventAdmins v-if="admins" :admins="admins" />
-
-    <div v-if="canAttend">
-      <body :class="$style.section">
-        自分の参加予定
-      </body>
-      <EventAttendanceMe
-        :myAttendance="attendance"
-        @change="onChangeMyAttendance"
+    <EventDetailElement title="日時">
+      <EventDate :time_start="event.timeStart" :time_end="event.timeEnd" />
+    </EventDetailElement>
+    <EventDetailElement title="場所">
+      <EventPlace :place="event.place" />
+    </EventDetailElement>
+    <EventDetailElement title="説明">
+      <EventDescription :description="event.description" />
+    </EventDetailElement>
+    <EventDetailElement title="グループ">
+      <EventGroup
+        :groupId="event.group.groupId"
+        :groupName="event.group.name"
       />
+    </EventDetailElement>
+    <EventDetailElement title="管理者">
+      <EventAdmins :admins="admins" />
+    </EventDetailElement>
+    <div v-if="canAttend">
+      <EventDetailElement title="自分の参加予定">
+        <EventAttendanceMe
+          :myAttendance="myAttendance"
+          @change="onChangeMyAttendance"
+        />
+      </EventDetailElement>
     </div>
-
-    <body :class="$style.section">
-      参加者
-    </body>
-    <EventAttendance v-if="attendees" :attendees="attendees" />
+    <EventDetailElement title="参加者">
+      <EventAttendance v-if="attendees" :attendees="attendees" />
+    </EventDetailElement>
   </div>
 </template>
 
@@ -51,7 +40,6 @@
 import EventName from "../components/EventDetail/EventName.vue";
 import EventDate from "../components/EventDetail/EventDate.vue";
 import EventPlace from "../components/EventDetail/EventPlace.vue";
-import { ResponseEventAttendeesInnerScheduleEnum } from "../api/generated";
 import EventDescription from "../components/EventDetail/EventDescription.vue";
 import EventGroup from "../components/EventDetail/EventGroup.vue";
 import EventAdmins from "../components/EventDetail/EventAdmins.vue";
@@ -62,19 +50,26 @@ import TagList from "../components/EventDetail/Tag/TagList.vue";
 import { useEvent } from "../composables/useEvent";
 import { useRoute } from "vue-router";
 import { getFirstParam } from "../lib/params";
-import { useMyAttendance } from "../composables/useMyAttendees";
-import { usersStore } from "../store/users";
-import api from "../api";
+import { useUsersStore } from "../store/users";
+import EventDetailElement from "../components/EventDetail/EventDetailElement.vue";
+import { AttendanceState } from "../types";
+import { useMeStore } from "../store/me";
 
 const route = useRoute();
 const eventId = computed(() => {
   return getFirstParam(route.params.id);
 });
-const { attendance, updateAttendance } = useMyAttendance();
-const { event, loadState, fetchEvent, updateMyAttendance } = useEvent(
-  eventId.value
-);
-const { getUser } = usersStore();
+const {
+  event: _event,
+  loadState,
+  fetchEvent,
+  updateMyAttendance,
+} = useEvent(eventId.value);
+const event = computed(() => _event.value!);
+const useUsers = useUsersStore();
+useUsers.fetchUsers();
+const meStore = useMeStore();
+
 const tags = computed((): { id: string; name: string }[] =>
   event.value
     ? event.value.tags.map(({ tagId, name }) => {
@@ -84,22 +79,31 @@ const tags = computed((): { id: string; name: string }[] =>
 );
 const canAttend = computed(() => true);
 const admins = computed(() =>
-  event.value?.admins.map((userId) => getUser(userId)?.name!)
+  event.value.admins
+    .map((userId) => useUsers.users.get(userId))
+    .filter((item) => item !== undefined)
+    .map((item) => item?.name!)
 );
 const attendees = computed(() =>
-  event.value?.attendees.map(({ userId, schedule }) => {
-    return {
-      name: getUser(userId)?.name!,
-      schedule,
-    };
-  })
+  event.value.attendees
+    .map(({ userId, schedule }) => {
+      return {
+        name: useUsers.users.get(userId)?.name,
+        schedule,
+      };
+    })
+    .filter((item) => item.name !== undefined)
+    .map(({ name, schedule }) => {
+      return { name: name!, schedule };
+    })
 );
-const onChangeMyAttendance = async (
-  newState: ResponseEventAttendeesInnerScheduleEnum
-) => {
-  updateAttendance(newState);
+const myAttendance = computed(
+  () =>
+    event.value.attendees.find(({ userId }) => userId === meStore.me?.userId)
+      ?.schedule
+);
+const onChangeMyAttendance = async (newState: AttendanceState) => {
   updateMyAttendance(newState);
-  await api.events.updateEvent();
 };
 onMounted(async () => {
   await fetchEvent();

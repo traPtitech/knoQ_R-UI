@@ -1,7 +1,7 @@
 <template>
-  <div v-for="admin in props.admins" :key="admin">
+  <span v-for="admin in props.admins" :key="admin">
     <user-icon :user-name="admin" />
-  </div>
+  </span>
 </template>
 
 <script setup lang="ts">

@@ -1,32 +1,32 @@
 <template>
-  <div v-if="!me">loading</div>
-  <div v-else>
-    <user-icon :user-name="me.name" />
-    {{ me.name }}
+  <UserIcon :userName="name" />
+
+  <div v-if="!props.myAttendance">
+    <button @click="emits('change', 'attendance')">出席</button>
   </div>
-  <div v-if="!props.myAttendance">loading</div>
   <div v-else>
-    {{ props.myAttendance }}
+    <button @click="emits('change', 'attendance')">出席</button>
+    <button @click="emits('change', 'absent')">欠席</button>
+    <button @click="emits('change', 'pending')">未定</button>
   </div>
-  <button @click="emits('change', RequestScheduleScheduleEnum.Attendance)">
-    出席
-  </button>
 </template>
 
 <script setup lang="ts">
-import { RequestScheduleScheduleEnum } from "../../api/generated";
-import { meStore } from "../../store/me";
+import { useMeStore } from "../../store/me";
+import { AttendanceState } from "../../types";
 import UserIcon from "../UI/UserIcon.vue";
+import { computed } from "vue";
 
 const props = defineProps<{
-  myAttendance?: RequestScheduleScheduleEnum;
+  myAttendance?: AttendanceState;
 }>();
 
 const emits = defineEmits<{
   /*eslint-disable no-unused-vars*/
-  (e: "change", newAttendance: RequestScheduleScheduleEnum): void;
+  (e: "change", newAttendance: AttendanceState): void;
 }>();
-const { me } = meStore();
+const meStore = useMeStore();
+const name = computed(() => meStore.me?.name!);
 </script>
 
 <style lang="scss" module></style>
