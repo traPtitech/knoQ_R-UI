@@ -40,11 +40,18 @@ export const useEvent = (eventId: string) => {
       }
     }
   };
+  const canAttendMe = () =>
+    (event.value?.open ||
+      event.value?.attendees.some(
+        ({ userId }) => userId === useMe.me?.userId
+      )) &&
+    new Date() <= new Date(event.value.timeEnd);
 
   return {
     event,
     loadState,
     fetchEvent,
     updateMyAttendance,
+    canAttendMe,
   };
 };

@@ -22,14 +22,12 @@
     <EventDetailElement title="管理者">
       <EventAdmins :admins="admins" />
     </EventDetailElement>
-    <div v-if="canAttend">
-      <EventDetailElement title="自分の参加予定">
-        <EventAttendanceMe
-          :myAttendance="myAttendance"
-          @change="onChangeMyAttendance"
-        />
-      </EventDetailElement>
-    </div>
+    <EventDetailElement v-if="canAttendMe()" title="自分の参加予定">
+      <EventAttendanceMe
+        :myAttendance="myAttendance"
+        @change="onChangeMyAttendance"
+      />
+    </EventDetailElement>
     <EventDetailElement title="参加者">
       <EventAttendance v-if="attendees" :attendees="attendees" />
     </EventDetailElement>
@@ -64,6 +62,7 @@ const {
   loadState,
   fetchEvent,
   updateMyAttendance,
+  canAttendMe,
 } = useEvent(eventId.value);
 const event = computed(() => _event.value!);
 const meStore = useMeStore();
@@ -78,7 +77,6 @@ const tags = computed((): { id: string; name: string }[] =>
       })
     : []
 );
-const canAttend = computed(() => true);
 const admins = computed(() =>
   event.value.admins
     .map((userId) => useUsers.users.get(userId))
