@@ -18,20 +18,24 @@ export const useEvent = (eventId: string) => {
     }
   };
   const useMe = useMeStore();
-  const updateMyAttendance = (newState: AttendanceState) => {
+  const updateMyAttendance = async (newState: AttendanceState) => {
     if (useMe.me) {
+      const { status } = await api.events.updateSchedule(eventId, {
+        schedule: newState,
+      });
       if (event.value) {
-        const myIdx = event.value.attendees.findIndex(
-          ({ userId }) => userId === useMe.me?.userId
-        );
-        if (myIdx >= 0) {
-          event.value.attendees[myIdx].schedule = newState;
-          api.events.updateSchedule(eventId, { schedule: newState });
-        } else {
-          event.value.attendees.push({
-            userId: useMe.me?.userId,
-            schedule: newState,
-          });
+        if (status === 204) {
+          const myIdx = event.value.attendees.findIndex(
+            ({ userId }) => userId === useMe.me?.userId
+          );
+          if (myIdx >= 0) {
+            event.value.attendees[myIdx].schedule = newState;
+          } else {
+            event.value.attendees.push({
+              userId: useMe.me?.userId,
+              schedule: newState,
+            });
+          }
         }
       }
     }
