@@ -66,9 +66,10 @@ const {
   updateMyAttendance,
 } = useEvent(eventId.value);
 const event = computed(() => _event.value!);
+const meStore = useMeStore();
+meStore.fetchMe();
 const useUsers = useUsersStore();
 useUsers.fetchUsers();
-const meStore = useMeStore();
 
 const tags = computed((): { id: string; name: string }[] =>
   event.value
