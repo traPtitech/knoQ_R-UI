@@ -1,13 +1,18 @@
 <template>
   <div :class="$style.editor">
-    <span v-for="tag in validTags" :key="tag.name">
-      <TagEditorTag :tag="tag.name" @delete="onDeleteTag(tag.name)" />
+    <span v-for="tag in tags" :key="tag.name">
+      <TagEditorTag
+        :tag="tag.name"
+        :locked="tag.locked"
+        @delete="emit('delete', tag.name)"
+        @lock="(lock) => emit('lock', tag.name, lock)"
+      />
     </span>
-    <button v-if="!editing" @click="onClick">+</button>
-    <span v-else>
+    <span v-if="editing">
       <input v-model="tagInputValue" />
       <button @click="onTagAdded">追加</button>
     </span>
+    <button v-else @click="editing = true">+</button>
   </div>
 </template>
 
@@ -16,7 +21,7 @@ import { ref, computed, ComputedRef } from "vue";
 import TagEditorTag from "./TagEditorTag.vue";
 
 interface Tag {
-  name?: string;
+  name: string;
   locked?: boolean;
 }
 const props = defineProps<{
@@ -25,25 +30,16 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "add", tagName: string): void;
   (e: "delete", tagName: string): void;
+  (e: "lock", tagName: string, locked: boolean): void;
 }>();
 
 const tagInputValue = ref("");
 const editing = ref(false);
 
-const validTags = computed(() =>
-  props.tags.filter(
-    (t): t is { name: string; locked?: boolean } => t.name !== undefined
-  )
-);
-
-const onClick = () => (editing.value = true);
 const onTagAdded = () => {
   emit("add", tagInputValue.value);
   tagInputValue.value = "";
   editing.value = false;
-};
-const onDeleteTag = (tag: string) => {
-  emit("delete", tag);
 };
 </script>
 
