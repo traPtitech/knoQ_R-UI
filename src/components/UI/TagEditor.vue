@@ -36,6 +36,7 @@ const emit = defineEmits<{
 const tagInputValue = ref("");
 const editing = ref(false);
 
+const onClick = () => (editing.value = true);
 const onTagAdded = () => {
   emit("add", tagInputValue.value);
   tagInputValue.value = "";
