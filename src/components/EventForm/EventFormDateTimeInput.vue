@@ -1,16 +1,8 @@
 <template>
-  <div>
-    <textarea
-      :placeholder="props.placeholder"
-      :value="modelValue"
-      @input="onInput"
-    />
-  </div>
+  <input :value="modelValue" type="datetime-local" @input="onInput" />
 </template>
-
-<script setup lang="ts">
+<script lang="ts" setup>
 const props = defineProps<{
-  placeholder?: string;
   modelValue: string;
 }>();
 const emit = defineEmits<{
@@ -18,7 +10,7 @@ const emit = defineEmits<{
 }>();
 
 const onInput = (e: Event) => {
-  const target = e.target as HTMLTextAreaElement;
+  const target = e.target as HTMLInputElement;
   emit("update:modelValue", target.value);
 };
 </script>
