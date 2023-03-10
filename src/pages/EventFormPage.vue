@@ -6,7 +6,12 @@
     @add="addTag"
     @lock="lockTag"
   />
-  <EventFormPlaceDateTime :placeTimes="event.placeTimes" @add="addPlaceTime" />
+  <EventFormPlaceDateTime
+    :placeTimes="event.placeTimes"
+    @add="addPlaceTime"
+    @edit="editPlaceTime"
+    @delete="deletePlaceTime"
+  />
   <EventFormTextArea v-model="event.description" placeholder="説明" />
   <!-- <EventFormGroup /> -->
   <EventFormDetail />
