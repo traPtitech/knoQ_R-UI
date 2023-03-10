@@ -32,6 +32,13 @@ const eventFormSchema = z.object({
   admins: z.array(z.string()),
   tags: tagsSchema,
 });
+
+export type InstantPlaceTime = z.infer<typeof instantPlaceTimeSchemma>;
+export type StockPlaceTime = z.infer<typeof stockPlaceTimeSchema>;
+
+export type PlaceTime = InstantPlaceTime | StockPlaceTime;
+
+export type InstantGroup = z.infer<typeof instantGroupSchemma>;
 type EventForm = z.infer<typeof eventFormSchema>;
 
 const defaultValues: EventForm = {
@@ -60,8 +67,14 @@ export const useEventForm = () => {
     { immediate: true }
   );
 
-  const addPlaceTime = () => {};
-  const deletePlaceTime = () => {};
+  const addPlaceTime = (placeTime: PlaceTime) => {
+    event.value.placeTimes.push(placeTime);
+  };
+  const deletePlaceTime = (placeTime: PlaceTime) => {
+    event.value.placeTimes = event.value.placeTimes.filter(
+      (item) => item !== placeTime
+    );
+  };
   const editPlaceTime = () => {};
 
   return {
