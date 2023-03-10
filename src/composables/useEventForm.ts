@@ -16,6 +16,10 @@ const stockPlaceTimeSchema = z.object({
 
 const instantGroupSchemma = z.object({
   name: z.string(),
+  description: z.string(),
+  open: z.boolean(),
+  members: z.array(z.string()),
+  admins: z.array(z.string()),
 });
 
 const stockGroupSchema = z.object({
