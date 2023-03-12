@@ -14,7 +14,7 @@
   />
   <EventFormTextArea v-model="event.description" placeholder="説明" />
   <EventFormGroup :group="event.group" @update="(g) => (event.group = g)" />
-  <EventFormDetail v-model:isOpen="event.open" />
+  <EventFormDetail v-model:isOpen="event.open" v-model:admins="event.admins" />
   <!-- <button @click="submit">submit</button> -->
   {{ event }}
 </template>
