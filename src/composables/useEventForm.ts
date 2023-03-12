@@ -39,10 +39,12 @@ const eventFormSchema = z.object({
 
 export type InstantPlaceTime = z.infer<typeof instantPlaceTimeSchemma>;
 export type StockPlaceTime = z.infer<typeof stockPlaceTimeSchema>;
-
 export type PlaceTime = InstantPlaceTime | StockPlaceTime;
 
 export type InstantGroup = z.infer<typeof instantGroupSchemma>;
+export type StockGroup = z.infer<typeof stockGroupSchema>;
+export type Group = InstantGroup | StockGroup;
+
 type EventForm = z.infer<typeof eventFormSchema>;
 
 const defaultValues: EventForm = {
