@@ -55,7 +55,7 @@ const defaultValues: EventForm = {
   group: {
     groupId: "",
   },
-  open: false,
+  open: true,
   admins: [],
   tags: [],
 };
