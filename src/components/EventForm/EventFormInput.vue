@@ -1,6 +1,6 @@
 <template>
   <span>
-    <input :placeholder="placeholder" v-bind="value" />
+    <input :placeholder="placeholder" v-bind="value" :class="$style.input" />
   </span>
 </template>
 
@@ -23,3 +23,8 @@ const value = computed({
   },
 });
 </script>
+
+<style lang="scss" module>
+input {
+}
+</style>
