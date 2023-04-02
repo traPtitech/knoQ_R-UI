@@ -39,3 +39,5 @@ const {
   editPlaceTime,
 } = useEventForm();
 </script>
+
+<style lang="scss" module></style>

@@ -1,7 +1,5 @@
 <template>
-  <span>
-    <input :placeholder="placeholder" v-bind="value" :class="$style.input" />
-  </span>
+  <input :placeholder="placeholder" v-bind="value" :class="$style.input" />
 </template>
 
 <script setup lang="ts">
@@ -26,5 +24,15 @@ const value = computed({
 
 <style lang="scss" module>
 input {
+  @include background-secondary;
+  @include color-ui-primary;
+  @include size-h3;
+  border: 0;
+  width: 100%;
+  height: 40px;
+
+  &::placeholder {
+    @include color-ui-secondary;
+  }
 }
 </style>
