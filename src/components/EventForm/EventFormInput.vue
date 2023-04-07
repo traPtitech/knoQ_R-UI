@@ -1,5 +1,5 @@
 <template>
-  <input :placeholder="placeholder" v-bind="value" :class="$style.input" />
+  <input :placeholder="placeholder" v-model="value" :class="$style.input" />
 </template>
 
 <script setup lang="ts">
@@ -28,7 +28,6 @@ input {
   @include color-ui-primary;
   @include size-h3;
   border: 0;
-  width: 100%;
   height: 40px;
 
   &::placeholder {

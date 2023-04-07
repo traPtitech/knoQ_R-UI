@@ -1,6 +1,10 @@
 @import './variables';
 
 
+@mixin background-primary {
+    background: $bg-primary;
+}
+
 @mixin background-secondary {
     background: $bg-secondary;
 }

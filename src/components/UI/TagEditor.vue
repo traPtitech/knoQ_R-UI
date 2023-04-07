@@ -1,23 +1,24 @@
 <template>
   <div :class="$style.editor">
-    <span v-for="tag in tags" :key="tag.name">
-      <TagEditorTag
-        :tag="tag.name"
-        :locked="tag.locked"
-        @delete="emit('delete', tag.name)"
-        @lock="(lock) => emit('lock', tag.name, lock)"
-      />
-    </span>
-    <span v-if="editing">
-      <input v-model="tagInputValue" />
-      <button @click="onTagAdded">追加</button>
-    </span>
-    <button v-else @click="editing = true">+</button>
+    <TagEditorTag
+      v-for="tag in tags"
+      :key="tag.name"
+      :tag="tag"
+      @delete="onDeleteTag"
+      @changeLockState="onChangeLockState"
+    />
+    <EventFormInput
+      v-model="tagInputValue"
+      placeholder="新規タグ"
+      :class="$style.input"
+      @keydown.enter="onTagAdded"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, ComputedRef } from "vue";
+import EventFormInput from "../EventForm/EventFormInput.vue";
 import TagEditorTag from "./TagEditorTag.vue";
 
 interface Tag {
@@ -28,24 +29,57 @@ const props = defineProps<{
   tags: Tag[];
 }>();
 const emit = defineEmits<{
-  (e: "add", tagName: string): void;
-  (e: "delete", tagName: string): void;
-  (e: "lock", tagName: string, locked: boolean): void;
+  (e: "update:tags", newTags: Tag[]): void;
 }>();
 
 const tagInputValue = ref("");
-const editing = ref(false);
 
-const onClick = () => (editing.value = true);
+const focusInput = () => {};
 const onTagAdded = () => {
-  emit("add", tagInputValue.value);
+  const newTags = props.tags;
+  if (
+    !newTags.map((t) => t.name).includes(tagInputValue.value) &&
+    tagInputValue.value !== ""
+  ) {
+    newTags.push({
+      name: tagInputValue.value,
+    });
+  }
+  emit("update:tags", newTags);
   tagInputValue.value = "";
-  editing.value = false;
+};
+const onDeleteTag = (tagName: string) => {
+  const newTags = props.tags.filter((t: Tag) => t.name !== tagName);
+  console.log(newTags.map((t) => t.name));
+  emit("update:tags", newTags);
+};
+const onChangeLockState = (tagName: string, lock: boolean) => {
+  const newTags = props.tags.map((t: Tag) => {
+    if (t.name === tagName) {
+      return {
+        name: tagName,
+        locked: lock,
+      };
+    } else {
+      return t;
+    }
+  });
+  emit("update:tags", newTags);
 };
 </script>
 
 <style lang="scss" module>
 .editor {
-  border: solid 1px #000000;
+  @include background-secondary;
+  @include color-ui-primary;
+  @include size-h3;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.input {
+  min-width: 40px;
+  flex-grow: 1;
 }
 </style>

@@ -1,6 +1,14 @@
 import { z } from "zod";
 import { computed, ref, watch } from "vue";
-import { tagsSchema, useTags } from "./useTags";
+
+export const tagSchema = z.object({
+  name: z.string(),
+  locked: z.boolean().optional(),
+});
+
+export const tagsSchema = z.array(tagSchema);
+
+export type Tag = z.infer<typeof tagSchema>;
 
 const instantPlaceTimeSchemma = z.object({
   place: z.string(),
@@ -61,18 +69,7 @@ const defaultValues: EventForm = {
 };
 
 export const useEventForm = () => {
-  const { tags, addTag, deleteTag, lockTag, validTags } = useTags();
-
   const event = ref<EventForm>(defaultValues);
-
-  watch(
-    tags,
-    (newTags, _) => {
-      event.value.tags = newTags;
-    },
-    { immediate: true }
-  );
-
   const addPlaceTime = (placeTime: PlaceTime) => {
     event.value.placeTimes.push(placeTime);
   };
@@ -85,10 +82,6 @@ export const useEventForm = () => {
 
   return {
     event,
-    addTag,
-    deleteTag,
-    lockTag,
-    validTags,
     addPlaceTime,
     deletePlaceTime,
     editPlaceTime,
