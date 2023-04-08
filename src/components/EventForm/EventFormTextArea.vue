@@ -22,3 +22,19 @@ const onInput = (e: Event) => {
   emit("update:modelValue", target.value);
 };
 </script>
+
+<style lang="scss" module>
+textarea {
+  @include background-secondary;
+  @include color-ui-primary;
+  @include size-h3;
+  resize: none;
+  border: 0;
+  width: 100%;
+  height: 120px;
+
+  &::placeholder {
+    @include color-ui-secondary;
+  }
+}
+</style>
