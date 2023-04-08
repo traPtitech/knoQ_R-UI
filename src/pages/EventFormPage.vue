@@ -2,12 +2,7 @@
   <div :class="$style.form">
     <EventFormInput placeholder="イベント名" v-model="event.name" />
     <TagEditor v-model:tags="event.tags" />
-    <EventFormPlaceDateTime
-      :placeTimes="event.placeTimes"
-      @add="addPlaceTime"
-      @edit="editPlaceTime"
-      @delete="deletePlaceTime"
-    />
+    <EventFormPlaceDateTime v-model:placeTimes="event.placeTimes" />
     <EventFormTextArea v-model="event.description" placeholder="説明" />
     <EventFormGroup :group="event.group" @update="(g) => (event.group = g)" />
     <EventFormDetail
@@ -26,11 +21,10 @@ import EventFormInput from "../components/EventForm/EventFormInput.vue";
 import EventFormTextArea from "../components/EventForm/EventFormTextArea.vue";
 import EventFormGroup from "../components/EventForm/EventFormGroup.vue";
 import TagEditor from "../components/UI/TagEditor.vue";
-import { useEventForm } from "../composables/useEventForm";
+import { EventForm, defaultValues } from "../types/eventForm";
 import { ref } from "vue";
 
-const { event, addPlaceTime, deletePlaceTime, editPlaceTime } = useEventForm();
-const tags = ref<{ name: string; locked?: boolean }[]>([]);
+const event = ref<EventForm>(defaultValues);
 </script>
 
 <style lang="scss" module>

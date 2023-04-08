@@ -1,51 +1,49 @@
 <template>
   <div>
-    <div v-for="placeTime in placeTimes" :key="getKey(placeTime)">
-      {{ placeTime }}
-      <button @click="emit('delete', placeTime)">削除</button>
+    <div>
+      <div v-for="placeTime in placeTimes" :key="getKey(placeTime)">
+        {{ placeTime }}
+        <button @click="() => onDelete(placeTime)">削除</button>
+      </div>
     </div>
-  </div>
-  <div v-if="editing">
-    <span v-if="placeType === 'instant'">
-      <EventFormInput v-model="place" placeholder="instant" />
-      <button @click="placeType = 'stock'">stockにする</button>
-    </span>
-    <span v-else>
-      <EventFormInput v-model="roomId" placeholder="stock" />
-      <button @click="placeType = 'instant'">instantにする</button>
-    </span>
+    <div>
+      <span v-if="placeType === 'instant'">
+        <EventFormInput v-model="place" placeholder="instant" />
+        <button @click="placeType = 'stock'">stockにする</button>
+      </span>
+      <span v-else>
+        <EventFormInput v-model="roomId" placeholder="stock" />
+        <button @click="placeType = 'instant'">instantにする</button>
+      </span>
+    </div>
     <EventFormDateTimeInput v-model="timeStart" />
     <EventFormDateTimeInput v-model="timeEnd" />
-    <button @click="onAddPlaceTime">追加</button>
+    <div>
+      <button @click="onAdd">追加</button>
+    </div>
   </div>
-  <button v-else @click="editing = true">+</button>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
 import {
-  InstantPlaceTime,
+  PlaceTime,
   StockPlaceTime,
-} from "../../composables/useEventForm";
+  InstantPlaceTime,
+} from "../../types/eventForm";
 import EventFormDateTimeInput from "./EventFormDateTimeInput.vue";
 import EventFormInput from "./EventFormInput.vue";
-
-type PlaceTime = InstantPlaceTime | StockPlaceTime;
+import { ifExp } from "../../lib/if";
 
 const props = defineProps<{
   placeTimes: PlaceTime[];
 }>();
 
 const emit = defineEmits<{
-  (e: "add", newItem: PlaceTime): void;
-  (e: "delete", deleteItem: PlaceTime): void;
-  (e: "edit", oldValue: PlaceTime, newValue: PlaceTime): void;
+  (e: "update:placeTimes", placeTimes: PlaceTime[]): void;
 }>();
 
-const editing = ref(false);
-
 const placeType = ref<"instant" | "stock">("instant");
-
 const place = ref("");
 const roomId = ref("");
 const timeStart = ref("");
@@ -59,26 +57,43 @@ const getKey = (placeTime: PlaceTime) => {
   }
 };
 
-const toDate = (date: string) => Date.parse(date);
-
-const onAddPlaceTime = () => {
-  if (placeType.value === "instant") {
-    emit("add", {
+const onAdd = () => {
+  const newItem = ifExp<InstantPlaceTime, StockPlaceTime>(
+    placeType.value === "instant",
+    {
+      type: "instant",
       place: place.value,
       timeStart: new Date(timeStart.value),
       timeEnd: new Date(timeEnd.value),
-    });
-  } else {
-    emit("add", {
+    },
+    {
+      type: "stock",
       roomId: roomId.value,
       timeStart: new Date(timeStart.value),
       timeEnd: new Date(timeEnd.value),
-    });
-  }
+    }
+  );
+  const newPlaceTimes = props.placeTimes;
+  newPlaceTimes.push(newItem);
+  emit("update:placeTimes", newPlaceTimes);
   place.value = "";
   roomId.value = "";
   timeStart.value = "";
   timeEnd.value = "";
+};
+const onDelete = (placeTime: PlaceTime) => {
+  const newPlaceTimes = props.placeTimes.filter(
+    (item: PlaceTime) =>
+      (item.type === "instant" &&
+        placeTime.type === "instant" &&
+        item.place !== placeTime.place) ||
+      (item.type === "stock" &&
+        placeTime.type === "stock" &&
+        item.roomId !== placeTime.roomId) ||
+      item.timeStart !== placeTime.timeStart ||
+      item.timeEnd !== placeTime.timeEnd
+  );
+  emit("update:placeTimes", newPlaceTimes);
 };
 </script>
 <style></style>
