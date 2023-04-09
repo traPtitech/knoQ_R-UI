@@ -1,9 +1,11 @@
 <template>
   <div>
-    <div>
+    <div :class="$style.elems">
       <div v-for="placeTime in placeTimes" :key="getKey(placeTime)">
-        {{ placeTime }}
-        <button @click="() => onDelete(placeTime)">削除</button>
+        <PlaceTimeElement
+          :placeTime="placeTime"
+          @delete="onDelete(placeTime)"
+        />
       </div>
     </div>
     <div>
@@ -34,6 +36,7 @@ import {
 import EventFormDateTimeInput from "./EventFormDateTimeInput.vue";
 import EventFormInput from "./EventFormInput.vue";
 import { ifExp } from "../../lib/if";
+import PlaceTimeElement from "./PlaceTimeElement.vue";
 
 const props = defineProps<{
   placeTimes: PlaceTime[];
@@ -76,10 +79,10 @@ const onAdd = () => {
   const newPlaceTimes = props.placeTimes;
   newPlaceTimes.push(newItem);
   emit("update:placeTimes", newPlaceTimes);
-  place.value = "";
-  roomId.value = "";
-  timeStart.value = "";
-  timeEnd.value = "";
+  // place.value = "";
+  // roomId.value = "";
+  // timeStart.value = "";
+  // timeEnd.value = "";
 };
 const onDelete = (placeTime: PlaceTime) => {
   const newPlaceTimes = props.placeTimes.filter(
@@ -96,4 +99,10 @@ const onDelete = (placeTime: PlaceTime) => {
   emit("update:placeTimes", newPlaceTimes);
 };
 </script>
-<style></style>
+<style lang="scss" module>
+.elems {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+</style>
