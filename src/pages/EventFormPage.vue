@@ -1,6 +1,10 @@
 <template>
   <div :class="$style.form">
-    <EventFormInput placeholder="イベント名" v-model="event.name" />
+    <EventFormInput
+      placeholder="イベント名"
+      v-model="event.name"
+      :class="$style.eventName"
+    />
     <TagEditor v-model:tags="event.tags" />
     <EventFormPlaceDateTime v-model:placeTimes="event.placeTimes" />
     <EventFormTextArea v-model="event.description" placeholder="説明" />
@@ -35,5 +39,8 @@ const event = ref<EventForm>(defaultValues);
   > * {
     margin-bottom: 20px;
   }
+}
+.eventName {
+  width: 100%;
 }
 </style>
