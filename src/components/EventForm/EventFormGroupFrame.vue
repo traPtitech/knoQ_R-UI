@@ -1,15 +1,13 @@
 <template>
   <div :class="$style.box" :selected="open">
-    <div :class="$style.frame">
-      <div :class="$style.header" @click="emit('click')" :selected="open">
-        <div :class="$style.toggle" />
-        <div>
-          {{ title }}
-        </div>
+    <div :class="$style.header" @click="emit('click')" :selected="open">
+      <div :class="$style.toggle" />
+      <div>
+        {{ title }}
       </div>
-      <div v-if="open">
-        <slot></slot>
-      </div>
+    </div>
+    <div v-if="open">
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -27,10 +25,14 @@ const emit = defineEmits<{
 <style lang="scss" module>
 .box {
   border-radius: 8px;
-  padding: 16px 8px 8px 8px;
+  margin: 16px 0 0 0;
   position: relative;
   &[selected="true"] {
     border: 1px solid black;
+    padding: 20px 16px 16px 16px;
+  }
+  &[selected="false"] {
+    padding-top: 8px;
   }
 }
 .header {

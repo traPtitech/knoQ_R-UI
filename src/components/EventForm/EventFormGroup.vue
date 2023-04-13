@@ -5,7 +5,11 @@
     title="既存のグループで開催"
   >
     <div>
-      <EventFormInput v-model="groupId" placeholder="グループ名" />
+      <EventFormInput
+        v-model="groupId"
+        placeholder="グループ名"
+        :class="$style.input"
+      />
     </div>
   </EventFormGroupFrame>
   <EventFormGroupFrame
@@ -13,19 +17,19 @@
     @click="groupType = 'instant'"
     title="新規のグループで開催"
   >
-    <div>
-      <div>
-        <EventFormInput v-model="groupName" placeholder="グループ名" />
-      </div>
-      <div>
-        <EventFormInput v-model="description" placeholder="説明" />
-      </div>
-      <div>
-        <MembersEditor v-model="admins" />
-      </div>
-      <div>
-        <MembersEditor v-model="members" />
-      </div>
+    <div :class="$style.instantGroup">
+      <EventFormInput
+        v-model="groupName"
+        placeholder="グループ名"
+        :class="$style.input"
+      />
+      <EventFormInput
+        v-model="description"
+        placeholder="説明"
+        :class="$style.input"
+      />
+      <MembersEditor v-model="admins" :class="$style.input" />
+      <MembersEditor v-model="members" :class="$style.input" />
     </div>
   </EventFormGroupFrame>
 </template>
@@ -79,3 +83,14 @@ watch(
   }
 );
 </script>
+
+<style lang="scss" module>
+.input {
+  width: 100%;
+}
+.instantGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+</style>
