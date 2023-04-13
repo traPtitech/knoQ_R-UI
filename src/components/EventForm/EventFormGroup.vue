@@ -1,18 +1,18 @@
 <template>
-  <div v-if="groupType === 'stock'">
-    <button @click="groupType = 'instant'">新規グループで開催に変更</button>
-    <div>
-      <span>既存のグループで開催</span>
-    </div>
+  <EventFormGroupFrame
+    :open="groupType === 'stock'"
+    @click="groupType = 'stock'"
+    title="既存のグループで開催"
+  >
     <div>
       <EventFormInput v-model="groupId" placeholder="グループ名" />
     </div>
-  </div>
-  <div v-else>
-    <button @click="groupType = 'stock'">既存グループで開催に変更</button>
-    <div>
-      <span>新規のグループで開催</span>
-    </div>
+  </EventFormGroupFrame>
+  <EventFormGroupFrame
+    :open="groupType === 'instant'"
+    @click="groupType = 'instant'"
+    title="新規のグループで開催"
+  >
     <div>
       <div>
         <EventFormInput v-model="groupName" placeholder="グループ名" />
@@ -27,14 +27,15 @@
         <MembersEditor v-model="members" />
       </div>
     </div>
-  </div>
+  </EventFormGroupFrame>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import EventFormInput from "./EventFormInput.vue";
 import MembersEditor from "../UI/MembersEditor.vue";
-import { Group } from "../../composables/useEventForm";
+import EventFormGroupFrame from "./EventFormGroupFrame.vue";
+import { Group } from "../../types/eventForm";
 
 const props = defineProps<{
   group: Group;
