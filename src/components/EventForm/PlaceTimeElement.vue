@@ -26,7 +26,6 @@ const fmtDate = (date: Date) => format(date, "HH:mm");
 
 <style lang="scss" module>
 .element {
-  @include background-secondary;
   @include color-ui-primary;
   height: 36px;
   display: flex;
