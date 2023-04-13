@@ -1,16 +1,17 @@
 <template>
   <div>
-    <CheckBox v-model="isOpenValue" />
-    <span>グループ外の人は参加できないようにする</span>
+    <EventFormCheckBox
+      v-model="isOpenValue"
+      text="グループ外の人は参加できないようにする"
+    />
     <MembersEditor v-model="adminsValue" />
   </div>
 </template>
 
 <script setup lang="ts">
-import EventFormInput from "./EventFormInput.vue";
-import CheckBox from "../../components/UI/CheckBox.vue";
 import { ref, computed } from "vue";
 import MembersEditor from "../UI/MembersEditor.vue";
+import EventFormCheckBox from "./EventFormCheckBox.vue";
 const props = defineProps<{
   isOpen: boolean;
   admins: string[];
@@ -21,19 +22,15 @@ const emit = defineEmits<{
 }>();
 
 const isOpenValue = computed({
-  get() {
-    return !props.isOpen;
-  },
-  set(v) {
+  get: () => !props.isOpen,
+  set: (v: boolean) => {
     emit("update:isOpen", !v);
   },
 });
 
 const adminsValue = computed({
-  get() {
-    return props.admins;
-  },
-  set(v) {
+  get: () => props.admins,
+  set: (v) => {
     emit("update:admins", v);
   },
 });

@@ -28,6 +28,7 @@
         placeholder="説明"
         :class="$style.input"
       />
+      <EventFormCheckBox v-model="open" text="自由に出入りできるようにする" />
       <MembersEditor v-model="admins" :class="$style.input" />
       <MembersEditor v-model="members" :class="$style.input" />
     </div>
@@ -40,6 +41,7 @@ import EventFormInput from "./EventFormInput.vue";
 import MembersEditor from "../UI/MembersEditor.vue";
 import EventFormGroupFrame from "./EventFormGroupFrame.vue";
 import { Group } from "../../types/eventForm";
+import EventFormCheckBox from "./EventFormCheckBox.vue";
 
 const props = defineProps<{
   group: Group;
