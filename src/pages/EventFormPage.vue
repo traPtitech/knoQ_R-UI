@@ -4,7 +4,7 @@
       placeholder="イベント名"
       v-model="event.name"
       :class="$style.eventName"
-      :err="err"
+      :errs="err?.name?._errors"
     />
     <TagEditor v-model:tags="event.tags" />
     <EventFormPlaceDateTime v-model:placeTimes="event.placeTimes" />
@@ -14,7 +14,6 @@
       v-model:isOpen="event.open"
       v-model:admins="event.admins"
     />
-    {{ err }}
     <!-- <button @click="submit">submit</button> -->
   </div>
 </template>
@@ -29,18 +28,17 @@ import TagEditor from "../components/UI/TagEditor.vue";
 import { EventForm, defaultValues, eventFormSchema } from "../types/eventForm";
 import { ref, reactive, watch } from "vue";
 import { conditionalExpression } from "@babel/types";
-import { ZodError } from "zod";
+import { ZodError, ZodFormattedError } from "zod";
 
 const event = reactive<EventForm>(defaultValues);
-const err = ref<ZodError>();
+const err = ref<ZodFormattedError<EventForm>>();
 
 watch(
   [event],
   (_old, _new) => {
-    try {
-      const _event = eventFormSchema.parse(event);
-    } catch (e) {
-      err.value = e;
+    const result = eventFormSchema.safeParse(event);
+    if (!result.success) {
+      err.value = result.error.format();
     }
   },
   {

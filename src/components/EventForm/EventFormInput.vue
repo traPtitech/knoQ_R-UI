@@ -6,8 +6,10 @@
       :class="$style.input"
       :err="hasError"
     />
-    <div>
-      {{ err }}
+    <div v-if="errs">
+      <div v-for="err in errs" :key="err">
+        {{ err }}
+      </div>
     </div>
   </div>
 </template>
@@ -18,7 +20,7 @@ import { ZodError } from "zod";
 const props = defineProps<{
   placeholder?: string;
   modelValue: string;
-  err?: ZodError;
+  errs?: string[];
 }>();
 const emit = defineEmits<{
   (e: "update:modelValue", text: string): void;
@@ -33,7 +35,7 @@ const value = computed({
   },
 });
 
-const hasError = computed(() => !!props.err);
+const hasError = computed(() => !!props.errs);
 </script>
 
 <style lang="scss" module>
