@@ -4,6 +4,7 @@
       placeholder="イベント名"
       v-model="event.name"
       :class="$style.eventName"
+      :err="err"
     />
     <TagEditor v-model:tags="event.tags" />
     <EventFormPlaceDateTime v-model:placeTimes="event.placeTimes" />
@@ -13,8 +14,8 @@
       v-model:isOpen="event.open"
       v-model:admins="event.admins"
     />
+    {{ err }}
     <!-- <button @click="submit">submit</button> -->
-    {{ event }}
   </div>
 </template>
 
@@ -25,10 +26,27 @@ import EventFormInput from "../components/EventForm/EventFormInput.vue";
 import EventFormTextArea from "../components/EventForm/EventFormTextArea.vue";
 import EventFormGroup from "../components/EventForm/EventFormGroup.vue";
 import TagEditor from "../components/UI/TagEditor.vue";
-import { EventForm, defaultValues } from "../types/eventForm";
-import { ref } from "vue";
+import { EventForm, defaultValues, eventFormSchema } from "../types/eventForm";
+import { ref, reactive, watch } from "vue";
+import { conditionalExpression } from "@babel/types";
+import { ZodError } from "zod";
 
-const event = ref<EventForm>(defaultValues);
+const event = reactive<EventForm>(defaultValues);
+const err = ref<ZodError>();
+
+watch(
+  [event],
+  (_old, _new) => {
+    try {
+      const _event = eventFormSchema.parse(event);
+    } catch (e) {
+      err.value = e;
+    }
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <style lang="scss" module>

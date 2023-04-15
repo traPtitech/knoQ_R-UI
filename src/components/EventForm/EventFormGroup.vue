@@ -61,7 +61,6 @@ const admins = ref<string[]>([]);
 const members = ref<string[]>([]);
 
 const onUpdate = () => {
-  console.log("updated");
   if (groupType.value === "instant") {
     emit("update", {
       name: groupName.value,

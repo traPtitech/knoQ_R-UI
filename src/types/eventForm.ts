@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const tagSchema = z.object({
-  name: z.string(),
+  name: z.string().nonempty(),
   locked: z.boolean().optional(),
 });
 
@@ -9,34 +9,50 @@ export const tagsSchema = z.array(tagSchema);
 
 export type Tag = z.infer<typeof tagSchema>;
 
-const instantPlaceTimeSchemma = z.object({
-  type: z.literal("instant"),
-  place: z.string(),
-  timeStart: z.date(),
-  timeEnd: z.date(),
-});
+const instantPlaceTimeSchemma = z
+  .object({
+    type: z.literal("instant"),
+    place: z.string().nonempty(),
+    timeStart: z.date(),
+    timeEnd: z.date(),
+  })
+  .refine(
+    (schema) =>
+      schema.timeStart && schema.timeEnd && schema.timeStart < schema.timeEnd,
+    {
+      message: "終了は開始より後にしてください。",
+    }
+  );
 
-const stockPlaceTimeSchema = z.object({
-  type: z.literal("stock"),
-  roomId: z.string(),
-  timeStart: z.date(),
-  timeEnd: z.date(),
-});
+const stockPlaceTimeSchema = z
+  .object({
+    type: z.literal("stock"),
+    roomId: z.string().uuid(),
+    timeStart: z.date(),
+    timeEnd: z.date(),
+  })
+  .refine(
+    (schema) =>
+      schema.timeStart && schema.timeEnd && schema.timeStart < schema.timeEnd,
+    {
+      message: "終了は開始より後にしてください。",
+    }
+  );
 
 const instantGroupSchemma = z.object({
-  name: z.string(),
+  name: z.string().nonempty(),
   description: z.string(),
   open: z.boolean(),
-  members: z.array(z.string()),
-  admins: z.array(z.string()),
+  members: z.array(z.string().uuid()),
+  admins: z.array(z.string().uuid()),
 });
 
 const stockGroupSchema = z.object({
-  groupId: z.string(),
+  groupId: z.string().uuid(),
 });
 
-const eventFormSchema = z.object({
-  name: z.string(),
+export const eventFormSchema = z.object({
+  name: z.string().nonempty(),
   description: z.string(),
   sharedRoom: z.boolean(),
   placeTimes: z.array(z.union([instantPlaceTimeSchemma, stockPlaceTimeSchema])),
