@@ -9,7 +9,11 @@
     <TagEditor v-model:tags="event.tags" />
     <EventFormPlaceDateTime v-model:placeTimes="event.placeTimes" />
     <EventFormTextArea v-model="event.description" placeholder="説明" />
-    <EventFormGroup :group="event.group" @update="(g) => (event.group = g)" />
+    <EventFormGroup
+      :group="event.group"
+      @update="(g) => (event.group = g)"
+      :existingGroups="groups.myGroups"
+    />
     <EventFormDetail
       v-model:isOpen="event.open"
       v-model:admins="event.admins"
@@ -27,8 +31,10 @@ import EventFormGroup from "../components/EventForm/EventFormGroup.vue";
 import TagEditor from "../components/UI/TagEditor.vue";
 import { EventForm, defaultValues, eventFormSchema } from "../types/eventForm";
 import { ref, reactive, watch } from "vue";
-import { conditionalExpression } from "@babel/types";
-import { ZodError, ZodFormattedError } from "zod";
+import { ZodFormattedError } from "zod";
+import { onMounted } from "vue";
+import { useGroupStore } from "../store/groups";
+import { useMeStore } from "../store/me";
 
 const event = reactive<EventForm>(defaultValues);
 const err = ref<ZodFormattedError<EventForm>>();
@@ -45,6 +51,13 @@ watch(
     immediate: true,
   }
 );
+
+const me = useMeStore();
+const groups = useGroupStore();
+onMounted(async () => {
+  await me.fetchMe();
+  await groups.fetchGroups();
+});
 </script>
 
 <style lang="scss" module>

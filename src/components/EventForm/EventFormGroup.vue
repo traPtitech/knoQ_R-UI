@@ -1,15 +1,12 @@
 <template>
+  <div></div>
   <EventFormGroupFrame
     :open="groupType === 'stock'"
     @click="groupType = 'stock'"
     title="既存のグループで開催"
   >
     <div>
-      <EventFormInput
-        v-model="groupId"
-        placeholder="グループ名"
-        :class="$style.input"
-      />
+      <DropDownSelector v-model="groupId" :options="groupOptions" />
     </div>
   </EventFormGroupFrame>
   <EventFormGroupFrame
@@ -36,15 +33,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import EventFormInput from "./EventFormInput.vue";
 import MembersEditor from "../UI/MembersEditor.vue";
 import EventFormGroupFrame from "./EventFormGroupFrame.vue";
 import { Group } from "../../types/eventForm";
 import EventFormCheckBox from "./EventFormCheckBox.vue";
+import { ResponseGroup } from "../../api";
+import DropDownSelector from "../DropDownSelector.vue";
 
 const props = defineProps<{
   group: Group;
+  existingGroups: ResponseGroup[];
 }>();
 const emit = defineEmits<{
   (e: "update", value: Group): void;
@@ -75,6 +75,15 @@ const onUpdate = () => {
     });
   }
 };
+
+const groupOptions = computed(() =>
+  props.existingGroups.map((group) => {
+    return {
+      name: group.name,
+      value: group.groupId,
+    };
+  })
+);
 
 watch(
   [groupType, groupId, groupName, description, open, admins, members],

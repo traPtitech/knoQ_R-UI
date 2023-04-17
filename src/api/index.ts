@@ -2,6 +2,7 @@ import {
   Configuration,
   EventsApi,
   UsersApi,
+  GroupsApi,
   AuthenticationApi,
 } from "./generated";
 
@@ -15,12 +16,14 @@ const config = new Configuration({
 
 const usersApi = new UsersApi(config, "");
 const eventsApi = new EventsApi(config, "");
+const groupsApi = new GroupsApi(config, "");
 const authApi = new AuthenticationApi(config, "");
 
 const api = {
   users: usersApi,
   events: eventsApi,
   auth: authApi,
+  groups: groupsApi,
 };
 
 export default api;
