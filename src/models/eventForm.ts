@@ -52,7 +52,7 @@ const stockGroupSchema = z.object({
 });
 
 export const eventFormSchema = z.object({
-  name: z.string().nonempty(),
+  name: z.string().nonempty({ message: "イベント名は必須です。" }),
   description: z.string(),
   sharedRoom: z.boolean(),
   placeTimes: z.array(z.union([instantPlaceTimeSchemma, stockPlaceTimeSchema])),
