@@ -1,6 +1,9 @@
 <template>
-  <div :class="$style.input" @click="emit('update:modelValue', !modelValue)">
-    <input type="checkbox" v-model="value" />
+  <div
+    :class="$style.container"
+    @click="emit('update:modelValue', !modelValue)"
+  >
+    <input type="checkbox" v-model="value" :class="$style.checkbox" />
     {{ text }}
   </div>
 </template>
@@ -25,8 +28,11 @@ const emit = defineEmits<{
 </script>
 
 <style lang="scss" module>
-.input {
+.container {
   display: flex;
   align-items: center;
+}
+.checkbox {
+  width: 16px;
 }
 </style>
