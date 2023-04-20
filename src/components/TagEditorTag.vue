@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import AIcon from "./AIcon.vue";
+import AIcon from "./UI/AIcon.vue";
 
 interface Tag {
   name: string;

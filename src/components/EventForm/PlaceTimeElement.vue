@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { PlaceTime } from "../../types/eventForm";
+import { PlaceTime } from "../../models/eventForm";
 import { format } from "date-fns";
 const props = defineProps<{
   placeTime: PlaceTime;

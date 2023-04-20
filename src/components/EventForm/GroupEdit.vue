@@ -34,11 +34,11 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import EventFormInput from "./EventFormInput.vue";
-import MembersEditor from "../UI/MembersEditor.vue";
-import EventFormGroupFrame from "./EventFormGroupFrame.vue";
-import { Group } from "../../types/eventForm";
-import EventFormCheckBox from "./EventFormCheckBox.vue";
+import EventFormInput from "../TextInput.vue";
+import MembersEditor from "../MembersEditor.vue";
+import EventFormGroupFrame from "./GroupFrame.vue";
+import { Group } from "../../models/eventForm";
+import EventFormCheckBox from "../CheckBox.vue";
 import { ResponseGroup } from "../../api";
 import DropDownSelector from "../DropDownSelector.vue";
 

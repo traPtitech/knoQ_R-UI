@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref, computed, ComputedRef } from "vue";
-import EventFormInput from "../EventForm/EventFormInput.vue";
+import EventFormInput from "./TextInput.vue";
 import TagEditorTag from "./TagEditorTag.vue";
 
 interface Tag {

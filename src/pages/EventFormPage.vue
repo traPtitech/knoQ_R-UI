@@ -1,35 +1,33 @@
 <template>
   <div :class="$style.form">
-    <EventFormInput
+    <TextInput
       placeholder="イベント名"
       v-model="event.name"
       :class="$style.eventName"
       :errs="err?.name?._errors"
     />
     <TagEditor v-model:tags="event.tags" />
-    <EventFormPlaceDateTime v-model:placeTimes="event.placeTimes" />
-    <EventFormTextArea v-model="event.description" placeholder="説明" />
-    <EventFormGroup
+    <PlaceTime v-model:placeTimes="event.placeTimes" />
+    <TextArea v-model="event.description" placeholder="説明" />
+    <GroupEdit
       :group="event.group"
       @update="(g) => (event.group = g)"
       :existingGroups="groups.myGroups"
     />
-    <EventFormDetail
-      v-model:isOpen="event.open"
-      v-model:admins="event.admins"
-    />
+    <DetailEdit v-model:isOpen="event.open" v-model:admins="event.admins" />
     <!-- <button @click="submit">submit</button> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import EventFormDetail from "../components/EventForm/EventFormDetail.vue";
-import EventFormPlaceDateTime from "../components/EventForm/EventFormPlaceTime.vue";
-import EventFormInput from "../components/EventForm/EventFormInput.vue";
-import EventFormTextArea from "../components/EventForm/EventFormTextArea.vue";
-import EventFormGroup from "../components/EventForm/EventFormGroup.vue";
-import TagEditor from "../components/UI/TagEditor.vue";
-import { EventForm, defaultValues, eventFormSchema } from "../types/eventForm";
+import TextInput from "/@/components/TextInput.vue";
+import TagEditor from "/@/components/TagEditor.vue";
+import PlaceTime from "/@/components/EventForm/PlaceTime.vue";
+import TextArea from "/@/components/TextArea.vue";
+import GroupEdit from "../components/EventForm/GroupEdit.vue";
+import DetailEdit from "../components/EventForm/DetailEdit.vue";
+
+import { EventForm, defaultValues, eventFormSchema } from "../models/eventForm";
 import { ref, reactive, watch } from "vue";
 import { ZodFormattedError } from "zod";
 import { onMounted } from "vue";

@@ -32,9 +32,9 @@ import {
   PlaceTime,
   StockPlaceTime,
   InstantPlaceTime,
-} from "../../types/eventForm";
-import EventFormDateTimeInput from "./EventFormDateTimeInput.vue";
-import EventFormInput from "./EventFormInput.vue";
+} from "../../models/eventForm";
+import EventFormDateTimeInput from "./DateTimeInput.vue";
+import EventFormInput from "../TextInput.vue";
 import { ifExp } from "../../lib/if";
 import PlaceTimeElement from "./PlaceTimeElement.vue";
 

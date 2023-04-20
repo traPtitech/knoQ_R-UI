@@ -16,7 +16,6 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { ZodError } from "zod";
 const props = defineProps<{
   placeholder?: string;
   modelValue: string;

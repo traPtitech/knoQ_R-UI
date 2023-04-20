@@ -10,8 +10,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import MembersEditor from "../UI/MembersEditor.vue";
-import EventFormCheckBox from "./EventFormCheckBox.vue";
+import MembersEditor from "../MembersEditor.vue";
+import EventFormCheckBox from "../CheckBox.vue";
 const props = defineProps<{
   isOpen: boolean;
   admins: string[];
