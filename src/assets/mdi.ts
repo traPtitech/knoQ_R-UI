@@ -1,13 +1,13 @@
-import { mdiVideo, mdiMapMarker, mdiChevronRight } from "@mdi/js";
+import { mdiVideo, mdiMapMarker, mdiChevronRight } from '@mdi/js'
 
 interface MdiIconsMapping {
-  [name: string]: string;
+  [name: string]: string
 }
 
 const mdi: MdiIconsMapping = {
   zoom: mdiVideo,
   location: mdiMapMarker,
-  arrowRight: mdiChevronRight,
-};
+  arrowRight: mdiChevronRight
+}
 
-export default mdi;
+export default mdi

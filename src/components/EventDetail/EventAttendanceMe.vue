@@ -12,21 +12,21 @@
 </template>
 
 <script setup lang="ts">
-import { useMeStore } from "../../store/me";
-import { AttendanceState } from "../../types";
-import UserIcon from "../UI/UserIcon.vue";
-import { computed } from "vue";
+import { useMeStore } from '../../store/me'
+import { AttendanceState } from '../../types'
+import UserIcon from '../UI/UserIcon.vue'
+import { computed } from 'vue'
 
 const props = defineProps<{
-  myAttendance?: AttendanceState;
-}>();
+  myAttendance?: AttendanceState
+}>()
 
 const emits = defineEmits<{
   /*eslint-disable no-unused-vars*/
-  (e: "change", newAttendance: AttendanceState): void;
-}>();
-const meStore = useMeStore();
-const name = computed(() => meStore.me?.name!);
+  (e: 'change', newAttendance: AttendanceState): void
+}>()
+const meStore = useMeStore()
+const name = computed(() => meStore.me?.name!)
 </script>
 
 <style lang="scss" module></style>

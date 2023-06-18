@@ -1,15 +1,15 @@
 @mixin color-ui-primary {
-    color: $ui-primary
+  color: $ui-primary;
 }
 
 @mixin color-ui-secondary {
-    color: $ui-secondary
+  color: $ui-secondary;
 }
 
 @mixin size-h2 {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 @mixin size-caption {
-    font-size: 0.75rem;
+  font-size: 0.75rem;
 }

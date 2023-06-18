@@ -5,8 +5,8 @@
 </template>
 
 <script setup lang="ts">
-import ATag from "./ATag.vue";
-const props = defineProps<{ tags: { id: string; name: string }[] }>();
+import ATag from './ATag.vue'
+const props = defineProps<{ tags: { id: string; name: string }[] }>()
 </script>
 
 <style lang="scss" module>

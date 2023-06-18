@@ -14,19 +14,13 @@
       <EventDescription :description="event.description" />
     </EventDetailElement>
     <EventDetailElement title="グループ">
-      <EventGroup
-        :groupId="event.group.groupId"
-        :groupName="event.group.name"
-      />
+      <EventGroup :groupId="event.group.groupId" :groupName="event.group.name" />
     </EventDetailElement>
     <EventDetailElement title="管理者">
       <EventAdmins :admins="admins" />
     </EventDetailElement>
     <EventDetailElement v-if="canAttendMe()" title="自分の参加予定">
-      <EventAttendanceMe
-        :myAttendance="myAttendance"
-        @change="onChangeMyAttendance"
-      />
+      <EventAttendanceMe :myAttendance="myAttendance" @change="onChangeMyAttendance" />
     </EventDetailElement>
     <EventDetailElement title="参加者">
       <EventAttendance v-if="attendees" :attendees="attendees" />
@@ -35,78 +29,76 @@
 </template>
 
 <script setup lang="ts">
-import EventName from "../components/EventDetail/EventName.vue";
-import EventDate from "../components/EventDetail/EventDate.vue";
-import EventPlace from "../components/EventDetail/EventPlace.vue";
-import EventDescription from "../components/EventDetail/EventDescription.vue";
-import EventGroup from "../components/EventDetail/EventGroup.vue";
-import EventAdmins from "../components/EventDetail/EventAdmins.vue";
-import EventAttendanceMe from "../components/EventDetail/EventAttendanceMe.vue";
-import EventAttendance from "../components/EventDetail/EventAttendance.vue";
-import { computed, onMounted } from "vue";
-import TagList from "../components/EventDetail/Tag/TagList.vue";
-import { useEvent } from "../composables/useEvent";
-import { useRoute } from "vue-router";
-import { getFirstParam } from "../lib/params";
-import { useUsersStore } from "../store/users";
-import EventDetailElement from "../components/EventDetail/EventDetailElement.vue";
-import { AttendanceState } from "../types";
-import { useMeStore } from "../store/me";
+import EventName from '../components/EventDetail/EventName.vue'
+import EventDate from '../components/EventDetail/EventDate.vue'
+import EventPlace from '../components/EventDetail/EventPlace.vue'
+import EventDescription from '../components/EventDetail/EventDescription.vue'
+import EventGroup from '../components/EventDetail/EventGroup.vue'
+import EventAdmins from '../components/EventDetail/EventAdmins.vue'
+import EventAttendanceMe from '../components/EventDetail/EventAttendanceMe.vue'
+import EventAttendance from '../components/EventDetail/EventAttendance.vue'
+import { computed, onMounted } from 'vue'
+import TagList from '../components/EventDetail/Tag/TagList.vue'
+import { useEvent } from '../composables/useEvent'
+import { useRoute } from 'vue-router'
+import { getFirstParam } from '../lib/params'
+import { useUsersStore } from '../store/users'
+import EventDetailElement from '../components/EventDetail/EventDetailElement.vue'
+import { AttendanceState } from '../types'
+import { useMeStore } from '../store/me'
 
-const route = useRoute();
+const route = useRoute()
 const eventId = computed(() => {
-  return getFirstParam(route.params.id);
-});
+  return getFirstParam(route.params.id)
+})
 const {
   event: _event,
   loadState,
   fetchEvent,
   updateMyAttendance,
-  canAttendMe,
-} = useEvent(eventId.value);
-const event = computed(() => _event.value!);
-const meStore = useMeStore();
-meStore.fetchMe();
-const useUsers = useUsersStore();
-useUsers.fetchUsers();
+  canAttendMe
+} = useEvent(eventId.value)
+const event = computed(() => _event.value!)
+const meStore = useMeStore()
+meStore.fetchMe()
+const useUsers = useUsersStore()
+useUsers.fetchUsers()
 
 const tags = computed((): { id: string; name: string }[] =>
   event.value
     ? event.value.tags.map(({ tagId, name }) => {
-        return { id: tagId, name: name };
+        return { id: tagId, name: name }
       })
     : []
-);
+)
 const admins = computed(() =>
   event.value.admins
     .map((userId) => useUsers.users.get(userId))
     .filter((item) => item !== undefined)
     .map((item) => item?.name!)
-);
+)
 const attendees = computed(() =>
   event.value.attendees
     .map(({ userId, schedule }) => {
       return {
         name: useUsers.users.get(userId)?.name,
-        schedule,
-      };
+        schedule
+      }
     })
     .filter((item) => item.name !== undefined)
     .map(({ name, schedule }) => {
-      return { name: name!, schedule };
+      return { name: name!, schedule }
     })
-);
+)
 const myAttendance = computed(
-  () =>
-    event.value.attendees.find(({ userId }) => userId === meStore.me?.userId)
-      ?.schedule
-);
+  () => event.value.attendees.find(({ userId }) => userId === meStore.me?.userId)?.schedule
+)
 const onChangeMyAttendance = async (newState: AttendanceState) => {
-  updateMyAttendance(newState);
-};
+  updateMyAttendance(newState)
+}
 onMounted(async () => {
-  await fetchEvent();
-});
+  await fetchEvent()
+})
 </script>
 
 <style lang="scss" module>
