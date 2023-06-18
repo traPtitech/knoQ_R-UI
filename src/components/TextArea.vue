@@ -1,26 +1,22 @@
 <template>
   <div>
-    <textarea
-      :placeholder="props.placeholder"
-      :value="modelValue"
-      @input="onInput"
-    />
+    <textarea :placeholder="props.placeholder" :value="modelValue" @input="onInput" />
   </div>
 </template>
 
 <script setup lang="ts">
 const props = defineProps<{
-  placeholder?: string;
-  modelValue: string;
-}>();
+  placeholder?: string
+  modelValue: string
+}>()
 const emit = defineEmits<{
-  (e: "update:modelValue", text: string): void;
-}>();
+  (e: 'update:modelValue', text: string): void
+}>()
 
 const onInput = (e: Event) => {
-  const target = e.target as HTMLTextAreaElement;
-  emit("update:modelValue", target.value);
-};
+  const target = e.target as HTMLTextAreaElement
+  emit('update:modelValue', target.value)
+}
 </script>
 
 <style lang="scss" module>

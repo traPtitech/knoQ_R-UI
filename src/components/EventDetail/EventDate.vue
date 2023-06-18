@@ -5,17 +5,17 @@
 </template>
 
 <script setup lang="ts">
-import { format } from "date-fns";
-import { ja } from "date-fns/locale";
-import AIcon from "../UI/AIcon.vue";
-import { computed } from "vue";
+import { format } from 'date-fns'
+import { ja } from 'date-fns/locale'
+import AIcon from '../UI/AIcon.vue'
+import { computed } from 'vue'
 
-const props = defineProps<{ time_start: string; time_end: string }>();
+const props = defineProps<{ time_start: string; time_end: string }>()
 const formatDate = (date: string) => {
-  return format(new Date(date), "MM/dd (E) HH:mm", { locale: ja });
-};
-const eventStart = computed(() => formatDate(props.time_start));
-const eventEnd = computed(() => formatDate(props.time_end));
+  return format(new Date(date), 'MM/dd (E) HH:mm', { locale: ja })
+}
+const eventStart = computed(() => formatDate(props.time_start))
+const eventEnd = computed(() => formatDate(props.time_end))
 </script>
 
 <style lang="scss" module>

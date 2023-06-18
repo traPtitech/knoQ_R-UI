@@ -14,31 +14,31 @@
 </template>
 
 <script setup lang="ts">
-import AIcon from "./UI/AIcon.vue";
+import AIcon from './UI/AIcon.vue'
 
 interface Tag {
-  name: string;
-  locked?: boolean;
+  name: string
+  locked?: boolean
 }
 const props = defineProps<{
-  tag: Tag;
-}>();
+  tag: Tag
+}>()
 
 const emit = defineEmits<{
-  (e: "delete", tagName: string): void;
-  (e: "changeLockState", tagName: string, locked: boolean): void;
-}>();
+  (e: 'delete', tagName: string): void
+  (e: 'changeLockState', tagName: string, locked: boolean): void
+}>()
 
 const onClickLockToggle = (): void => {
   if (props.tag.locked === undefined) {
-    emit("changeLockState", props.tag.name, true);
+    emit('changeLockState', props.tag.name, true)
   } else {
-    emit("changeLockState", props.tag.name, !props.tag.locked);
+    emit('changeLockState', props.tag.name, !props.tag.locked)
   }
-};
+}
 const onClickDelete = (): void => {
-  emit("delete", props.tag.name);
-};
+  emit('delete', props.tag.name)
+}
 </script>
 
 <style lang="scss" module>

@@ -3,14 +3,14 @@
 </template>
 <script lang="ts" setup>
 const props = defineProps<{
-  modelValue: string;
-}>();
+  modelValue: string
+}>()
 const emit = defineEmits<{
-  (e: "update:modelValue", text: string): void;
-}>();
+  (e: 'update:modelValue', text: string): void
+}>()
 
 const onInput = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  emit("update:modelValue", target.value);
-};
+  const target = e.target as HTMLInputElement
+  emit('update:modelValue', target.value)
+}
 </script>

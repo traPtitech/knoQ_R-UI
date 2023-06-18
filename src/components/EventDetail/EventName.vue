@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ event_name: String }>();
+const props = defineProps<{ event_name: String }>()
 </script>
 
 <style lang="scss" module>

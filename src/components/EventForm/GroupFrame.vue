@@ -14,12 +14,12 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  title: string;
-  open: boolean;
-}>();
+  title: string
+  open: boolean
+}>()
 const emit = defineEmits<{
-  (e: "click"): void;
-}>();
+  (e: 'click'): void
+}>()
 </script>
 
 <style lang="scss" module>
@@ -27,11 +27,11 @@ const emit = defineEmits<{
   border-radius: 8px;
   margin: 16px 0 0 0;
   position: relative;
-  &[selected="true"] {
+  &[selected='true'] {
     border: 1px solid black;
     padding: 20px 16px 16px 16px;
   }
-  &[selected="false"] {
+  &[selected='false'] {
     padding-top: 8px;
   }
 }
@@ -51,10 +51,10 @@ const emit = defineEmits<{
   height: 16px;
   width: 16px;
   border-radius: 50%;
-  [selected="true"] & {
+  [selected='true'] & {
     background-color: $ui-secondary;
   }
-  [selected="false"] & {
+  [selected='false'] & {
     background-color: $ui-tertiary;
   }
 }

@@ -1,18 +1,16 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import { onMounted } from "vue";
-import { RouterLink } from "vue-router";
-import { useMeStore } from "../store/me";
-const meStore = useMeStore();
-onMounted(async () => await meStore.fetchMe());
+import { onMounted } from 'vue'
+import { RouterLink } from 'vue-router'
+import { useMeStore } from '../store/me'
+const meStore = useMeStore()
+onMounted(async () => await meStore.fetchMe())
 </script>
 
 <template>
   <img alt="Vue logo" src="../assets/logo.png" />
-  <RouterLink to="/events/62a569a2-74d6-474e-80d0-9a6bcdd58050"
-    >event</RouterLink
-  >
+  <RouterLink to="/events/62a569a2-74d6-474e-80d0-9a6bcdd58050">event</RouterLink>
 </template>
 
 <style>

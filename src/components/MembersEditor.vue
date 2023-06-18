@@ -12,25 +12,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 const props = defineProps<{
-  placeholder?: string;
-  modelValue: string[];
-}>();
+  placeholder?: string
+  modelValue: string[]
+}>()
 const emit = defineEmits<{
-  (e: "update:modelValue", members: string[]): void;
-}>();
+  (e: 'update:modelValue', members: string[]): void
+}>()
 
-const members = ref<string[]>([]);
-const editingValue = ref("");
+const members = ref<string[]>([])
+const editingValue = ref('')
 
 const onAddMember = (e: Event) => {
-  members.value.push(editingValue.value);
-  editingValue.value = "";
-  emit("update:modelValue", members.value);
-};
+  members.value.push(editingValue.value)
+  editingValue.value = ''
+  emit('update:modelValue', members.value)
+}
 const onDeleteMember = (member: string) => {
-  members.value = members.value.filter((item) => item !== member);
-  emit("update:modelValue", members.value);
-};
+  members.value = members.value.filter((item) => item !== member)
+  emit('update:modelValue', members.value)
+}
 </script>

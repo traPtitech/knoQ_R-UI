@@ -1,42 +1,41 @@
 @import './variables';
 
-
 @mixin background-primary {
-    background: $bg-primary;
+  background: $bg-primary;
 }
 
 @mixin background-secondary {
-    background: $bg-secondary;
+  background: $bg-secondary;
 }
 
 @mixin color-ui-primary {
-    color: $ui-primary;
+  color: $ui-primary;
 }
 
 @mixin color-ui-secondary {
-    color: $ui-secondary;
+  color: $ui-secondary;
 }
 
 @mixin size-h1 {
-    font-size: 2.125rem;
+  font-size: 2.125rem;
 }
 
 @mixin size-h2 {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 @mixin size-h3 {
-    font-size: 1.25rem;
+  font-size: 1.25rem;
 }
 
 @mixin size-body {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 @mixin size-body2 {
-    font-size: 0.875rem;
+  font-size: 0.875rem;
 }
 
 @mixin size-caption {
-    font-size: 0.75rem;
+  font-size: 0.75rem;
 }

@@ -1,14 +1,7 @@
-import {
-  mdiVideo,
-  mdiMapMarker,
-  mdiChevronRight,
-  mdiLock,
-  mdiLockOpen,
-  mdiClose,
-} from "@mdi/js";
+import { mdiVideo, mdiMapMarker, mdiChevronRight, mdiLock, mdiLockOpen, mdiClose } from '@mdi/js'
 
 interface MdiIconsMapping {
-  [name: string]: string;
+  [name: string]: string
 }
 
 const mdi: MdiIconsMapping = {
@@ -17,7 +10,7 @@ const mdi: MdiIconsMapping = {
   arrowRight: mdiChevronRight,
   lock: mdiLock,
   lockOpen: mdiLockOpen,
-  close: mdiClose,
-};
+  close: mdiClose
+}
 
-export default mdi;
+export default mdi

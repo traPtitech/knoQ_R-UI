@@ -7,12 +7,12 @@
 </template>
 
 <script setup lang="ts">
-import { AttendanceState } from "../../types";
-import UserIcon from "../UI/UserIcon.vue";
+import { AttendanceState } from '../../types'
+import UserIcon from '../UI/UserIcon.vue'
 
 const props = defineProps<{
-  attendees: { name: string; schedule: AttendanceState }[];
-}>();
+  attendees: { name: string; schedule: AttendanceState }[]
+}>()
 </script>
 
 <style lang="scss" module></style>

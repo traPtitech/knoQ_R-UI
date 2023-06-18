@@ -1,11 +1,6 @@
 <template>
   <div>
-    <input
-      :placeholder="placeholder"
-      v-model="value"
-      :class="$style.input"
-      :err="hasError"
-    />
+    <input :placeholder="placeholder" v-model="value" :class="$style.input" :err="hasError" />
     <div v-if="errs">
       <div v-for="err in errs" :key="err">
         {{ err }}
@@ -15,26 +10,26 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed } from 'vue'
 const props = defineProps<{
-  placeholder?: string;
-  modelValue: string;
-  errs?: string[];
-}>();
+  placeholder?: string
+  modelValue: string
+  errs?: string[]
+}>()
 const emit = defineEmits<{
-  (e: "update:modelValue", text: string): void;
-}>();
+  (e: 'update:modelValue', text: string): void
+}>()
 
 const value = computed({
   get() {
-    return props.modelValue;
+    return props.modelValue
   },
   set(v: string) {
-    emit("update:modelValue", v);
-  },
-});
+    emit('update:modelValue', v)
+  }
+})
 
-const hasError = computed(() => !!props.errs);
+const hasError = computed(() => !!props.errs)
 </script>
 
 <style lang="scss" module>
@@ -49,7 +44,7 @@ input {
   &::placeholder {
     @include color-ui-secondary;
   }
-  &[err="true"] {
+  &[err='true'] {
     border: 2px solid #f00;
   }
 }

@@ -7,17 +7,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed } from 'vue'
 const props = defineProps<{
-  modelValue: string;
-  options: { name: string; value: string }[];
-}>();
+  modelValue: string
+  options: { name: string; value: string }[]
+}>()
 const emit = defineEmits<{
-  (e: "update:modelValue", v: string): void;
-}>();
+  (e: 'update:modelValue', v: string): void
+}>()
 
 const val = computed({
   get: () => props.modelValue,
-  set: (v: string) => emit("update:modelValue", v),
-});
+  set: (v: string) => emit('update:modelValue', v)
+})
 </script>

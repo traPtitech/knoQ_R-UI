@@ -17,55 +17,52 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, ComputedRef } from "vue";
-import EventFormInput from "./TextInput.vue";
-import TagEditorTag from "./TagEditorTag.vue";
+import { ref, computed, ComputedRef } from 'vue'
+import EventFormInput from './TextInput.vue'
+import TagEditorTag from './TagEditorTag.vue'
 
 interface Tag {
-  name: string;
-  locked?: boolean;
+  name: string
+  locked?: boolean
 }
 const props = defineProps<{
-  tags: Tag[];
-}>();
+  tags: Tag[]
+}>()
 const emit = defineEmits<{
-  (e: "update:tags", newTags: Tag[]): void;
-}>();
+  (e: 'update:tags', newTags: Tag[]): void
+}>()
 
-const tagInputValue = ref("");
+const tagInputValue = ref('')
 
-const focusInput = () => {};
+const focusInput = () => {}
 const onTagAdded = () => {
-  const newTags = props.tags;
-  if (
-    !newTags.map((t) => t.name).includes(tagInputValue.value) &&
-    tagInputValue.value !== ""
-  ) {
+  const newTags = props.tags
+  if (!newTags.map((t) => t.name).includes(tagInputValue.value) && tagInputValue.value !== '') {
     newTags.push({
-      name: tagInputValue.value,
-    });
+      name: tagInputValue.value
+    })
   }
-  emit("update:tags", newTags);
-  tagInputValue.value = "";
-};
+  emit('update:tags', newTags)
+  tagInputValue.value = ''
+}
 const onDeleteTag = (tagName: string) => {
-  const newTags = props.tags.filter((t: Tag) => t.name !== tagName);
-  console.log(newTags.map((t) => t.name));
-  emit("update:tags", newTags);
-};
+  const newTags = props.tags.filter((t: Tag) => t.name !== tagName)
+  console.log(newTags.map((t) => t.name))
+  emit('update:tags', newTags)
+}
 const onChangeLockState = (tagName: string, lock: boolean) => {
   const newTags = props.tags.map((t: Tag) => {
     if (t.name === tagName) {
       return {
         name: tagName,
-        locked: lock,
-      };
+        locked: lock
+      }
     } else {
-      return t;
+      return t
     }
-  });
-  emit("update:tags", newTags);
-};
+  })
+  emit('update:tags', newTags)
+}
 </script>
 
 <style lang="scss" module>
