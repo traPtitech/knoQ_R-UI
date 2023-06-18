@@ -1,0 +1,26 @@
+name: release
+
+on:
+  push:
+    tags:
+      - v*.*.*
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with: node-version: 20
+        cache: npm
+      - run: npm run build
+        env:
+          NODE_ENV: production
+      - name: Archive dist/
+        run: tar -zcvf ./dist.tar.gz ./dist
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with: files: dist.tar.gz
+        
