@@ -6,13 +6,13 @@ import * as path from 'path'
 export default defineConfig({
   resolve: {
     alias: {
-      '/@': `${__dirname}/src/`
+      '/@': path.resolve(__dirname, 'src')
     }
   },
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "/@/styles/main.scss";`
+        additionalData: `@import "/@/styles/_main.scss";`
       }
     }
   },
