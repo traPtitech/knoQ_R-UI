@@ -9,7 +9,8 @@
     "dev": "vite",
     "prepare": "husky install",
     "preview": "vite preview",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "test": "vitest"
   },
   "dependencies": {
     "axios": "^0.27.2",
