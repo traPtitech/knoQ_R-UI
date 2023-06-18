@@ -5,8 +5,8 @@
 </template>
 
 <script setup lang="ts">
-import UserIcon from "../UI/UserIcon.vue";
-const props = defineProps<{ admins: string[] }>();
+import UserIcon from '../UI/UserIcon.vue'
+const props = defineProps<{ admins: string[] }>()
 </script>
 
 <style lang="scss" module></style>

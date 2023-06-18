@@ -5,11 +5,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { RouterLink } from "vue-router";
+import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 
-const props = defineProps<{ id: string; name: string }>();
-const tagPath = computed(() => `/events?tags=${props.id}`);
+const props = defineProps<{ id: string; name: string }>()
+const tagPath = computed(() => `/events?tags=${props.id}`)
 </script>
 
 <style lang="scss" module>

@@ -11,8 +11,8 @@
 </template>
 
 <script setup lang="ts">
-import AIcon from "../UI/AIcon.vue";
-const props = defineProps<{ place: string }>();
+import AIcon from '../UI/AIcon.vue'
+const props = defineProps<{ place: string }>()
 </script>
 
 <style lang="scss" module>
