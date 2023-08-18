@@ -4,6 +4,7 @@ import EventList from '../pages/EventList.vue'
 import EventDetail from '../pages/EventDetailPage.vue'
 import EventForm from '../pages/EventFormPage.vue'
 import GroupList from '../pages/GroupList.vue'
+import SettingsPage from '../pages/SettingsPage.vue'
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -27,6 +28,11 @@ const routes = [
     path: '/groups',
     name: 'groups',
     component: GroupList
+  },
+  {
+    path: '/settings/ical',
+    name: 'ical',
+    component: SettingsPage
   }
 ]
 
