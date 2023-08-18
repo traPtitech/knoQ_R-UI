@@ -3,6 +3,7 @@ import Home from '../pages/HomePage.vue'
 import EventList from '../pages/EventList.vue'
 import EventDetail from '../pages/EventDetailPage.vue'
 import EventForm from '../pages/EventFormPage.vue'
+import GroupList from '../pages/GroupList.vue'
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -21,6 +22,11 @@ const routes = [
     name: 'EventDetail',
     component: EventDetail,
     meta: { headerTitle: 'Event Detail' }
+  },
+  {
+    path: '/groups',
+    name: 'groups',
+    component: GroupList
   }
 ]
 
