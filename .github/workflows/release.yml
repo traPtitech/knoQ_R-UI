@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with: 
+        with:
           node-version: 20
         cache: npm
       - run: npm run build
@@ -23,5 +23,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with: files: dist.tar.gz
-        
+        with:
+          files: dist.tar.gz
