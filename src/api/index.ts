@@ -1,6 +1,17 @@
-import { Configuration, EventsApi, UsersApi, AuthenticationApi } from './generated'
+import {
+  Configuration,
+  RoomsApi,
+  EventsApi,
+  GroupsApi,
+  UsersApi,
+  TagsApi,
+  AuthenticationApi,
+  ICalApi,
+  PublicApi
+} from './generated'
 
-export const BASE_PATH = 'http://localhost:6006/api'
+export const BASE_PATH =
+  process.env.NODE_ENV === 'development' ? 'http://localhost:6006/api' : '/api'
 const config = new Configuration({
   basePath: BASE_PATH,
   baseOptions: {
@@ -8,14 +19,15 @@ const config = new Configuration({
   }
 })
 
-const usersApi = new UsersApi(config, '')
-const eventsApi = new EventsApi(config, '')
-const authApi = new AuthenticationApi(config, '')
-
 const api = {
-  users: usersApi,
-  events: eventsApi,
-  auth: authApi
+  rooms: new RoomsApi(config),
+  events: new EventsApi(config),
+  groups: new GroupsApi(config),
+  users: new UsersApi(config),
+  tags: new TagsApi(config),
+  auth: new AuthenticationApi(config),
+  ical: new ICalApi(config),
+  public: new PublicApi(config)
 }
 
 export default api
