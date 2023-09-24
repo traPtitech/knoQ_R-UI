@@ -10,12 +10,14 @@
     "prepare": "husky install",
     "preview": "vite preview",
     "lint-staged": "lint-staged",
-    "test": "vitest"
+    "test": "vitest",
+    "generate": "openapi-typescript https://raw.githubusercontent.com/traPtitech/knoQ/master/docs/swagger.yaml -o src/api/schema.d.ts"
   },
   "dependencies": {
     "axios": "^1.4.0",
     "date-fns": "^2.30.0",
     "markdown-it": "^13.0.1",
+    "openapi-fetch": "^0.7.6",
     "pinia": "^2.1.6",
     "sass": "^1.66.1",
     "vue": "^3.3.4",
@@ -34,6 +36,7 @@
     "eslint-plugin-vue": "^9.17.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.0",
+    "openapi-typescript": "^6.6.2",
     "prettier": "^3.0.2",
     "typescript": "^5.1.6",
     "vite": "^4.4.9",
