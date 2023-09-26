@@ -1,25 +1,24 @@
 <!-- <template>
 </template> -->
 <template>
-  <div v-if="!events">loading</div>
-  <div v-else>
-    <div>イベント数:{{ events?.length }}</div>
-    <div v-for="event in events" :key="event.eventId">
-      {{ event }}
-    </div>
-  </div>
+  <div v-if="error">failed to load</div>
+  <div v-if="!data">loading...</div>
+  <div v-else>hello {{ data.name }}</div>
+  <RouterLink to="/">/</RouterLink>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import api, { type ResponseEvent } from '../api'
+import useSWRV from 'swrv'
+import { fetcher } from '../lib/fetcher'
+import { paths } from '../api/schema'
+import createClient from 'openapi-fetch'
 
-const events = ref<ResponseEvent[] | null>(null)
-
-onMounted(async () => {
-  const { data } = await api.events.getEvents()
-  events.value = data
-})
+// const { data, error } = useSWRV<
+//   paths['/users/me']['get']['responses']['200']['content']['application/json']
+// >('/users/me', async (s) => await fetcher(s, {}))
+const { data, error } = useSWRV<
+  paths['/users/me']['get']['responses']['200']['content']['application/json']
+>('/users/me', fetcher)
 </script>
 
 <style lang="scss" module></style>

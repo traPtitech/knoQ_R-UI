@@ -1,16 +1,26 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
+import useSWRV from 'swrv'
 import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-import { useMeStore } from '../store/me'
-const meStore = useMeStore()
-onMounted(async () => await meStore.fetchMe())
+import { fetcher } from '../lib/fetcher'
+import { paths } from '../api/schema'
+import createClient from 'openapi-fetch'
+// import { useMeStore } from '../store/me'
+// const meStore = useMeStore()
+// onMounted(async () => await meStore.fetchMe())
+
+const { data, error } = useSWRV<
+  paths['/users/me']['get']['responses']['200']['content']['application/json']
+>('/users/me', fetcher)
 </script>
 
 <template>
-  <img alt="Vue logo" src="../assets/logo.png" />
-  <RouterLink to="/events/62a569a2-74d6-474e-80d0-9a6bcdd58050">event</RouterLink>
+  <div v-if="error">failed to load</div>
+  <div v-if="!data">loading...</div>
+  <div v-else>hello {{ data.name }}</div>
+  <RouterLink to="/events">/events</RouterLink>
 </template>
 
 <style>

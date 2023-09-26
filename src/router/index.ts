@@ -12,28 +12,28 @@ const routes = [
     path: '/events',
     name: 'events',
     component: EventList
-  },
-  {
-    path: '/events/new',
-    name: 'create event',
-    component: EventForm
-  },
-  {
-    path: '/events/:id',
-    name: 'EventDetail',
-    component: EventDetail,
-    meta: { headerTitle: 'Event Detail' }
-  },
-  {
-    path: '/groups',
-    name: 'groups',
-    component: GroupList
-  },
-  {
-    path: '/settings/ical',
-    name: 'ical',
-    component: SettingsPage
   }
+  // {
+  //   path: '/events/new',
+  //   name: 'create event',
+  //   component: EventForm
+  // },
+  // {
+  //   path: '/events/:id',
+  //   name: 'EventDetail',
+  //   component: EventDetail,
+  //   meta: { headerTitle: 'Event Detail' }
+  // },
+  // {
+  //   path: '/groups',
+  //   name: 'groups',
+  //   component: GroupList
+  // },
+  // {
+  //   path: '/settings/ical',
+  //   name: 'ical',
+  //   component: SettingsPage
+  // }
 ]
 
 const router = createRouter({
