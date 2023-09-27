@@ -715,7 +715,7 @@ export interface operations {
    * @description 進捗部屋の情報を取得
    */
   getRooms: {
-    parameters?: {
+    parameters: {
       query?: {
         dateBegin?: components['parameters']['dateBegin']
         dateEnd?: components['parameters']['dateEnd']
@@ -870,7 +870,7 @@ export interface operations {
    * @description 使用宣言の情報を取得
    */
   getEvents: {
-    parameters?: {
+    parameters: {
       query?: {
         dateBegin?: components['parameters']['dateBegin']
         dateEnd?: components['parameters']['dateEnd']
@@ -1002,7 +1002,7 @@ export interface operations {
   }
   /** @description 所属しているイベントを返す */
   getMyEvents: {
-    parameters?: {
+    parameters: {
       query?: {
         relation?: components['parameters']['userRelation']
       }
@@ -1161,7 +1161,7 @@ export interface operations {
   }
   /** @description 自分の所属しているグループのIDを返す */
   getMyGroups: {
-    parameters?: {
+    parameters: {
       query?: {
         relation?: components['parameters']['userRelation']
       }
@@ -1186,7 +1186,7 @@ export interface operations {
   }
   /** @description ユーザー一覧を返す */
   getUsers: {
-    parameters?: {
+    parameters: {
       query?: {
         'include-suspended'?: components['parameters']['include-suspended']
       }
