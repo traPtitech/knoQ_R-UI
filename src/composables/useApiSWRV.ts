@@ -14,7 +14,8 @@ const makeUseApiSWRV = <Paths extends {}>() => {
     init: FetchOptions<FilterKeys<Paths[P], 'get'>>,
     config?: IConfig<any, fetcherFn<any>> | undefined
   ) => {
-    return useSWRV([url, init], async () => (await GET(url, init)).data, config)
+    const initStr = JSON.stringify(init)
+    return useSWRV([url, initStr], async () => (await GET(url, init)).data, config)
   }
 }
 
