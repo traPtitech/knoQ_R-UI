@@ -42,7 +42,7 @@ export const useMyAttendance = (
   const beforeEnd = computed(
     () => event.value && now.value && now.value < new Date(event.value.timeEnd)
   )
-  const canAttendance = computed(() => {
+  const canChange = computed(() => {
     if (!event.value) return
     return beforeEnd.value && (event.value.open || amGroupMember.value)
   })
@@ -65,7 +65,7 @@ export const useMyAttendance = (
     })
   }
   return {
-    canAttendance,
+    canChange,
     mySchedule,
     updateMyAttendance
   }
