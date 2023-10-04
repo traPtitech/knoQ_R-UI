@@ -20,12 +20,16 @@
     <h3>あなたの出席</h3>
     <MyAttendance @change="updateMyAttendance" :canChange="canChange" :schedule="mySchedule" />
   </div>
+  <div>
+    <h3>イベント削除</h3>
+    <button @click="onDeleteEvent">削除</button>
+  </div>
 </template>
 
 <script setup lang="ts">
 import MyAttendance from '../features/event/components/MyAttendance.vue'
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getFirstParam } from '../lib/params'
 import { useApiSWRV } from '../composables/useApiSWRV'
 import { useMyAttendance } from '../features/event/composables/useMyAttendance'
@@ -34,6 +38,7 @@ import TagsEditor from '../features/tag/components/TagsEditor.vue'
 import { client } from '../api'
 
 const route = useRoute()
+const router = useRouter()
 const eventId = computed(() => {
   return getFirstParam(route.params.id)
 })
@@ -63,6 +68,11 @@ const onDeleteTag = async (name: string) => {
 const onUpdateLockState = async (name: string, locked: boolean) => {
   // TODO
   mutate()
+}
+
+const onDeleteEvent = async () => {
+  await client.DELETE('/events/{eventID}', { params: { path: { eventID: eventId.value } } })
+  router.push('/')
 }
 </script>
 
