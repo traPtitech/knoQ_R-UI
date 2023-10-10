@@ -3,10 +3,11 @@ import useSWRV from 'swrv'
 import { paths } from '../api/schema'
 import { FilterKeys, PathsWithMethod } from 'openapi-typescript-helpers'
 import { IConfig, fetcherFn } from 'swrv/dist/types'
+import { BASE_URL } from '../api'
 
 const makeUseApiSWRV = <Paths extends {}>() => {
   const { GET } = createClient<Paths>({
-    baseUrl: 'http://localhost:6006/api',
+    baseUrl: BASE_URL,
     credentials: 'include'
   })
   return <P extends PathsWithMethod<Paths, 'get'>>(
