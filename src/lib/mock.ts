@@ -8,8 +8,8 @@ import {
   setupWorker
 } from 'msw'
 import { PathsWithMethod } from 'openapi-typescript-helpers'
-import { paths } from '../api/schema'
-import { BASE_URL } from '../api'
+import { paths } from './api-schema'
+import { BASE_URL } from './api'
 
 const mswUrlFixer = (path: string): string => {
   const s = path.replace(/\{(.+)\}/, ':$1')

@@ -1,4 +1,4 @@
-import { components } from '../../api/schema'
+import { components } from '../../lib/api-schema'
 
 export type KnoqEvent = components['schemas']['ResponseEvent']
 export type KnoqEventDetail = components['schemas']['ResponseEventDetail']

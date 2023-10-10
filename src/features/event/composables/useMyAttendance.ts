@@ -1,9 +1,8 @@
 import { ComputedRef, Ref, computed, nextTick, ref } from 'vue'
 import { KnoqEvent, KnoqEventDetail, Schedule } from '..'
-import { useApiSWRV } from '../../../composables/useApiSWRV'
+import { useApiSWRV, client } from '../../../lib/api'
 import useSWRV from 'swrv'
-import { components } from '../../../api/schema'
-import { client } from '../../../api'
+import { components } from '../../../lib/api-schema'
 
 export const useMyAttendance = (
   event:

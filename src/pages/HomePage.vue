@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { useApiSWRV } from '../composables/useApiSWRV'
+import { useApiSWRV } from '../lib/api'
 import { computed } from 'vue'
 
 const { data: me, error: meError } = useApiSWRV('/users/me', {})

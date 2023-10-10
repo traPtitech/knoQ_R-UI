@@ -22,3 +22,4 @@ const { data, error } = useSWRV<
 </script>
 
 <style lang="scss" module></style>
+../lib/schema

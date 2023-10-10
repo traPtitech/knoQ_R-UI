@@ -31,11 +31,11 @@ import MyAttendance from '../features/event/components/MyAttendance.vue'
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getFirstParam } from '../lib/params'
-import { useApiSWRV } from '../composables/useApiSWRV'
+import { useApiSWRV } from '../lib/api'
 import { useMyAttendance } from '../features/event/composables/useMyAttendance'
 import TagsForm from '../features/tag/components/TagsForm.vue'
 import TagsEditor from '../features/tag/components/TagsEditor.vue'
-import { client } from '../api'
+import { client } from '../lib/api'
 
 const route = useRoute()
 const router = useRouter()

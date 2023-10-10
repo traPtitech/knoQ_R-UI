@@ -1,4 +1,4 @@
-import { paths } from '../../api/schema'
+import { paths } from '../../lib/api-schema'
 import { mockApi } from '../../lib/mock'
 import { Group } from './types'
 

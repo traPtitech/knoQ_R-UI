@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { client } from '../../../api'
+import { client } from '../../../lib/api'
 
 export const useTags = (eventID: string) => {
   const tags = ref([])

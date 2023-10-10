@@ -1,9 +1,16 @@
 import createClient, { FetchOptions } from 'openapi-fetch'
 import useSWRV from 'swrv'
-import { paths } from '../api/schema'
+import { paths } from './api-schema'
 import { FilterKeys, PathsWithMethod } from 'openapi-typescript-helpers'
 import { IConfig, fetcherFn } from 'swrv/dist/types'
-import { BASE_URL } from '../api'
+
+export const BASE_URL =
+  process.env.NODE_ENV === 'development' ? 'https://localhost:6006/api' : '/api'
+
+export const client = createClient<paths>({
+  baseUrl: BASE_URL,
+  credentials: 'include'
+})
 
 const makeUseApiSWRV = <Paths extends {}>() => {
   const { GET } = createClient<Paths>({
