@@ -5,7 +5,7 @@ import { FilterKeys, PathsWithMethod } from 'openapi-typescript-helpers'
 import { IConfig, fetcherFn } from 'swrv/dist/types'
 
 export const BASE_URL =
-  process.env.NODE_ENV === 'development' ? 'https://localhost:6006/api' : '/api'
+  process.env.NODE_ENV === 'development' ? 'http://localhost:6006/api' : '/api'
 
 export const client = createClient<paths>({
   baseUrl: BASE_URL,
