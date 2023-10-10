@@ -11,7 +11,8 @@ const app = createApp(App)
 app.use(router)
 const pinia = createPinia()
 app.use(pinia)
-if (process.env.NODE_ENV === 'development') {
+
+if (import.meta.env.VITE_BACKEND === 'mock') {
   const handlers = [userHandlers, eventHandlers, groupHandlers].flat()
   const worker = setupWorker(...handlers)
   worker.start()

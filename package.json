@@ -7,6 +7,7 @@
     "lint": "eslint --fix",
     "format": "prettier --write .",
     "dev": "vite",
+    "dev:mock": "VITE_BACKEND=mock vite",
     "prepare": "husky install",
     "preview": "vite preview",
     "lint-staged": "lint-staged",
