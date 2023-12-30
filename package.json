@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "vue-tsc --noEmit && vite build",
-    "lint": "eslint 'src/**/*.{ts,vue}'",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "dev": "vite",
     "dev:mock": "VITE_BACKEND=mock vite",
@@ -46,7 +47,6 @@
     "@vitejs/plugin-vue": "^4.6.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.1.2",
     "eslint-plugin-storybook": "^0.6.15",
     "eslint-plugin-vue": "^9.19.2",
     "husky": "^8.0.3",

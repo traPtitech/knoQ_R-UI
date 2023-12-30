@@ -7,15 +7,19 @@ import vueParser from 'vue-eslint-parser'
 const compat = new FlatCompat()
 
 export default [
+  {
+    ignores: ['src/lib/api-schema.d.ts', '**/dist/**']
+  },
+  {
+    files: ['**/*.{vue,ts}']
+  },
   js.configs.recommended,
   ...compat.extends(
     'plugin:vue/vue3-recommended',
-    'plugin:prettier/recommended',
-    'plugin:storybook/recommended'
+    'plugin:storybook/recommended',
+    'prettier'
   ),
   {
-    files: ['**/*.{vue,ts}'],
-    ignores: ['src/lib/api-schema.d.ts'],
     rules: {
       'no-undef': 'warn',
       'no-unused-vars': 'warn'
