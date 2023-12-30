@@ -2,8 +2,8 @@
   <div></div>
   <EventFormGroupFrame
     :open="groupType === 'stock'"
-    @click="groupType = 'stock'"
     title="既存のグループで開催"
+    @click="groupType = 'stock'"
   >
     <div>
       <DropDownSelector v-model="groupId" :options="groupOptions" />
@@ -11,12 +11,20 @@
   </EventFormGroupFrame>
   <EventFormGroupFrame
     :open="groupType === 'instant'"
-    @click="groupType = 'instant'"
     title="新規のグループで開催"
+    @click="groupType = 'instant'"
   >
     <div :class="$style.instantGroup">
-      <EventFormInput v-model="groupName" placeholder="グループ名" :class="$style.input" />
-      <EventFormInput v-model="description" placeholder="説明" :class="$style.input" />
+      <EventFormInput
+        v-model="groupName"
+        placeholder="グループ名"
+        :class="$style.input"
+      />
+      <EventFormInput
+        v-model="description"
+        placeholder="説明"
+        :class="$style.input"
+      />
       <EventFormCheckBox v-model="open" text="自由に出入りできるようにする" />
       <MembersEditor v-model="admins" :class="$style.input" />
       <MembersEditor v-model="members" :class="$style.input" />
@@ -77,9 +85,13 @@ const groupOptions = computed(() =>
   })
 )
 
-watch([groupType, groupId, groupName, description, open, admins, members], onUpdate, {
-  immediate: true
-})
+watch(
+  [groupType, groupId, groupName, description, open, admins, members],
+  onUpdate,
+  {
+    immediate: true
+  }
+)
 </script>
 
 <style lang="scss" module>

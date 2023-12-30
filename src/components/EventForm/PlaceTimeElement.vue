@@ -3,7 +3,10 @@
     <span v-if="placeTime.type === 'instant'"> {{ placeTime.place }} </span>
     <span v-if="placeTime.type === 'stock'"> {{ placeTime.roomId }} </span>
     :
-    <span>{{ fmtDate(placeTime.timeStart) }} ~ {{ fmtDate(placeTime.timeEnd) }}</span>
+    <span
+      >{{ fmtDate(placeTime.timeStart) }} ~
+      {{ fmtDate(placeTime.timeEnd) }}</span
+    >
     <button @click="emit('delete')">削除</button>
   </div>
 </template>

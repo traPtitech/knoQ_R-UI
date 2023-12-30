@@ -5,7 +5,7 @@
       :key="tag.name"
       :tag="tag"
       @delete="() => onDeleteTag(tag.name)"
-      @changeLockState="(state) => onChangeLockState(tag.name, state)"
+      @change-lock-state="(state) => onChangeLockState(tag.name, state)"
     />
     <TextInput
       v-model="tagInputValue"
@@ -37,7 +37,10 @@ const tagInputValue = ref('')
 
 const onTagAdded = () => {
   const newTags = props.modelValue
-  if (!newTags.map((t) => t.name).includes(tagInputValue.value) && tagInputValue.value !== '') {
+  if (
+    !newTags.map((t) => t.name).includes(tagInputValue.value) &&
+    tagInputValue.value !== ''
+  ) {
     newTags.push({
       name: tagInputValue.value
     })

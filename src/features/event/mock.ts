@@ -74,7 +74,10 @@ const events: KnoqEvent[] = eventDetails.map((v) => {
 export const eventHandlers = [
   mockApi.get('/events', (req, res, ctx) => {
     type Responses = paths['/events']['get']['responses']
-    return res(ctx.status(200), ctx.json<Responses[200]['content']['application/json']>(events))
+    return res(
+      ctx.status(200),
+      ctx.json<Responses[200]['content']['application/json']>(events)
+    )
   }),
   mockApi.post('/events', (req, res, ctx) => {
     type Responses = paths['/events']['post']['responses']
@@ -88,11 +91,17 @@ export const eventHandlers = [
     const id = req.params.id as string
     return res(
       ctx.status(200),
-      ctx.json<Responses[200]['content']['application/json']>({ ...eventDetails[0], eventId: id })
+      ctx.json<Responses[200]['content']['application/json']>({
+        ...eventDetails[0],
+        eventId: id
+      })
     )
   }),
   mockApi.get('/users/me/events', (req, res, ctx) => {
     type Responses = paths['/users/me/events']['get']['responses']
-    return res(ctx.status(200), ctx.json<Responses[200]['content']['application/json']>(events))
+    return res(
+      ctx.status(200),
+      ctx.json<Responses[200]['content']['application/json']>(events)
+    )
   })
 ]

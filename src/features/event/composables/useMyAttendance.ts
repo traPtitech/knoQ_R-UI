@@ -47,7 +47,9 @@ export const useMyAttendance = (
   })
   const mySchedule = computed(() => {
     const { data: me } = useApiSWRV('/users/me', {})
-    const mySchedule = event.value?.attendees.filter((v) => v.userId === me.value?.userId)
+    const mySchedule = event.value?.attendees.filter(
+      (v) => v.userId === me.value?.userId
+    )
     if (!mySchedule) {
       return
     }

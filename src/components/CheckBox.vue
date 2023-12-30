@@ -1,6 +1,9 @@
 <template>
-  <div :class="$style.container" @click="emit('update:modelValue', !modelValue)">
-    <input type="checkbox" v-model="value" :class="$style.checkbox" />
+  <div
+    :class="$style.container"
+    @click="emit('update:modelValue', !modelValue)"
+  >
+    <input v-model="value" type="checkbox" :class="$style.checkbox" />
     {{ text }}
   </div>
 </template>

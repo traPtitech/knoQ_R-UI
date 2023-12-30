@@ -4,10 +4,10 @@
     <button v-if="tag.locked" @click="onClickLockToggle">
       <AIcon name="lock" />
     </button>
-    <button v-else @click="onClickLockToggle" :class="$style.button">
+    <button v-else :class="$style.button" @click="onClickLockToggle">
       <AIcon name="lockOpen" />
     </button>
-    <button @click="onClickDelete" :class="$style.button">
+    <button :class="$style.button" @click="onClickDelete">
       <AIcon name="close" />
     </button>
   </span>

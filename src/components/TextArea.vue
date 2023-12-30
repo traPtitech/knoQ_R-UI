@@ -1,6 +1,10 @@
 <template>
   <div>
-    <textarea :placeholder="props.placeholder" :value="modelValue" @input="onInput" />
+    <textarea
+      :placeholder="props.placeholder"
+      :value="modelValue"
+      @input="onInput"
+    />
   </div>
 </template>
 

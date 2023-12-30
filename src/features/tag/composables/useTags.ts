@@ -9,10 +9,15 @@ export const useTags = (eventID: string) => {
     // const {data: tags} = useApiSWRV("/t")
   }
   const addTag = async (tagName: string) => {
-    await POST('/events/{eventID}/tags', { params: { path: { eventID } }, body: { name: tagName } })
+    await POST('/events/{eventID}/tags', {
+      params: { path: { eventID } },
+      body: { name: tagName }
+    })
   }
   const deleteTag = async (tagName: string) => {
-    await DELETE('/events/{eventID}/tags/{tagName}', { params: { path: { eventID, tagName } } })
+    await DELETE('/events/{eventID}/tags/{tagName}', {
+      params: { path: { eventID, tagName } }
+    })
   }
 
   return {

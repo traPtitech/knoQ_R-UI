@@ -16,9 +16,13 @@ const instantPlaceTimeSchemma = z
     timeStart: z.date(),
     timeEnd: z.date()
   })
-  .refine((schema) => schema.timeStart && schema.timeEnd && schema.timeStart < schema.timeEnd, {
-    message: '終了は開始より後にしてください。'
-  })
+  .refine(
+    (schema) =>
+      schema.timeStart && schema.timeEnd && schema.timeStart < schema.timeEnd,
+    {
+      message: '終了は開始より後にしてください。'
+    }
+  )
 
 const stockPlaceTimeSchema = z
   .object({
@@ -27,9 +31,13 @@ const stockPlaceTimeSchema = z
     timeStart: z.date(),
     timeEnd: z.date()
   })
-  .refine((schema) => schema.timeStart && schema.timeEnd && schema.timeStart < schema.timeEnd, {
-    message: '終了は開始より後にしてください。'
-  })
+  .refine(
+    (schema) =>
+      schema.timeStart && schema.timeEnd && schema.timeStart < schema.timeEnd,
+    {
+      message: '終了は開始より後にしてください。'
+    }
+  )
 
 const instantGroupSchemma = z.object({
   name: z.string().nonempty(),

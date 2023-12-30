@@ -1,8 +1,8 @@
 <template>
   <div :class="$style.form">
     <TextInput
-      placeholder="イベント名"
       v-model="event.name"
+      placeholder="イベント名"
       :class="$style.eventName"
       :errs="err?.name?._errors"
     />
@@ -11,8 +11,8 @@
     <TextArea v-model="event.description" placeholder="説明" />
     <GroupEdit
       :group="event.group"
+      :existing-groups="groups.myGroups"
       @update="(g) => (event.group = g)"
-      :existingGroups="groups.myGroups"
     />
     <DetailEdit v-model:isOpen="event.open" v-model:admins="event.admins" />
     <!-- <button @click="submit">submit</button> -->

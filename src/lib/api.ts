@@ -23,7 +23,11 @@ const makeUseApiSWRV = <Paths extends {}>() => {
     config?: IConfig<any, fetcherFn<any>> | undefined
   ) => {
     const initStr = JSON.stringify(init)
-    return useSWRV([url, initStr], async () => (await GET(url, init)).data, config)
+    return useSWRV(
+      [url, initStr],
+      async () => (await GET(url, init)).data,
+      config
+    )
   }
 }
 

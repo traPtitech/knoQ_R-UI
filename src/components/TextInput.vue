@@ -1,6 +1,11 @@
 <template>
   <div>
-    <input :placeholder="placeholder" v-model="value" :class="$style.input" :err="hasError" />
+    <input
+      v-model="value"
+      :placeholder="placeholder"
+      :class="$style.input"
+      :err="hasError"
+    />
     <div v-if="errs">
       <div v-for="err in errs" :key="err">
         {{ err }}

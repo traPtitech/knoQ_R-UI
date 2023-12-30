@@ -1,6 +1,6 @@
 <template>
   <div v-for="attendee in props.attendees" :key="attendee.name">
-    <UserIcon :userName="attendee.name" />
+    <UserIcon :user-name="attendee.name" />
     {{ attendee.name }}
     {{ attendee.schedule }}
   </div>

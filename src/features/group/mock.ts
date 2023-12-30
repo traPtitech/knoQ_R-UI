@@ -21,10 +21,16 @@ const groupIds: string[] = groups.map((v) => v.groupId)
 export const groupHandlers = [
   mockApi.get('/groups', (req, res, ctx) => {
     type Responses = paths['/groups']['get']['responses']
-    return res(ctx.status(200), ctx.json<Responses[200]['content']['application/json']>(groups))
+    return res(
+      ctx.status(200),
+      ctx.json<Responses[200]['content']['application/json']>(groups)
+    )
   }),
   mockApi.get('/users/me/groups', (req, res, ctx) => {
     type Responses = paths['/users/me/groups']['get']['responses']
-    return res(ctx.status(200), ctx.json<Responses[200]['content']['application/json']>(groupIds))
+    return res(
+      ctx.status(200),
+      ctx.json<Responses[200]['content']['application/json']>(groupIds)
+    )
   })
 ]

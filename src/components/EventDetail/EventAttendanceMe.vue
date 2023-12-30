@@ -1,5 +1,5 @@
 <template>
-  <UserIcon :userName="name" />
+  <UserIcon :user-name="name" />
 
   <div v-if="!props.myAttendance">
     <button @click="emits('change', 'attendance')">出席</button>

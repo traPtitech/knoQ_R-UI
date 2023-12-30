@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.box" :selected="open">
-    <div :class="$style.header" @click="emit('click')" :selected="open">
+    <div :class="$style.header" :selected="open" @click="emit('click')">
       <div :class="$style.toggle" />
       <div>
         {{ title }}

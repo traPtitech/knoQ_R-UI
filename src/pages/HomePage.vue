@@ -12,7 +12,9 @@
     <div v-else-if="!todaysEvents">loading events</div>
     <div v-else>
       <div v-for="event in todaysEvents" :key="event.eventId">
-        <RouterLink :to="`/events/${event.eventId}`"> {{ event.name }}</RouterLink>
+        <RouterLink :to="`/events/${event.eventId}`">
+          {{ event.name }}</RouterLink
+        >
       </div>
     </div>
   </div>
@@ -22,7 +24,9 @@
     <div v-else-if="!myEvents">loading events</div>
     <div v-else>
       <div v-for="event in myEvents" :key="event.eventId">
-        <RouterLink :to="`/events/${event.eventId}`"> {{ event.name }}</RouterLink>
+        <RouterLink :to="`/events/${event.eventId}`">
+          {{ event.name }}</RouterLink
+        >
       </div>
     </div>
   </div>
@@ -32,7 +36,9 @@
     <div v-else-if="!myGroupDetails">loading events</div>
     <div v-else>
       <div v-for="group in myGroupDetails" :key="group?.groupId">
-        <RouterLink :to="`/groups/${group?.groupId}`"> {{ group?.name }}</RouterLink>
+        <RouterLink :to="`/groups/${group?.groupId}`">
+          {{ group?.name }}</RouterLink
+        >
       </div>
     </div>
   </div>
@@ -46,17 +52,29 @@ import { computed } from 'vue'
 const { data: me, error: meError } = useApiSWRV('/users/me', {})
 const { data: todaysEvents, error: todaysEventsError } = useApiSWRV('/events', {
   params: {
-    query: { dateBegin: '2023-09-27T00:00:00+09:00', dateEnd: '2023-09-27T23:59:59+09:00' }
+    query: {
+      dateBegin: '2023-09-27T00:00:00+09:00',
+      dateEnd: '2023-09-27T23:59:59+09:00'
+    }
   }
 })
-const { data: myEvents, error: myEventsError } = useApiSWRV('/users/me/events', {
-  params: { query: { relation: 'attendees' } }
-})
-const { data: myGroups, error: myGroupsError } = useApiSWRV('/users/me/groups', {
-  params: { query: { relation: 'belongs' } }
-})
+const { data: myEvents, error: myEventsError } = useApiSWRV(
+  '/users/me/events',
+  {
+    params: { query: { relation: 'attendees' } }
+  }
+)
+const { data: myGroups, error: myGroupsError } = useApiSWRV(
+  '/users/me/groups',
+  {
+    params: { query: { relation: 'belongs' } }
+  }
+)
 const { data: allGroups, error: allGroupsError } = useApiSWRV('/groups', {})
 const myGroupDetails = computed(
-  () => myGroups.value?.map((v) => allGroups.value?.filter((x) => x.groupId === v)).flat()
+  () =>
+    myGroups.value
+      ?.map((v) => allGroups.value?.filter((x) => x.groupId === v))
+      .flat()
 )
 </script>

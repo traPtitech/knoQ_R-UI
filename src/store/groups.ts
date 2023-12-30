@@ -16,7 +16,8 @@ export const useGroupStore = defineStore('group', () => {
       const _me = useMe.me
       return groups.value.filter(
         (group: ResponseGroup) =>
-          group.members.includes(_me.userId) || group.admins.includes(_me.userId)
+          group.members.includes(_me.userId) ||
+          group.admins.includes(_me.userId)
       )
     } else {
       return []

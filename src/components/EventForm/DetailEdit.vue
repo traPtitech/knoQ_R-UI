@@ -1,6 +1,9 @@
 <template>
   <div>
-    <EventFormCheckBox v-model="isOpenValue" text="グループ外の人は参加できないようにする" />
+    <EventFormCheckBox
+      v-model="isOpenValue"
+      text="グループ外の人は参加できないようにする"
+    />
     <MembersEditor v-model="adminsValue" />
   </div>
 </template>

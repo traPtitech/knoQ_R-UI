@@ -1,4 +1,11 @@
-import { mdiVideo, mdiMapMarker, mdiChevronRight, mdiLock, mdiLockOpen, mdiClose } from '@mdi/js'
+import {
+  mdiVideo,
+  mdiMapMarker,
+  mdiChevronRight,
+  mdiLock,
+  mdiLockOpen,
+  mdiClose
+} from '@mdi/js'
 
 interface MdiIconsMapping {
   [name: string]: string

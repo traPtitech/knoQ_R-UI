@@ -18,7 +18,11 @@
   </div>
   <div>
     <h3>あなたの出席</h3>
-    <MyAttendance @change="updateMyAttendance" :canChange="canChange" :schedule="mySchedule" />
+    <MyAttendance
+      :can-change="canChange"
+      :schedule="mySchedule"
+      @change="updateMyAttendance"
+    />
   </div>
   <div>
     <h3>イベント削除</h3>
@@ -34,7 +38,7 @@ import { getFirstParam } from '../lib/params'
 import { useApiSWRV } from '../lib/api'
 import { useMyAttendance } from '../features/event/composables/useMyAttendance'
 import TagsForm from '../features/tag/components/TagsForm.vue'
-import TagsEditor from '../features/tag/components/TagsEditor.vue'
+import TagsEditor from '/@/features/tag/components/TagsEditor.vue'
 import { client } from '../lib/api'
 
 const route = useRoute()
@@ -71,7 +75,9 @@ const onUpdateLockState = async (name: string, locked: boolean) => {
 }
 
 const onDeleteEvent = async () => {
-  await client.DELETE('/events/{eventID}', { params: { path: { eventID: eventId.value } } })
+  await client.DELETE('/events/{eventID}', {
+    params: { path: { eventID: eventId.value } }
+  })
   router.push('/')
 }
 </script>

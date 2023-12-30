@@ -3,7 +3,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 const props = defineProps<{ userName: string }>()
-const iconUrl = computed(() => `https://q.trap.jp/api/v3/public/icon/${props.userName}`)
+const iconUrl = computed(
+  () => `https://q.trap.jp/api/v3/public/icon/${props.userName}`
+)
 </script>
 
 <style lang="scss" module>

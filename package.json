@@ -67,7 +67,8 @@
   },
   "lint-staged": {
     "*.{ts,tsx,vue}": [
-      "eslint ."
+      "eslint --fix",
+      "prettier --write"
     ]
   },
   "msw": {

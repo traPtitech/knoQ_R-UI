@@ -1,5 +1,5 @@
 <template>
-  <span :class="$style.tag" v-bind:key="tag.id" v-for="tag in props.tags">
+  <span v-for="tag in props.tags" :key="tag.id" :class="$style.tag">
     <ATag :id="tag.id" :name="tag.name" />
   </span>
 </template>

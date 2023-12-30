@@ -2,7 +2,10 @@
   <div>
     <div :class="$style.elems">
       <div v-for="placeTime in placeTimes" :key="getKey(placeTime)">
-        <PlaceTimeElement :placeTime="placeTime" @delete="onDelete(placeTime)" />
+        <PlaceTimeElement
+          :place-time="placeTime"
+          @delete="onDelete(placeTime)"
+        />
       </div>
     </div>
     <div>
@@ -25,7 +28,11 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { PlaceTime, StockPlaceTime, InstantPlaceTime } from '../../models/eventForm'
+import {
+  PlaceTime,
+  StockPlaceTime,
+  InstantPlaceTime
+} from '../../models/eventForm'
 import EventFormDateTimeInput from './DateTimeInput.vue'
 import EventFormInput from '../TextInput.vue'
 import { ifExp } from '../../lib/if'
@@ -80,8 +87,12 @@ const onAdd = () => {
 const onDelete = (placeTime: PlaceTime) => {
   const newPlaceTimes = props.placeTimes.filter(
     (item: PlaceTime) =>
-      (item.type === 'instant' && placeTime.type === 'instant' && item.place !== placeTime.place) ||
-      (item.type === 'stock' && placeTime.type === 'stock' && item.roomId !== placeTime.roomId) ||
+      (item.type === 'instant' &&
+        placeTime.type === 'instant' &&
+        item.place !== placeTime.place) ||
+      (item.type === 'stock' &&
+        placeTime.type === 'stock' &&
+        item.roomId !== placeTime.roomId) ||
       item.timeStart !== placeTime.timeStart ||
       item.timeEnd !== placeTime.timeEnd
   )

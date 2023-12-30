@@ -5,7 +5,7 @@
       :key="tag.name"
       :tag="tag"
       @delete="onDeleteTag"
-      @changeLockState="onChangeLockState"
+      @change-lock-state="onChangeLockState"
     />
     <EventFormInput
       v-model="tagInputValue"
@@ -37,7 +37,10 @@ const tagInputValue = ref('')
 const focusInput = () => {}
 const onTagAdded = () => {
   const newTags = props.tags
-  if (!newTags.map((t) => t.name).includes(tagInputValue.value) && tagInputValue.value !== '') {
+  if (
+    !newTags.map((t) => t.name).includes(tagInputValue.value) &&
+    tagInputValue.value !== ''
+  ) {
     newTags.push({
       name: tagInputValue.value
     })

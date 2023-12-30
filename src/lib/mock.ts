@@ -22,16 +22,26 @@ type Resolver = ResponseResolver<
   DefaultBodyType
 >
 const _mockApi = <Paths extends {}>() => {
-  const get = <P extends PathsWithMethod<Paths, 'get'>>(path: P, resolver: Resolver) =>
-    rest.get(mswUrlFixer(path as string), resolver)
-  const post = <P extends PathsWithMethod<Paths, 'post'>>(path: P, resolver: Resolver) =>
-    rest.post(mswUrlFixer(path as string), resolver)
-  const put = <P extends PathsWithMethod<Paths, 'put'>>(path: P, resolver: Resolver) =>
-    rest.put(mswUrlFixer(path as string), resolver)
-  const patch = <P extends PathsWithMethod<Paths, 'patch'>>(path: P, resolver: Resolver) =>
-    rest.patch(mswUrlFixer(path as string), resolver)
-  const _delete = <P extends PathsWithMethod<Paths, 'delete'>>(path: P, resolver: Resolver) =>
-    rest.delete(mswUrlFixer(path as string), resolver)
+  const get = <P extends PathsWithMethod<Paths, 'get'>>(
+    path: P,
+    resolver: Resolver
+  ) => rest.get(mswUrlFixer(path as string), resolver)
+  const post = <P extends PathsWithMethod<Paths, 'post'>>(
+    path: P,
+    resolver: Resolver
+  ) => rest.post(mswUrlFixer(path as string), resolver)
+  const put = <P extends PathsWithMethod<Paths, 'put'>>(
+    path: P,
+    resolver: Resolver
+  ) => rest.put(mswUrlFixer(path as string), resolver)
+  const patch = <P extends PathsWithMethod<Paths, 'patch'>>(
+    path: P,
+    resolver: Resolver
+  ) => rest.patch(mswUrlFixer(path as string), resolver)
+  const _delete = <P extends PathsWithMethod<Paths, 'delete'>>(
+    path: P,
+    resolver: Resolver
+  ) => rest.delete(mswUrlFixer(path as string), resolver)
   return {
     get,
     post,
