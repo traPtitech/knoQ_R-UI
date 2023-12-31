@@ -17,6 +17,7 @@ export default [
   ...compat.extends(
     'plugin:vue/vue3-recommended',
     'plugin:storybook/recommended',
+    'plugin:vuejs-accessibility/recommended',
     'prettier'
   ),
   {
