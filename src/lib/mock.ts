@@ -4,11 +4,10 @@ import {
   ResponseResolver,
   RestContext,
   RestRequest,
-  rest,
-  setupWorker
+  rest
 } from 'msw'
 import { PathsWithMethod } from 'openapi-typescript-helpers'
-import { paths } from './api-schema'
+import { paths } from '/@/lib/api'
 import { BASE_URL } from './api'
 
 const mswUrlFixer = (path: string): string => {

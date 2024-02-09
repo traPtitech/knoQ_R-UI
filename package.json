@@ -14,7 +14,7 @@
     "preview": "vite preview",
     "lint-staged": "lint-staged",
     "test": "vitest --ui --coverage.enabled=true",
-    "generate": "openapi-typescript https://raw.githubusercontent.com/traPtitech/knoQ/master/docs/swagger.yaml -o src/lib/api-schema.d.ts",
+    "generate": "openapi-typescript https://raw.githubusercontent.com/traPtitech/knoQ/master/docs/swagger.yaml -o src/lib/api/schema.d.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

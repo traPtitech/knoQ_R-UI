@@ -1,3 +1,3 @@
-import { components } from '../../lib/api-schema'
+import { components } from '/@/lib/api'
 
 export type User = components['schemas']['ResponseUser']

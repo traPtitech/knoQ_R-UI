@@ -1,9 +1,9 @@
 import { ref } from 'vue'
-import { client } from '../../../lib/api'
+import { apiClient } from '/@/lib/api'
 
 export const useTags = (eventID: string) => {
   const tags = ref([])
-  const { GET, POST, DELETE } = client
+  const { GET, POST, DELETE } = apiClient
 
   const getTags = async () => {
     // const {data: tags} = useApiSWRV("/t")

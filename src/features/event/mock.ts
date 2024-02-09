@@ -1,5 +1,5 @@
-import { KnoqEvent, KnoqEventDetail } from '.'
-import { paths } from '../../lib/api-schema'
+import { KnoqEvent, KnoqEventDetail } from './types'
+import { paths } from '/@/lib/api'
 import { mockApi } from '../../lib/mock'
 
 const eventDetails: KnoqEventDetail[] = [

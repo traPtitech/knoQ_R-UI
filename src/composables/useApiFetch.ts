@@ -1,6 +1,5 @@
 import useSWRV, { IConfig } from 'swrv'
-import { paths } from '../lib/api-schema'
-import { apiClient } from '/@/lib/api'
+import { apiClient, paths } from '/@/lib/api'
 import { FetchOptions } from 'openapi-fetch'
 import { FilterKeys, PathsWithMethod } from 'openapi-typescript-helpers'
 import { useSwrvState } from './useSwrvState'

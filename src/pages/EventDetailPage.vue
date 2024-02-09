@@ -36,7 +36,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getFirstParam } from '../lib/params'
 import { fetchEvent } from '../features/event/api'
 import { useMySchedule } from '../features/event/composables/useMySchedule'
-import { useMe } from '../composables/useMe'
+import { useMe } from '/@/composables/useMe'
 import { Schedule } from '/@/features/event/types'
 
 const route = useRoute()
