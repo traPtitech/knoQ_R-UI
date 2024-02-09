@@ -1,11 +1,12 @@
 <template>
   <div>
     <h2>イベント</h2>
+    <div>{{ state }}</div>
     <div v-if="error">failed to fetch</div>
     <div v-else-if="!event">loading</div>
     <div v-else>
       {{ event }}
-      <div>
+      <!-- <div>
         <h3>タグ</h3>
         <TagsEditor
           :tags="event.tags"
@@ -13,15 +14,13 @@
           @delete="onDeleteTag"
           @update="onUpdateLockState"
         />
-      </div>
+      </div> -->
     </div>
-  </div>
-  <div>
     <h3>あなたの出席</h3>
-    <MyAttendance
-      :can-change="canChange"
+    <MySchedule
+      :can-change="canUpdate"
       :schedule="mySchedule"
-      @change="updateMyAttendance"
+      @change="onUpdateMySchedule"
     />
   </div>
   <div>
@@ -31,15 +30,14 @@
 </template>
 
 <script setup lang="ts">
-import MyAttendance from '../features/event/components/MyAttendance.vue'
+import MySchedule from '/@/features/event/components/MySchedule.vue'
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getFirstParam } from '../lib/params'
-import { useApiSWRV } from '../lib/api'
-import { useMyAttendance } from '../features/event/composables/useMyAttendance'
-import TagsForm from '../features/tag/components/TagsForm.vue'
-import TagsEditor from '/@/features/tag/components/TagsEditor.vue'
-import { client } from '../lib/api'
+import { fetchEvent } from '../features/event/api'
+import { useMySchedule } from '../features/event/composables/useMySchedule'
+import { useMe } from '../composables/useMe'
+import { Schedule } from '/@/features/event/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -47,37 +45,16 @@ const eventId = computed(() => {
   return getFirstParam(route.params.id)
 })
 
-const {
-  data: event,
-  error,
-  mutate
-} = useApiSWRV('/events/{eventID}', {
-  params: { path: { eventID: eventId.value } }
-})
-const { canChange, mySchedule, updateMyAttendance } = useMyAttendance(event)
+const { event, error, mutate, state } = fetchEvent(eventId.value)
+const { me } = useMe()
+const { canUpdate, mySchedule, updateMySchedule } = useMySchedule(me, event)
 
-const onAddTag = async (name: string) => {
-  await client.POST('/events/{eventID}/tags', {
-    params: { path: { eventID: eventId.value } },
-    body: { name }
-  })
-  mutate()
-}
-const onDeleteTag = async (name: string) => {
-  await client.DELETE('/events/{eventID}/tags/{tagName}', {
-    params: { path: { eventID: eventId.value, tagName: name } }
-  })
-  mutate()
-}
-const onUpdateLockState = async (name: string, locked: boolean) => {
-  // TODO
+const onUpdateMySchedule = async (schedule: Schedule) => {
+  await updateMySchedule(schedule)
   mutate()
 }
 
 const onDeleteEvent = async () => {
-  await client.DELETE('/events/{eventID}', {
-    params: { path: { eventID: eventId.value } }
-  })
   router.push('/')
 }
 </script>

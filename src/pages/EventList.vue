@@ -13,6 +13,7 @@ import { fetcher } from '../lib/fetcher'
 import { paths } from '../api/schema'
 import createClient from 'openapi-fetch'
 
+const x = useSWRV()
 // const { data, error } = useSWRV<
 //   paths['/users/me']['get']['responses']['200']['content']['application/json']
 // >('/users/me', async (s) => await fetcher(s, {}))

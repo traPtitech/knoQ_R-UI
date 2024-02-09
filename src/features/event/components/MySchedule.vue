@@ -12,10 +12,10 @@
 </template>
 
 <script setup lang="ts">
-import { Schedule } from '..'
-const emits = defineEmits<{ (e: 'change', value: Schedule): void }>()
-const props = defineProps<{
-  schedule: Schedule | null | undefined
-  canChange: boolean | undefined
+import { Schedule } from '../types'
+const emits = defineEmits<{ change: [value: Schedule] }>()
+defineProps<{
+  schedule?: Schedule | null
+  canChange?: boolean
 }>()
 </script>
