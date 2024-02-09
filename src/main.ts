@@ -1,10 +1,20 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+// import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
+// import { setupWorker } from 'msw'
+// import { userHandlers } from './features/user/mock'
+// import { eventHandlers } from './features/event/mock'
+// import { groupHandlers } from './features/group/mock'
 
 const app = createApp(App)
 app.use(router)
-const pinia = createPinia()
-app.use(pinia)
+// const pinia = createPinia()
+// app.use(pinia)
+
+// if (import.meta.env.VITE_BACKEND === 'mock') {
+//   const handlers = [userHandlers, eventHandlers, groupHandlers].flat()
+//   const worker = setupWorker(...handlers)
+//   worker.start()
+// }
 app.mount('#app')
