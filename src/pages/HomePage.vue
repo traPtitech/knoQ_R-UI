@@ -74,10 +74,9 @@ const { data: myGroups, error: myGroupsError } = useApiFetch(
   }
 )
 const { data: allGroups, error: allGroupsError } = useApiFetch('/groups', {})
-const myGroupDetails = computed(
-  () =>
-    myGroups.value
-      ?.map((v) => allGroups.value?.filter((x) => x.groupId === v))
-      .flat()
+const myGroupDetails = computed(() =>
+  myGroups.value
+    ?.map((v) => allGroups.value?.filter((x) => x.groupId === v))
+    .flat()
 )
 </script>
