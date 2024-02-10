@@ -9,9 +9,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "dev": "vite",
-    "prepare": "husky install",
     "preview": "vite preview",
-    "lint-staged": "lint-staged",
     "test": "vitest --ui --coverage.enabled=true",
     "generate": "openapi-typescript https://raw.githubusercontent.com/traPtitech/knoQ/master/docs/swagger.yaml -o src/lib/api/schema.d.ts",
     "storybook": "storybook dev -p 6006",
@@ -52,8 +50,6 @@
     "eslint-plugin-storybook": "^0.6.15",
     "eslint-plugin-vue": "^9.21.1",
     "eslint-plugin-vuejs-accessibility": "^2.2.1",
-    "husky": "^9.0.10",
-    "lint-staged": "^15.2.2",
     "openapi-typescript": "^6.7.4",
     "openapi-typescript-helpers": "^0.0.6",
     "prettier": "^3.2.5",
@@ -65,14 +61,5 @@
     "vitest": "^1.2.2",
     "vue-eslint-parser": "^9.4.2",
     "vue-tsc": "^1.8.27"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,vue}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
-  },
-  "msw": {
-    "workerDirectory": "public"
   }
 }
