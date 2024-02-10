@@ -33,7 +33,6 @@
 import MySchedule from '/@/features/event/components/MySchedule.vue'
 import { ComputedRef, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getFirstParam } from '../lib/params'
 import { fetchEvent } from '../features/event/api'
 import { useMySchedule } from '../features/event/composables/useMySchedule'
 import { useMe } from '/@/composables/useMe'
