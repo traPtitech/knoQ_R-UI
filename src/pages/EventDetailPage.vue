@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import MySchedule from '/@/features/event/components/MySchedule.vue'
-import { computed } from 'vue'
+import { ComputedRef, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getFirstParam } from '../lib/params'
 import { fetchEvent } from '../features/event/api'
@@ -41,9 +41,7 @@ import { Schedule } from '/@/features/event/types'
 
 const route = useRoute()
 const router = useRouter()
-const eventId = computed(() => {
-  return getFirstParam(route.params.id)
-})
+const eventId: ComputedRef<string> = computed(() => route.params.id as string)
 
 const { event, error, mutate, state } = fetchEvent(eventId.value)
 const { me } = useMe()
