@@ -1,24 +1,83 @@
-<script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import { onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
-import HelloWorld from '../components/HelloWorld.vue'
-import { useMeStore } from '../store/me'
-const meStore = useMeStore()
-onMounted(async () => await meStore.fetchMe())
-</script>
-
 <template>
-  <img alt="Vue logo" src="../assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
-  <RouterLink to="/events/62a569a2-74d6-474e-80d0-9a6bcdd58050">event</RouterLink>
+  <div>
+    <h2>あなた</h2>
+    <div v-if="meError">failed to load</div>
+    <div v-else-if="!me">loading me</div>
+    <div v-else>{{ me.name }}</div>
+  </div>
+
+  <div>
+    <h2>今日のイベント</h2>
+    <div v-if="todaysEventsError">failed to load events</div>
+    <div v-else-if="!todaysEvents">loading events</div>
+    <div v-else>
+      <div v-for="event in todaysEvents" :key="event.eventId">
+        <RouterLink :to="`/events/${event.eventId}`">
+          {{ event.name }}</RouterLink
+        >
+      </div>
+    </div>
+  </div>
+  <div>
+    <h2>あなたのイベント</h2>
+    <div v-if="myEventsError">failed to load events</div>
+    <div v-else-if="!myEvents">loading events</div>
+    <div v-else>
+      <div v-for="event in myEvents" :key="event.eventId">
+        <RouterLink :to="`/events/${event.eventId}`">
+          {{ event.name }}</RouterLink
+        >
+      </div>
+    </div>
+  </div>
+  <div>
+    <h2>あなたのグループ</h2>
+    <div v-if="myGroupsError">failed to load events</div>
+    <div v-else-if="!myGroupDetails">loading events</div>
+    <div v-else>
+      <div v-for="group in myGroupDetails" :key="group?.groupId">
+        <RouterLink :to="`/groups/${group?.groupId}`">
+          {{ group?.name }}</RouterLink
+        >
+      </div>
+    </div>
+  </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-</style>
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+import { computed } from 'vue'
+import { useApiFetch } from '/@/composables/useApiFetch'
+
+const { data: me, error: meError } = useApiFetch('/users/me', {})
+const { data: todaysEvents, error: todaysEventsError } = useApiFetch(
+  '/events',
+  {
+    params: {
+      query: {
+        dateBegin: '2023-09-27T00:00:00+09:00',
+        dateEnd: '2023-09-27T23:59:59+09:00'
+      }
+    }
+  }
+)
+const { data: myEvents, error: myEventsError } = useApiFetch(
+  '/users/me/events',
+  {
+    params: { query: { relation: 'attendees' } }
+  }
+)
+const { data: myGroups, error: myGroupsError } = useApiFetch(
+  '/users/me/groups',
+  {
+    params: { query: { relation: 'belongs' } }
+  }
+)
+const { data: allGroups, error: allGroupsError } = useApiFetch('/groups', {})
+const myGroupDetails = computed(
+  () =>
+    myGroups.value
+      ?.map((v) => allGroups.value?.filter((x) => x.groupId === v))
+      .flat()
+)
+</script>

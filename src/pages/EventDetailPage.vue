@@ -1,104 +1,62 @@
 <template>
-  <div v-if="loadState === 'loading'">loading</div>
-  <div v-else-if="loadState === 'error'">not found</div>
-  <div v-else>
-    <EventName :event_name="event.name" />
-    <TagList :tags="tags" />
-    <EventDetailElement title="日時">
-      <EventDate :time_start="event.timeStart" :time_end="event.timeEnd" />
-    </EventDetailElement>
-    <EventDetailElement title="場所">
-      <EventPlace :place="event.place" />
-    </EventDetailElement>
-    <EventDetailElement title="説明">
-      <EventDescription :description="event.description" />
-    </EventDetailElement>
-    <EventDetailElement title="グループ">
-      <EventGroup :groupId="event.group.groupId" :groupName="event.group.name" />
-    </EventDetailElement>
-    <EventDetailElement title="管理者">
-      <EventAdmins :admins="admins" />
-    </EventDetailElement>
-    <EventDetailElement v-if="canAttendMe()" title="自分の参加予定">
-      <EventAttendanceMe :myAttendance="myAttendance" @change="onChangeMyAttendance" />
-    </EventDetailElement>
-    <EventDetailElement title="参加者">
-      <EventAttendance v-if="attendees" :attendees="attendees" />
-    </EventDetailElement>
+  <div>
+    <h2>イベント</h2>
+    <div>{{ state }}</div>
+    <div v-if="error">failed to fetch</div>
+    <div v-else-if="!event">loading</div>
+    <div v-else>
+      {{ event }}
+      <!-- <div>
+        <h3>タグ</h3>
+        <TagsEditor
+          :tags="event.tags"
+          @add="onAddTag"
+          @delete="onDeleteTag"
+          @update="onUpdateLockState"
+        />
+      </div> -->
+    </div>
+    <h3>あなたの出席</h3>
+    <MySchedule
+      :can-change="canUpdate"
+      :schedule="mySchedule"
+      @change="onUpdateMySchedule"
+    />
+  </div>
+  <div>
+    <h3>イベント削除</h3>
+    <button @click="onDeleteEvent">削除</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import EventName from '../components/EventDetail/EventName.vue'
-import EventDate from '../components/EventDetail/EventDate.vue'
-import EventPlace from '../components/EventDetail/EventPlace.vue'
-import EventDescription from '../components/EventDetail/EventDescription.vue'
-import EventGroup from '../components/EventDetail/EventGroup.vue'
-import EventAdmins from '../components/EventDetail/EventAdmins.vue'
-import EventAttendanceMe from '../components/EventDetail/EventAttendanceMe.vue'
-import EventAttendance from '../components/EventDetail/EventAttendance.vue'
-import { computed, onMounted } from 'vue'
-import TagList from '../components/EventDetail/Tag/TagList.vue'
-import { useEvent } from '../composables/useEvent'
-import { useRoute } from 'vue-router'
+import MySchedule from '/@/features/event/components/MySchedule.vue'
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { getFirstParam } from '../lib/params'
-import { useUsersStore } from '../store/users'
-import EventDetailElement from '../components/EventDetail/EventDetailElement.vue'
-import { AttendanceState } from '../types'
-import { useMeStore } from '../store/me'
+import { fetchEvent } from '../features/event/api'
+import { useMySchedule } from '../features/event/composables/useMySchedule'
+import { useMe } from '/@/composables/useMe'
+import { Schedule } from '/@/features/event/types'
 
 const route = useRoute()
+const router = useRouter()
 const eventId = computed(() => {
   return getFirstParam(route.params.id)
 })
-const {
-  event: _event,
-  loadState,
-  fetchEvent,
-  updateMyAttendance,
-  canAttendMe
-} = useEvent(eventId.value)
-const event = computed(() => _event.value!)
-const meStore = useMeStore()
-meStore.fetchMe()
-const useUsers = useUsersStore()
-useUsers.fetchUsers()
 
-const tags = computed((): { id: string; name: string }[] =>
-  event.value
-    ? event.value.tags.map(({ tagId, name }) => {
-        return { id: tagId, name: name }
-      })
-    : []
-)
-const admins = computed(() =>
-  event.value.admins
-    .map((userId) => useUsers.users.get(userId))
-    .filter((item) => item !== undefined)
-    .map((item) => item?.name!)
-)
-const attendees = computed(() =>
-  event.value.attendees
-    .map(({ userId, schedule }) => {
-      return {
-        name: useUsers.users.get(userId)?.name,
-        schedule
-      }
-    })
-    .filter((item) => item.name !== undefined)
-    .map(({ name, schedule }) => {
-      return { name: name!, schedule }
-    })
-)
-const myAttendance = computed(
-  () => event.value.attendees.find(({ userId }) => userId === meStore.me?.userId)?.schedule
-)
-const onChangeMyAttendance = async (newState: AttendanceState) => {
-  updateMyAttendance(newState)
+const { event, error, mutate, state } = fetchEvent(eventId.value)
+const { me } = useMe()
+const { canUpdate, mySchedule, updateMySchedule } = useMySchedule(me, event)
+
+const onUpdateMySchedule = async (schedule: Schedule) => {
+  await updateMySchedule(schedule)
+  mutate()
 }
-onMounted(async () => {
-  await fetchEvent()
-})
+
+const onDeleteEvent = async () => {
+  router.push('/')
+}
 </script>
 
 <style lang="scss" module>
