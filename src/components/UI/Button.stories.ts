@@ -1,20 +1,20 @@
 import { Meta, StoryObj } from '@storybook/vue3'
-import AButton from './AButton.vue'
-const meta: Meta<typeof AButton> = {
-  component: AButton
+import Button from './Button.vue'
+const meta: Meta<typeof Button> = {
+  component: Button
 }
 
 export default meta
 
-type Story = StoryObj<typeof AButton>
+type Story = StoryObj<typeof Button>
 
 export const Primary: Story = {
   render: (args) => ({
-    components: { AButton },
+    components: { Button },
     setup: () => {
       return { args }
     },
-    template: '<AButton v-bind="args"/>'
+    template: '<Button v-bind="args"/>'
   }),
   args: {
     name: 'ボタン'

@@ -8,7 +8,7 @@ const compat = new FlatCompat()
 
 export default [
   {
-    ignores: ['src/lib/api-schema.d.ts', '**/dist/**']
+    ignores: ['src/lib/api/schema.d.ts', '**/dist/**']
   },
   {
     files: ['**/*.{vue,ts}']
@@ -24,6 +24,7 @@ export default [
     rules: {
       'no-undef': 'warn',
       'no-unused-vars': 'warn',
+      'vue/component-name-in-template-casing': 'error',
       'vuejs-accessibility/label-has-for': [
         'error',
         {
@@ -39,6 +40,12 @@ export default [
         ecmaVersion: 'latest',
         parser: typescriptParser
       }
+    }
+  },
+  {
+    files: ['src/components/**/*.vue'],
+    rules: {
+      'vue/multi-word-component-names': 'off'
     }
   }
 ]
