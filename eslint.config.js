@@ -23,7 +23,15 @@ export default [
   {
     rules: {
       'no-undef': 'warn',
-      'no-unused-vars': 'warn'
+      'no-unused-vars': 'warn',
+      'vuejs-accessibility/label-has-for': [
+        'error',
+        {
+          required: {
+            some: ['nesting', 'id']
+          }
+        }
+      ]
     },
     languageOptions: {
       parser: vueParser,
