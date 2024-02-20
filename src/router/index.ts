@@ -1,12 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { type RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 import Home from '../pages/HomePage.vue'
 import EventList from '../pages/EventList.vue'
 import EventDetail from '../pages/EventDetailPage.vue'
 import EventForm from '../pages/EventFormPage.vue'
 import GroupList from '../pages/GroupList.vue'
 import SettingsPage from '../pages/SettingsPage.vue'
+import LoginPage from '../pages/LoginPage.vue'
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   { path: '/', name: 'Home', component: Home },
   {
     path: '/events',
@@ -23,7 +24,7 @@ const routes = [
     name: 'EventDetail',
     component: EventDetail,
     meta: { headerTitle: 'Event Detail' }
-  }
+  },
   // {
   //   path: '/groups',
   //   name: 'groups',
@@ -34,6 +35,16 @@ const routes = [
   //   name: 'ical',
   //   component: SettingsPage
   // }
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginPage
+  },
+  {
+    path: '/callback',
+    name: 'callback',
+    redirect: '/'
+  }
 ]
 
 const router = createRouter({
