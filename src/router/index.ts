@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../pages/HomePage.vue'
 import EventList from '../pages/EventList.vue'
-import EventDetail from '../pages/EventDetailPage.vue'
+import EventDetail from '../pages/EventDetail.vue'
 import EventForm from '../pages/EventFormPage.vue'
 import GroupList from '../pages/GroupList.vue'
 import SettingsPage from '../pages/SettingsPage.vue'

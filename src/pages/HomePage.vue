@@ -1,4 +1,43 @@
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+import { computed } from 'vue'
+import { useApiFetch } from '/@/composables/useApiFetch'
+import AppHeader from '/@/components/AppHeader.vue'
+
+const { data: me, error: meError } = useApiFetch('/users/me', {})
+const { data: todaysEvents, error: todaysEventsError } = useApiFetch(
+  '/events',
+  {
+    params: {
+      query: {
+        dateBegin: '2023-09-27T00:00:00+09:00',
+        dateEnd: '2023-09-27T23:59:59+09:00'
+      }
+    }
+  }
+)
+const { data: myEvents, error: myEventsError } = useApiFetch(
+  '/users/me/events',
+  {
+    params: { query: { relation: 'attendees' } }
+  }
+)
+const { data: myGroups, error: myGroupsError } = useApiFetch(
+  '/users/me/groups',
+  {
+    params: { query: { relation: 'belongs' } }
+  }
+)
+const { data: allGroups, error: allGroupsError } = useApiFetch('/groups', {})
+const myGroupDetails = computed(() =>
+  myGroups.value
+    ?.map((v) => allGroups.value?.filter((x) => x.groupId === v))
+    .flat()
+)
+</script>
+
 <template>
+  <AppHeader />
   <div>
     <h2>あなた</h2>
     <div v-if="meError">failed to load</div>
@@ -43,40 +82,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { RouterLink } from 'vue-router'
-import { computed } from 'vue'
-import { useApiFetch } from '/@/composables/useApiFetch'
-
-const { data: me, error: meError } = useApiFetch('/users/me', {})
-const { data: todaysEvents, error: todaysEventsError } = useApiFetch(
-  '/events',
-  {
-    params: {
-      query: {
-        dateBegin: '2023-09-27T00:00:00+09:00',
-        dateEnd: '2023-09-27T23:59:59+09:00'
-      }
-    }
-  }
-)
-const { data: myEvents, error: myEventsError } = useApiFetch(
-  '/users/me/events',
-  {
-    params: { query: { relation: 'attendees' } }
-  }
-)
-const { data: myGroups, error: myGroupsError } = useApiFetch(
-  '/users/me/groups',
-  {
-    params: { query: { relation: 'belongs' } }
-  }
-)
-const { data: allGroups, error: allGroupsError } = useApiFetch('/groups', {})
-const myGroupDetails = computed(() =>
-  myGroups.value
-    ?.map((v) => allGroups.value?.filter((x) => x.groupId === v))
-    .flat()
-)
-</script>
