@@ -27,6 +27,7 @@
         "zod": "^3.24.3"
     },
     "devDependencies": {
+        "@iconify-json/material-symbols": "^1.2.20",
         "@storybook/addon-essentials": "^8.6.12",
         "@storybook/addon-interactions": "^8.6.12",
         "@storybook/addon-links": "^8.6.12",
