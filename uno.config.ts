@@ -3,7 +3,12 @@ import { defineConfig, presetAttributify, presetWind3 } from "unocss"
 export default defineConfig({
     presets: [
         presetAttributify(),
-        presetWind3()
+        presetWind3(),
     ],
-    rules: []
+    rules: [],
+    preflights: [
+        {
+            getCSS: ({ theme: _theme }) => ` `
+        }
+    ]
 })
