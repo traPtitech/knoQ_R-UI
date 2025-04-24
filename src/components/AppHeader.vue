@@ -4,14 +4,20 @@ import logo from '/@/assets/logo.svg'
 </script>
 
 <template>
-  <div grid grid-cols="[1fr_auto_1fr]" grid-items-center>
+  <div
+    p-4
+    flex
+    flex-justify-between
+    flex-items-center
+    b-b="1 solid border-secondary"
+  >
     <RouterLink to="/" justify-self-start>
       <img :src="logo" alt="Logo" w-8 h-8 />
     </RouterLink>
     <div justify-self-center grid grid-cols-3 gap-8>
       <RouterLink to="/">イベント </RouterLink>
       <RouterLink to="/">イベント </RouterLink>
-      <RouterLink to="/">イベント </RouterLink>
+      <RouterLink to="/">探す</RouterLink>
     </div>
     <RouterLink to="/" justify-self-end>
       <img src="../assets/logo.png" alt="Logo" w-8 h-8 />
