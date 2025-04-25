@@ -1,3 +1,9 @@
+<script setup lang="ts">
+const emits = defineEmits<{
+  (e: 'click'): void
+}>()
+</script>
+
 <template>
   <button
     @click="emits('click')"
@@ -13,10 +19,3 @@
     <slot />
   </button>
 </template>
-
-<script setup lang="ts">
-const props = defineProps<{}>()
-const emits = defineEmits<{
-  (e: 'click'): void
-}>()
-</script>
