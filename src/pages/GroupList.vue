@@ -8,5 +8,3 @@ import { useApiFetch } from '/@/composables/useApiFetch'
 
 const { data: groups, state } = useApiFetch('/groups', {})
 </script>
-
-<style lang="scss" module></style>
