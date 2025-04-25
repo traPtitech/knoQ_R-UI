@@ -1,0 +1,14 @@
+{
+    admin off
+}
+
+:80
+
+encode zstd gzip
+
+file_server {
+    precompressed br gzip
+}
+root * /usr/share/caddy
+
+try_files {path} /index.html
