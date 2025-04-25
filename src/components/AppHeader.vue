@@ -20,7 +20,7 @@ import logo from '/@/assets/logo.svg'
       <RouterLink hxs to="/">探す</RouterLink>
     </div>
     <RouterLink to="/" justify-self-end>
-      <img src="../assets/logo.png" alt="Logo" w-8 h-8 />
+      <img :src="logo" alt="Logo" w-8 h-8 />
     </RouterLink>
   </div>
 </template>
