@@ -13,16 +13,26 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const form = ref<EventForm>(defaultValues)
 
-const { execute, error } = useApiFetch('/events', {
-  immediate: false,
-  onSuccess: (res) => {
-    router.push(`/events/${res.eventId}`)
-  }
-}).post(form)
+const error = ref<Error | null>(null)
 
-const onSubmit = () => {
-  execute()
+const onSubmit = async () => {
+  try {
+    const { data, error: postError } = await apiClient.POST('/events', {
+      body: form.value
+    })
+    if (postError) {
+      error.value = postError
+      return
+    }
+    if (data) {
+      router.push(`/events/${data.eventId}`)
+    }
+  } catch (e) {
+    error.value = e as Error
+  }
 }
+
+
 </script>
 <template>
   <AppHeader />
