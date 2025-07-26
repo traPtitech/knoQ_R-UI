@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ComputedRef, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { fetchEvent } from '../features/event/api'
+import { fetchEvent, deleteEvent } from '../features/event/api'
 import { useMySchedule } from '../features/event/composables/useMySchedule'
 import { useMe } from '/@/features/user/composables/useMe'
 import { Schedule } from '/@/features/event/types'
@@ -12,6 +12,7 @@ import AttendanceButton from '../features/event/components/AttendanceButton.vue'
 import SchedulePoll from '../features/event/components/SchedulePoll.vue'
 import InvitationLinkButton from '../features/event/components/InvitationLinkButton.vue'
 import DescriptionMd from '../features/event/components/DescriptionMd.vue'
+import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -26,58 +27,39 @@ const onUpdateMySchedule = async (schedule: Schedule) => {
   mutate()
 }
 
-const onDeleteEvent = async () => {
+const onDelete = async () => {
+  await deleteEvent(eventId.value)
   router.push('/')
 }
 </script>
 
 <template>
   <AppHeader />
-  <div grid grid-cols-2>
-    <AttendingEventList />
-    <div>
-      <!-- <div v-if="error">failed to fetch</div> -->
-      <!-- <div v-else-if="!event">loading</div> -->
-      <!-- <div v-else> -->
-      <h1>機械学習講習会</h1>
-      <div flex gap-2>
+  <div max-w-3xl my-8 mx-auto grid gap-4>
+    <div v-if="error">failed to fetch</div>
+    <div v-else-if="!event">loading</div>
+    <div v-else>
+      <h2 hl>{{ event.name }}</h2>
+      <div class="flex gap-2 items-center my-4">
         <p>by</p>
-        <IconWithName userId="itt" />
+        <IconWithName :userId="event.admins[0]" />
       </div>
-      <AttendanceButton />
-      <h2>日程調整</h2>
-      <SchedulePoll />
-      <InvitationLinkButton />
-      <DescriptionMd
-        :markdown="`# テスト
-## 22
-|a1|2|
-|-|-|
-|b|c|
-<h1>ほげ</h1>
-`"
-      />
-
-      <!-- <div>
-        <h3>タグ</h3>
-        <TagsEditor
-          :tags="event.tags"
-          @add="onAddTag"
-          @delete="onDeleteTag"
-          @update="onUpdateLockState"
-        />
-      </div> -->
-      <!-- <h3>あなたの出席</h3> -->
-      <!-- <MySchedule -->
-      <!-- :can-change="canUpdate" -->
-      <!-- :schedule="mySchedule" -->
-      <!-- @change="onUpdateMySchedule" -->
-      <!-- /> -->
-      <!-- <div> -->
-      <!-- <h3>イベント削除</h3> -->
-      <!-- <button @click="onDeleteEvent">削除</button> -->
-      <!-- </div> -->
+      <div card grid gap-6>
+        <h3 hm>日程調整</h3>
+        <SchedulePoll :event="event" @update:my-schedule="onUpdateMySchedule" />
+        <div class="flex gap-4">
+          <AttendanceButton :schedule="mySchedule" @update:schedule="onUpdateMySchedule" />
+          <InvitationLinkButton :event-id="eventId" />
+        </div>
+      </div>
+      <div card grid gap-6>
+        <h3 hm>イベント概要</h3>
+        <DescriptionMd :markdown="event.description" />
+      </div>
+      <div v-if="canUpdate" card grid gap-6>
+        <h3 hm>イベントの管理</h3>
+        <PrimaryButton @click="onDelete">イベントを削除</PrimaryButton>
+      </div>
     </div>
   </div>
-  <!-- </div> -->
 </template>

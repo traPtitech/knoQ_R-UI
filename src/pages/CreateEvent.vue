@@ -5,8 +5,24 @@ import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import PlaceListField from '../features/event/components/PlaceListField.vue'
 import PrimaryButton from '../components/UI/Button/PrimaryButton.vue'
 import DateListField from '../features/event/components/DateListField.vue'
+import { ref } from 'vue'
+import { EventForm, defaultValues } from '../features/event/forms/eventForm'
+import { useApiFetch } from '/@/composables/useApiFetch'
+import { useRouter } from 'vue-router'
 
-const model = defineModel<string>()
+const router = useRouter()
+const form = ref<EventForm>(defaultValues)
+
+const { execute, error } = useApiFetch('/events', {
+  immediate: false,
+  onSuccess: (res) => {
+    router.push(`/events/${res.eventId}`)
+  }
+}).post(form)
+
+const onSubmit = () => {
+  execute()
+}
 </script>
 <template>
   <AppHeader />
@@ -14,22 +30,23 @@ const model = defineModel<string>()
     <h2 hl>イベントを作成する</h2>
     <div card grid gap-6>
       <h3 hm>基本情報</h3>
-      <InputField label="イベント名" v-model="model" />
-      <InputField label="連絡チャンネル" v-model="model" />
-      <TextareaField label="イベント概要" />
+      <InputField label="イベント名" v-model="form.name" />
+      <InputField label="連絡チャンネル" v-model="form.group.name" />
+      <TextareaField label="イベント概要" v-model="form.description" />
     </div>
     <div card grid gap-6>
       <h3 hm>場所と日時</h3>
-      <PlaceListField />
-      <DateListField />
+      <PlaceListField v-model="form.placeTimes" />
+      <DateListField v-model="form.placeTimes" />
     </div>
     <div card grid gap-6>
       <h3 hm>メンバー</h3>
-      <InputField label="管理者" v-model="model" />
-      <InputField label="招待する参加者" v-model="model" />
+      <InputField label="管理者" v-model="form.admins" />
+      <InputField label="招待する参加者" v-model="form.group.members" />
     </div>
     <div grid-justify-self-center>
-      <PrimaryButton>イベントを作成</PrimaryButton>
+      <PrimaryButton @click="onSubmit">イベントを作成</PrimaryButton>
     </div>
+    <div v-if="error">{{ error }}</div>
   </div>
 </template>

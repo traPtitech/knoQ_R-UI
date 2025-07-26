@@ -5,5 +5,5 @@ const userIconLink = (userId: string) =>
 </script>
 
 <template>
-  <img :src="userIconLink(userId)" />
+  <img :src="userIconLink(userId)" class="w-8 h-8 rounded-full" />
 </template>

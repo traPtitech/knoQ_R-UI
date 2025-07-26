@@ -3,9 +3,8 @@ import Home from '../pages/HomePage.vue'
 import EventList from '../pages/EventList.vue'
 import EventDetail from '../pages/EventDetail.vue'
 import CreateEvent from "/@/pages/CreateEvent.vue"
-import EventForm from '../pages/EventFormPage.vue'
 import GroupList from '../pages/GroupList.vue'
-import SettingsPage from '../pages/SettingsPage.vue'
+import MyPage from '../pages/MyPage.vue'
 
 const routes: RouteRecordRaw[] = [
     { path: '/', name: 'Home', component: Home },
@@ -25,16 +24,16 @@ const routes: RouteRecordRaw[] = [
         component: EventDetail,
         meta: { headerTitle: 'Event Detail' }
     },
-    // {
-    //   path: '/groups',
-    //   name: 'groups',
-    //   component: GroupList
-    // },
-    // {
-    //   path: '/settings/ical',
-    //   name: 'ical',
-    //   component: SettingsPage
-    // }
+    {
+      path: '/groups',
+      name: 'groups',
+      component: GroupList
+    },
+    {
+        path: '/me',
+        name: 'MyPage',
+        component: MyPage
+    },
     {
         path: "/callback",
         name: "Callback",

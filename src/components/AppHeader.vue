@@ -1,14 +1,23 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import logo from '/@/assets/logo.svg'
-import PrimaryButton from './UI/Button/PrimaryButton.vue';
-import { apiClient } from '/@/lib/api';
+import PrimaryButton from './UI/Button/PrimaryButton.vue'
+import { apiClient } from '/@/lib/api'
+import { useMe } from '/@/features/user/composables/useMe'
+import UserIcon from './UI/UserIcon.vue'
+import DropdownMenu from './UI/DropdownMenu.vue'
 
-const clickLogin = async ()=>{
-    const { data }  = await apiClient.POST("/authParams")
-    if (data){
-        window.location.assign(data.url)
-    }
+const { me, setMe } = useMe()
+
+const clickLogin = async () => {
+  const { data } = await apiClient.POST('/authParams')
+  if (data) {
+    window.location.assign(data.url)
+  }
+}
+
+const clickLogout = async () => {
+  setMe(null)
 }
 </script>
 
@@ -24,12 +33,31 @@ const clickLogin = async ()=>{
       <img :src="logo" alt="Logo" w-8 h-8 />
     </RouterLink>
     <div justify-self-center grid grid-cols-3 gap-8>
-      <RouterLink hxs to="/">イベント </RouterLink>
-      <RouterLink hxs to="/">イベント </RouterLink>
+      <RouterLink hxs to="/events">イベント</RouterLink>
+      <RouterLink hxs to="/calendar">カレンダー</RouterLink>
       <RouterLink hxs to="/">探す</RouterLink>
     </div>
-    <PrimaryButton py-2 @click="clickLogin">
-        ログイン
-    </PrimaryButton>
+    <div v-if="me" grid grid-flow-col grid-items-center gap-4>
+      <RouterLink btn-primary to="/events/new"> イベント作成 </RouterLink>
+      <DropdownMenu>
+        <template #trigger>
+          <UserIcon :user-id="me.name" />
+        </template>
+        <div class="py-1">
+          <RouterLink
+            to="/me"
+            class="block px-4 py-2 text-sm text-text-primary hover:bg-surface-secondary"
+            >マイページ</RouterLink
+          >
+          <button
+            @click="clickLogout"
+            class="block w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-surface-secondary"
+          >
+            ログアウト
+          </button>
+        </div>
+      </DropdownMenu>
+    </div>
+    <PrimaryButton v-else py-2 @click="clickLogin"> ログイン </PrimaryButton>
   </div>
 </template>
