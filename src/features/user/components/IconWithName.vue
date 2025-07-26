@@ -10,16 +10,15 @@ const props = defineProps<{
 
 const { users } = useUsers()
 
-const userName = computed(() => {
-  if (!users.value) return ''
-  const user = users.value.find(user => user.userId === props.userId)
-  return user?.name ?? ''
+const user = computed(() => {
+  if (!users.value) return
+  return users.value.find(user => user.userId === props.userId)
 })
 </script>
 
 <template>
   <RouterLink :to="`/users/${userId}`" class="inline-flex gap-1 items-center">
-    <UserIcon :user-id="userId" class="w-6 h-6" />
-    {{ userName }}
+    <UserIcon :user-id="userId" :src="user?.icon" class="w-6 h-6" />
+    {{ user?.name ?? '' }}
   </RouterLink>
 </template>
