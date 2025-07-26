@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ComputedRef, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { fetchEvent, deleteEvent } from '../features/event/api'
+import { fetchEvent } from '../features/event/api'
 import { useMySchedule } from '../features/event/composables/useMySchedule'
 import { useMe } from '/@/features/user/composables/useMe'
 import { Schedule } from '/@/features/event/types'
@@ -28,7 +28,7 @@ const onUpdateMySchedule = async (schedule: Schedule) => {
 }
 
 const onDelete = async () => {
-  await deleteEvent(eventId.value)
+  //await deleteEvent(eventId.value)
   router.push('/')
 }
 </script>
@@ -48,7 +48,10 @@ const onDelete = async () => {
         <h3 hm>日程調整</h3>
         <SchedulePoll :event="event" @update:my-schedule="onUpdateMySchedule" />
         <div class="flex gap-4">
-          <AttendanceButton :schedule="mySchedule" @update:schedule="onUpdateMySchedule" />
+          <AttendanceButton
+            :schedule="mySchedule"
+            @update:schedule="onUpdateMySchedule"
+          />
           <InvitationLinkButton :event-id="eventId" />
         </div>
       </div>
