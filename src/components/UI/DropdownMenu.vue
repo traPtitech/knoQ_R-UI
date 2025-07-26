@@ -10,7 +10,13 @@ const toggle = () => {
 
 <template>
   <div class="relative">
-    <div @click="toggle">
+    <div
+      role="button"
+      tabindex="0"
+      @click="toggle"
+      @keydown.enter="toggle"
+      @keydown.space="toggle"
+    >
       <slot name="trigger" />
     </div>
     <div
