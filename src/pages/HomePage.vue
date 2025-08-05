@@ -35,7 +35,12 @@ const { data: myGroupIds, error: myGroupsError } = useApiFetch(
     <h2 hl>7/22 (金)</h2>
     <div grid gap-4>
       <h3 hm>進捗部屋</h3>
-      <h3 hm>イベント</h3>
+      <div>
+        <div>A-111</div>
+        <div>A-222</div>
+        <div>A-333</div>
+      </div>
+      <h3 hm>今日のイベント</h3>
       <div v-if="todaysEventsError">failed to load events</div>
       <div v-else-if="!todaysEvents">loading events</div>
       <div v-else-if="todaysEvents.length === 0">イベントはありません</div>
@@ -59,19 +64,6 @@ const { data: myGroupIds, error: myGroupsError } = useApiFetch(
           :key="event.eventId"
           :event="event"
         />
-      </div>
-    </div>
-    <div card grid gap-6>
-      <h3 hm>あなたのグループ</h3>
-      <div v-if="myGroupsError">failed to load groups</div>
-      <div v-else-if="!myGroups">loading groups</div>
-      <div v-else-if="myGroups.length === 0">グループはありません</div>
-      <div v-else>
-        <div v-for="group in myGroups" :key="group.groupId">
-          <RouterLink :to="`/groups/${group.groupId}`">
-            {{ group.name }}
-          </RouterLink>
-        </div>
       </div>
     </div>
   </div>
