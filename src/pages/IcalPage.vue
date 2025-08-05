@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import InputField from '/@/components/UI/Form/InputField.vue'
 import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
+import AppHeader from '../components/AppHeader.vue'
 import DropdownMenu from '/@/components/UI/DropdownMenu.vue'
 import { useTags } from '/@/features/tag/composables/useTags'
 import { useEvents } from '/@/features/event/composables/useEvents'
@@ -122,6 +123,7 @@ const selectGroup = (group: { id: string; name: string }) => {
 </script>
 
 <template>
+  <AppHeader />
   <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">Generate iCal URL</h1>
     <div class="space-y-4">

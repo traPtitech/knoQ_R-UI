@@ -7,7 +7,7 @@ import { useMe } from '/@/features/user/composables/useMe'
 import UserIcon from './UI/UserIcon.vue'
 import DropdownMenu from './UI/DropdownMenu.vue'
 
-const { me, setMe } = useMe()
+const { me } = useMe()
 
 const clickLogin = async () => {
   const { data } = await apiClient.POST('/authParams')
@@ -17,7 +17,7 @@ const clickLogin = async () => {
 }
 
 const clickLogout = async () => {
-  setMe(null)
+  //setMe(null)
 }
 </script>
 
@@ -33,10 +33,10 @@ const clickLogout = async () => {
       <img :src="logo" alt="Logo" w-8 h-8 />
     </RouterLink>
     <div grid grid-flow-col gap-8>
-      <RouterLink hxs to="/events">イベント</RouterLink>
+      <RouterLink hxs to="/arrangement">調整</RouterLink>
       <RouterLink hxs to="/calendar">カレンダー</RouterLink>
       <RouterLink hxs to="/ical">iCal</RouterLink>
-      <RouterLink hxs to="/">探す</RouterLink>
+      <RouterLink hxs to="/search">探す</RouterLink>
     </div>
     <div v-if="me" grid grid-flow-col grid-items-center gap-4>
       <RouterLink btn-primary to="/events/new"> イベント作成 </RouterLink>
