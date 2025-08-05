@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { startOfMonth, endOfMonth, eachDayOfInterval, format, isSameDay, addMonths, subMonths, parseISO } from 'date-fns'
+import {
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  format,
+  isSameDay,
+  addMonths,
+  subMonths,
+  parseISO
+} from 'date-fns'
 import AppHeader from '/@/components/AppHeader.vue'
 import EventCard from '/@/features/event/components/EventCard.vue'
 import { useApiFetch } from '/@/composables/useApiFetch'
@@ -36,7 +45,7 @@ const { data: events, error: eventsError } = useApiFetch<Event[]>('/events')
 
 const eventsForSelectedDate = computed(() => {
   if (!selectedDate.value || !events.value) return []
-  return events.value.filter(event =>
+  return events.value.filter((event) =>
     isSameDay(parseISO(event.timeStart), selectedDate.value!)
   )
 })
@@ -48,9 +57,19 @@ const eventsForSelectedDate = computed(() => {
     <h1 class="text-2xl font-bold mb-4">カレンダー</h1>
 
     <div class="flex justify-between items-center mb-4">
-      <button @click="goToPreviousMonth" class="px-4 py-2 bg-primary text-white rounded-md">前月</button>
+      <button
+        @click="goToPreviousMonth"
+        class="px-4 py-2 bg-primary text-white rounded-md"
+      >
+        前月
+      </button>
       <h2 class="text-xl font-semibold">{{ formattedMonth }}</h2>
-      <button @click="goToNextMonth" class="px-4 py-2 bg-primary text-white rounded-md">次月</button>
+      <button
+        @click="goToNextMonth"
+        class="px-4 py-2 bg-primary text-white rounded-md"
+      >
+        次月
+      </button>
     </div>
 
     <div class="grid grid-cols-7 gap-2 text-center font-bold mb-2">
@@ -70,7 +89,8 @@ const eventsForSelectedDate = computed(() => {
         class="p-2 border rounded-md cursor-pointer"
         :class="{
           'bg-blue-200': isSameDay(day, new Date()),
-          'bg-gray-100': !isSameDay(day, new Date()) && !isSameDay(day, selectedDate),
+          'bg-gray-100':
+            !isSameDay(day, new Date()) && !isSameDay(day, selectedDate),
           'bg-blue-400 text-white': isSameDay(day, selectedDate)
         }"
         @click="selectDate(day)"
@@ -80,10 +100,19 @@ const eventsForSelectedDate = computed(() => {
     </div>
 
     <div class="mt-8">
-      <h3 class="text-xl font-semibold mb-4">{{ selectedDate ? format(selectedDate, 'yyyy年MM月dd日') : '日付を選択してください' }} のイベント</h3>
+      <h3 class="text-xl font-semibold mb-4">
+        {{
+          selectedDate
+            ? format(selectedDate, 'yyyy年MM月dd日')
+            : '日付を選択してください'
+        }}
+        のイベント
+      </h3>
       <div v-if="eventsError">イベントの読み込みに失敗しました</div>
       <div v-else-if="!events">イベントを読み込み中...</div>
-      <div v-else-if="eventsForSelectedDate.length === 0">選択された日付にイベントはありません</div>
+      <div v-else-if="eventsForSelectedDate.length === 0">
+        選択された日付にイベントはありません
+      </div>
       <div v-else class="grid gap-4">
         <EventCard
           v-for="event in eventsForSelectedDate"

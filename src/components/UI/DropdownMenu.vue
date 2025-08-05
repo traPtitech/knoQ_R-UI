@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const isOpen = ref(false)
+const isOpen = defineModel<boolean>({ default: false })
+const dropdownRef = ref<HTMLElement | null>(null)
 
 const toggle = () => {
   isOpen.value = !isOpen.value
@@ -9,7 +10,7 @@ const toggle = () => {
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative" ref="dropdownRef">
     <div
       role="button"
       tabindex="0"

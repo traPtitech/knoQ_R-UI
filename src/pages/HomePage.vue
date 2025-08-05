@@ -21,11 +21,9 @@ const { data: todaysEvents, error: todaysEventsError } = useApiFetch(
 )
 const { data: myEvents, error: myEventsError } = useApiFetch(
   '/users/me/events',
-  {
-    params: { query: { relation: 'attendees' } }
-  }
+  { params: { query: { relation: 'attendees' } } }
 )
-const { data: myGroups, error: myGroupsError } = useApiFetch(
+const { data: myGroupIds, error: myGroupsError } = useApiFetch(
   '/users/me/groups',
   {}
 )

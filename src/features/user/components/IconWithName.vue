@@ -12,7 +12,7 @@ const { users } = useUsers()
 
 const user = computed(() => {
   if (!users.value) return
-  return users.value.find(user => user.userId === props.userId)
+  return users.value.find((user) => user.userId === props.userId)
 })
 </script>
 

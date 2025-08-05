@@ -31,8 +31,6 @@ const onSubmit = async () => {
     error.value = e as Error
   }
 }
-
-
 </script>
 <template>
   <AppHeader />

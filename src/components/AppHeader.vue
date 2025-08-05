@@ -32,9 +32,10 @@ const clickLogout = async () => {
     <RouterLink to="/" justify-self-start>
       <img :src="logo" alt="Logo" w-8 h-8 />
     </RouterLink>
-    <div justify-self-center grid grid-cols-3 gap-8>
+    <div grid grid-flow-col gap-8>
       <RouterLink hxs to="/events">イベント</RouterLink>
       <RouterLink hxs to="/calendar">カレンダー</RouterLink>
+      <RouterLink hxs to="/ical">iCal</RouterLink>
       <RouterLink hxs to="/">探す</RouterLink>
     </div>
     <div v-if="me" grid grid-flow-col grid-items-center gap-4>
