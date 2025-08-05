@@ -38,9 +38,9 @@ const onSubmit = async () => {
     <h2 hl>イベントを作成する</h2>
     <div card grid gap-6>
       <h3 hm>基本情報</h3>
-      <InputField label="イベント名" v-model="form.name" />
-      <InputField label="連絡チャンネル" v-model="form.group.name" />
-      <TextareaField label="イベント概要" v-model="form.description" />
+      <InputField v-model="form.name" label="イベント名" />
+      <InputField v-model="form.group.name" label="連絡チャンネル" />
+      <TextareaField v-model="form.description" label="イベント概要" />
     </div>
     <div card grid gap-6>
       <h3 hm>場所と日時</h3>
@@ -49,8 +49,8 @@ const onSubmit = async () => {
     </div>
     <div card grid gap-6>
       <h3 hm>メンバー</h3>
-      <InputField label="管理者" v-model="form.admins" />
-      <InputField label="招待する参加者" v-model="form.group.members" />
+      <InputField v-model="form.admins" label="管理者" />
+      <InputField v-model="form.group.members" label="招待する参加者" />
     </div>
     <div grid-justify-self-center>
       <PrimaryButton @click="onSubmit">イベントを作成</PrimaryButton>

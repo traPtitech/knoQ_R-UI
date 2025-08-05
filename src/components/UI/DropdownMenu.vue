@@ -10,7 +10,7 @@ const toggle = () => {
 </script>
 
 <template>
-  <div class="relative" ref="dropdownRef">
+  <div ref="dropdownRef" class="relative">
     <div
       role="button"
       tabindex="0"

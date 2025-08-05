@@ -6,11 +6,11 @@ import UserIcon from '/@/components/UI/UserIcon.vue'
     <div>
       <p>100人が参加予定です</p>
       <div flex>
-        <UserIcon userId="itt" w-6 h-6 mr--2 rounded-full />
-        <UserIcon userId="itt" w-6 h-6 mr--2 rounded-full />
-        <UserIcon userId="itt" w-6 h-6 mr--2 rounded-full />
-        <UserIcon userId="itt" w-6 h-6 mr--2 rounded-full />
-        <UserIcon userId="itt" w-6 h-6 mr--2 rounded-full />
+        <UserIcon user-id="itt" w-6 h-6 mr--2 rounded-full />
+        <UserIcon user-id="itt" w-6 h-6 mr--2 rounded-full />
+        <UserIcon user-id="itt" w-6 h-6 mr--2 rounded-full />
+        <UserIcon user-id="itt" w-6 h-6 mr--2 rounded-full />
+        <UserIcon user-id="itt" w-6 h-6 mr--2 rounded-full />
       </div>
     </div>
     <div>

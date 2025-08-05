@@ -151,7 +151,7 @@ const selectGroup = (group: { id: string; name: string }) => {
       </div>
 
       <div class="flex space-x-2">
-        <DropdownMenu v-model:is-open="isTagDropdownOpen" ref="tagDropdownRef">
+        <DropdownMenu ref="tagDropdownRef" v-model:is-open="isTagDropdownOpen">
           <template #trigger>
             <PrimaryButton>Add Tag Filter</PrimaryButton>
           </template>
@@ -169,8 +169,8 @@ const selectGroup = (group: { id: string; name: string }) => {
         </DropdownMenu>
 
         <DropdownMenu
-          v-model:is-open="isEventDropdownOpen"
           ref="eventDropdownRef"
+          v-model:is-open="isEventDropdownOpen"
         >
           <template #trigger>
             <PrimaryButton>Add Event Filter</PrimaryButton>
@@ -191,8 +191,8 @@ const selectGroup = (group: { id: string; name: string }) => {
         </DropdownMenu>
 
         <DropdownMenu
-          v-model:is-open="isUserDropdownOpen"
           ref="userDropdownRef"
+          v-model:is-open="isUserDropdownOpen"
         >
           <template #trigger>
             <PrimaryButton>Add User Filter</PrimaryButton>
@@ -213,8 +213,8 @@ const selectGroup = (group: { id: string; name: string }) => {
         </DropdownMenu>
 
         <DropdownMenu
-          v-model:is-open="isGroupDropdownOpen"
           ref="groupDropdownRef"
+          v-model:is-open="isGroupDropdownOpen"
         >
           <template #trigger>
             <PrimaryButton>Add Group Filter</PrimaryButton>
@@ -244,7 +244,7 @@ const selectGroup = (group: { id: string; name: string }) => {
       />
       <InputField v-model="dateEnd" label="Date End" type="datetime-local" />
 
-      <PrimaryButton @click="copyToClipboard" :disabled="!icalUrl">
+      <PrimaryButton :disabled="!icalUrl" @click="copyToClipboard">
         Copy iCal URL
       </PrimaryButton>
       <div v-if="icalUrl" class="bg-gray-100 p-4 rounded break-all">

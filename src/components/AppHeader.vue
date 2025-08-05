@@ -51,8 +51,8 @@ const clickLogout = async () => {
             >マイページ</RouterLink
           >
           <button
-            @click="clickLogout"
             class="block w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-surface-secondary"
+            @click="clickLogout"
           >
             ログアウト
           </button>

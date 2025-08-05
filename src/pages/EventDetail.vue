@@ -42,7 +42,7 @@ const onDelete = async () => {
       <h2 hl>{{ event.name }}</h2>
       <div class="flex gap-2 items-center my-4">
         <p>by</p>
-        <IconWithName :userId="event.admins[0]" />
+        <IconWithName :user-id="event.admins[0]" />
       </div>
       <div card grid gap-6>
         <h3 hm>日程調整</h3>

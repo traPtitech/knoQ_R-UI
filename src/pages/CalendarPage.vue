@@ -58,15 +58,15 @@ const eventsForSelectedDate = computed(() => {
 
     <div class="flex justify-between items-center mb-4">
       <button
-        @click="goToPreviousMonth"
         class="px-4 py-2 bg-primary text-white rounded-md"
+        @click="goToPreviousMonth"
       >
         前月
       </button>
       <h2 class="text-xl font-semibold">{{ formattedMonth }}</h2>
       <button
-        @click="goToNextMonth"
         class="px-4 py-2 bg-primary text-white rounded-md"
+        @click="goToNextMonth"
       >
         次月
       </button>
