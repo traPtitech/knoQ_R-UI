@@ -13,7 +13,7 @@ import {
 import AppHeader from '/@/components/AppHeader.vue'
 import EventCard from '/@/features/event/components/EventCard.vue'
 import { useApiFetch } from '/@/composables/useApiFetch'
-import type { Event } from '/@/features/event/types'
+//import type { Event } from '/@/features/event/types'
 
 const currentMonth = ref(new Date())
 
@@ -41,14 +41,14 @@ const selectDate = (date: Date) => {
   selectedDate.value = date
 }
 
-const { data: events, error: eventsError } = useApiFetch<Event[]>('/events')
+//const { data: events, error: eventsError } = useApiFetch<Event[]>('/events')
 
-const eventsForSelectedDate = computed(() => {
-  if (!selectedDate.value || !events.value) return []
-  return events.value.filter((event) =>
-    isSameDay(parseISO(event.timeStart), selectedDate.value!)
-  )
-})
+//const eventsForSelectedDate = computed(() => {
+//  if (!selectedDate.value || !events.value) return []
+//  return events.value.filter((event) =>
+//    isSameDay(parseISO(event.timeStart), selectedDate.value!)
+//  )
+//})
 </script>
 
 <template>
@@ -83,20 +83,20 @@ const eventsForSelectedDate = computed(() => {
     </div>
 
     <div class="grid grid-cols-7 gap-2">
-      <div
-        v-for="day in daysInMonth"
-        :key="day.toISOString()"
-        class="p-2 border rounded-md cursor-pointer"
-        :class="{
-          'bg-blue-200': isSameDay(day, new Date()),
-          'bg-gray-100':
-            !isSameDay(day, new Date()) && !isSameDay(day, selectedDate),
-          'bg-blue-400 text-white': isSameDay(day, selectedDate)
-        }"
-        @click="selectDate(day)"
-      >
-        {{ format(day, 'd') }}
-      </div>
+      <!-- <div -->
+      <!-- v-for="day in daysInMonth" -->
+      <!-- :key="day.toISOString()" -->
+      <!-- class="p-2 border rounded-md cursor-pointer" -->
+      <!-- :class="{ -->
+      <!-- 'bg-blue-200': isSameDay(day, new Date()), -->
+      <!-- 'bg-gray-100': -->
+      <!-- !isSameDay(day, new Date()) && !isSameDay(day, selectedDate), -->
+      <!-- 'bg-blue-400 text-white': isSameDay(day, selectedDate) -->
+      <!-- }" -->
+      <!-- @click="selectDate(day)" -->
+      <!-- > -->
+      <!-- {{ format(day, 'd') }} -->
+      <!-- </div> -->
     </div>
 
     <div class="mt-8">
@@ -108,18 +108,18 @@ const eventsForSelectedDate = computed(() => {
         }}
         のイベント
       </h3>
-      <div v-if="eventsError">イベントの読み込みに失敗しました</div>
-      <div v-else-if="!events">イベントを読み込み中...</div>
-      <div v-else-if="eventsForSelectedDate.length === 0">
-        選択された日付にイベントはありません
-      </div>
-      <div v-else class="grid gap-4">
-        <EventCard
-          v-for="event in eventsForSelectedDate"
-          :key="event.eventId"
-          :event="event"
-        />
-      </div>
+      <!-- <div v-if="eventsError">イベントの読み込みに失敗しました</div> -->
+      <!-- <div v-else-if="!events">イベントを読み込み中...</div> -->
+      <!-- <div v-else-if="eventsForSelectedDate.length === 0"> -->
+      <!-- 選択された日付にイベントはありません -->
+      <!-- </div> -->
+      <!-- <div v-else class="grid gap-4"> -->
+      <!-- <EventCard -->
+      <!-- v-for="event in eventsForSelectedDate" -->
+      <!-- :key="event.eventId" -->
+      <!-- :event="event" -->
+      <!-- /> -->
+      <!-- </div> -->
     </div>
   </div>
 </template>

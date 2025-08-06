@@ -9,16 +9,16 @@ import EventCard from './EventCard.vue'
       <div grid gap-1>
         <div>2月22日(月)</div>
         <div grid gap-1>
-          <EventCard />
+          <!-- <EventCard /> -->
         </div>
       </div>
       <div grid gap-1>
         <div>2月23日(火)</div>
       </div>
       <div grid gap-1>
-        <EventCard />
-        <EventCard />
-        <EventCard />
+        <!-- <EventCard /> -->
+        <!-- <EventCard /> -->
+        <!-- <EventCard /> -->
       </div>
     </div>
   </div>

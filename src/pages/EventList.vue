@@ -10,7 +10,7 @@ const { data: events, state } = useApiFetch('/events', {})
   <AppHeader />
   <div max-w-3xl my-8 mx-auto grid gap-4>
     <h2 hl>イベント一覧</h2>
-    <div v-if="state.error">failed to load events</div>
+    <div v-if="state">failed to load events</div>
     <div v-else-if="!events">loading events</div>
     <div v-else class="grid gap-4">
       <EventCard v-for="event in events" :key="event.eventId" :event="event" />

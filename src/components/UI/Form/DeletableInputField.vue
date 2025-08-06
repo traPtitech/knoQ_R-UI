@@ -4,7 +4,7 @@ import InputField from './InputField.vue'
 
 <template>
   <div grid grid-cols="[1fr_auto]" grid-items-center gap-2>
-    <InputField />
+    <!-- <InputField /> -->
     <button w-5 h-5 p-2 i-material-symbols:close-rounded />
   </div>
 </template>

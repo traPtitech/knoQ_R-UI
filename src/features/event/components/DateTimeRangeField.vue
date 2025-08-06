@@ -20,15 +20,15 @@ defineProps<{ label: string }>()
     <div grid grid-flow-col grid-auto-cols-max gap-4>
       <div grid grid-flow-col grid-auto-cols-max grid-items-center gap-2>
         <p>開始</p>
-        <InputField w-44 value="12月10日 (金曜日)" />
-        <InputField w-20 value="08:15" />
+        <!-- <InputField w-44 value="12月10日 (金曜日)" /> -->
+        <!-- <InputField w-20 value="08:15" /> -->
       </div>
       <div grid grid-flow-col grid-auto-cols-max grid-items-center gap-2>
         <p>終了</p>
-        <InputField w-44 value="2月10日 (金曜日)" />
-        <InputField w-20 value="17:10" />
+        <!-- <InputField w-44 value="2月10日 (金曜日)" /> -->
+        <!-- <InputField w-20 value="17:10" /> -->
       </div>
     </div>
-    <CheckboxField label="終日" />
+    <!-- <CheckboxField label="終日" /> -->
   </div>
 </template>

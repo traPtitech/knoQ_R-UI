@@ -10,7 +10,7 @@ const { data: groups, state } = useApiFetch('/groups', {})
   <AppHeader />
   <div max-w-3xl my-8 mx-auto grid gap-4>
     <h2 hl>グループ一覧</h2>
-    <div v-if="state.error">failed to load groups</div>
+    <div v-if="state">failed to load groups</div>
     <div v-else-if="!groups">loading groups</div>
     <div v-else class="grid gap-4">
       <GroupCard v-for="group in groups" :key="group.groupId" :group="group" />

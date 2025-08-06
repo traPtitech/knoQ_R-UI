@@ -127,16 +127,16 @@ const selectGroup = (group: { id: string; name: string }) => {
   <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">Generate iCal URL</h1>
     <div class="space-y-4">
-      <InputField
-        v-model="icalToken"
-        label="iCal Token"
-        placeholder="Enter your iCal token"
-      />
-      <TextareaField
-        v-model="eventFilter"
-        label="Event Filter (q)"
-        placeholder="e.g., event==UUID || user==UUID"
-      />
+      <!-- <InputField -->
+        <!-- v-model="icalToken" -->
+        <!-- label="iCal Token" -->
+        <!-- placeholder="Enter your iCal token" -->
+      <!-- /> -->
+      <!-- <TextareaField -->
+        <!-- v-model="eventFilter" -->
+        <!-- label="Event Filter (q)" -->
+        <!-- placeholder="e.g., event==UUID || user==UUID" -->
+      <!-- /> -->
       <div class="text-sm text-gray-600">
         <p>Syntax: <code>top : ε | expr</code></p>
         <p><code>expr : term ( ( "||" | "&&" ) term)*</code></p>
@@ -239,12 +239,12 @@ const selectGroup = (group: { id: string; name: string }) => {
         <PrimaryButton @click="clearFilter">Clear Filter</PrimaryButton>
       </div>
 
-      <InputField
-        v-model="dateBegin"
-        label="Date Begin"
-        type="datetime-local"
-      />
-      <InputField v-model="dateEnd" label="Date End" type="datetime-local" />
+      <!-- <InputField -->
+        <!-- v-model="dateBegin" -->
+        <!-- label="Date Begin" -->
+        <!-- type="datetime-local" -->
+      <!-- /> -->
+      <!-- <InputField v-model="dateEnd" label="Date End" type="datetime-local" /> -->
 
       <PrimaryButton :disabled="!icalUrl" @click="copyToClipboard">
         Copy iCal URL

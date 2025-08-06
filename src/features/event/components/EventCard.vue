@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { Event } from '/@/features/event/types'
+import type { KnoqEvent} from '/@/features/event/types'
 import { computed } from 'vue'
 import { compareAsc, format, parseISO } from 'date-fns'
 import IconWithName from '/@/features/user/components/IconWithName.vue'
 
 const props = defineProps<{
-  event: Event
+  event: KnoqEvent
 }>()
 
 const roomName = computed(() => {

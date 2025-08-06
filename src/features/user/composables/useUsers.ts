@@ -1,11 +1,11 @@
-import { useApiFetch } from '/@/composables/useApiFetch'
-import type { User } from '/@/features/user/types'
+import { useApiFetch } from "/@/composables/useApiFetch";
+// import type { User } from "/@/features/user/types";
 
 export const useUsers = () => {
-  const { data: users, error } = useApiFetch<User[]>('/users')
+	const { data: users, error } = useApiFetch("/users", {});
 
-  return {
-    users,
-    error
-  }
-}
+	return {
+		users,
+		error,
+	};
+};

@@ -37,11 +37,11 @@ const { data: myGroups } = useApiFetch('/users/me/groups', {})
       <h3 hm>あなたのグループ</h3>
       <div v-if="!myGroups">loading groups</div>
       <div v-else>
-        <div v-for="group in myGroups" :key="group.groupId">
-          <RouterLink :to="`/groups/${group.groupId}`">
-            {{ group.name }}
-          </RouterLink>
-        </div>
+        <!-- <div v-for="group in myGroups" :key="group.groupId"> -->
+          <!-- <RouterLink :to="`/groups/${group.groupId}`"> -->
+            <!-- {{ group.name }} -->
+          <!-- </RouterLink> -->
+        <!-- </div> -->
       </div>
     </div>
   </div>
