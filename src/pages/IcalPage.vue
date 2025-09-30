@@ -128,14 +128,14 @@ const selectGroup = (group: { id: string; name: string }) => {
     <h1 class="text-2xl font-bold mb-4">Generate iCal URL</h1>
     <div class="space-y-4">
       <!-- <InputField -->
-        <!-- v-model="icalToken" -->
-        <!-- label="iCal Token" -->
-        <!-- placeholder="Enter your iCal token" -->
+      <!-- v-model="icalToken" -->
+      <!-- label="iCal Token" -->
+      <!-- placeholder="Enter your iCal token" -->
       <!-- /> -->
       <!-- <TextareaField -->
-        <!-- v-model="eventFilter" -->
-        <!-- label="Event Filter (q)" -->
-        <!-- placeholder="e.g., event==UUID || user==UUID" -->
+      <!-- v-model="eventFilter" -->
+      <!-- label="Event Filter (q)" -->
+      <!-- placeholder="e.g., event==UUID || user==UUID" -->
       <!-- /> -->
       <div class="text-sm text-gray-600">
         <p>Syntax: <code>top : ε | expr</code></p>
@@ -240,9 +240,9 @@ const selectGroup = (group: { id: string; name: string }) => {
       </div>
 
       <!-- <InputField -->
-        <!-- v-model="dateBegin" -->
-        <!-- label="Date Begin" -->
-        <!-- type="datetime-local" -->
+      <!-- v-model="dateBegin" -->
+      <!-- label="Date Begin" -->
+      <!-- type="datetime-local" -->
       <!-- /> -->
       <!-- <InputField v-model="dateEnd" label="Date End" type="datetime-local" /> -->
 

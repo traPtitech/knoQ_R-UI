@@ -10,8 +10,8 @@ const model = defineModel<string>()
   <label grid gap-1 :for="id">
     <p hxs>{{ label }}</p>
     <textarea
-      v-model="model"
       :id
+      v-model="model"
       box-border
       px-4
       py-3

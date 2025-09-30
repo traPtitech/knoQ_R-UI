@@ -10,7 +10,7 @@ const style = 'box-border px-4 py-3 b b-solid b-border-primary rd-1'
 <template>
   <label v-if="label" grid gap-1 :for="id">
     <p hxs>{{ label }}</p>
-    <input v-model="model" :class="style" :id/>
+    <input :id v-model="model" :class="style" />
   </label>
   <input v-else v-model="model" :class="style" />
 </template>

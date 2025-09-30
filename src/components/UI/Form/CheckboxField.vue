@@ -4,7 +4,7 @@ defineProps<{ label: string; id: string }>()
 
 <template>
   <label grid gap-2 grid-flow-col grid-auto-cols-max :for="id">
-    <input type="checkbox" :id />
+    <input :id type="checkbox" />
     {{ label }}
   </label>
 </template>
