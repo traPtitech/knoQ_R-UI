@@ -5,8 +5,17 @@ import { useApiFetch } from '/@/composables/useApiFetch'
 import AppHeader from '/@/components/AppHeader.vue'
 import { useMe } from '/@/features/user/composables/useMe'
 import EventCard from '/@/features/event/components/EventCard.vue'
+import { useWorkspace } from '../features/room/composables/useWorkspace'
+import { getEndOfToday, getStartOfToday } from '../utils'
 
 const { me } = useMe()
+const today = new Intl.DateTimeFormat('ja-JP', {
+  month: 'numeric',
+  day: 'numeric',
+  weekday: 'short'
+}).format(new Date())
+
+const { workspaces } = useWorkspace(getStartOfToday(), getEndOfToday())
 
 const { data: todaysEvents, error: todaysEventsError } = useApiFetch(
   '/events',
@@ -32,13 +41,15 @@ const { data: myGroupIds, error: myGroupsError } = useApiFetch(
 <template>
   <AppHeader />
   <div max-w-3xl my-8 mx-auto grid gap-8>
-    <h2 hl>7/22 (金)</h2>
+    <h2 hl>{{ today }}</h2>
     <div grid gap-4>
       <h3 hm>進捗部屋</h3>
       <div>
-        <div>A-111</div>
-        <div>A-222</div>
-        <div>A-333</div>
+        <div v-for="workspace in workspaces">
+          - {{ workspace.place }}: {{ workspace.timeStart }}から{{
+            workspace.timeEnd
+          }}
+        </div>
       </div>
       <h3 hm>今日のイベント</h3>
       <div v-if="todaysEventsError">failed to load events</div>

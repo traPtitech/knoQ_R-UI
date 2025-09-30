@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import type { KnoqEvent} from '/@/features/event/types'
+import type { KnoqEvent } from '/@/features/event/types'
 import { computed } from 'vue'
 import { compareAsc, format, parseISO } from 'date-fns'
 import IconWithName from '/@/features/user/components/IconWithName.vue'
+import { useUsers } from '../../user/composables/useUsers'
 
 const props = defineProps<{
   event: KnoqEvent
 }>()
+
+const { getUsersByIds } = useUsers()
+
+const attendees = getUsersByIds(props.event.attendees)
 
 const roomName = computed(() => {
   return props.event.place || '未定'
@@ -41,7 +46,7 @@ const eventTime = computed(() => {
         </div>
         <div flex flex-row gap-2 flex-wrap>
           <IconWithName
-            v-for="user in event.attendees"
+            v-for="user in attendees"
             :key="user.userId"
             :user-id="user.userId"
           />
