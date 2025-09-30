@@ -1,5 +1,5 @@
 import { ComputedRef, Ref, computed } from 'vue'
-import { KnoqEvent, KnoqEventDetail, Schedule } from '/@/features/event/types'
+import { KnoqEventDetail, Schedule } from '/@/features/event/types'
 import { apiClient } from '/@/lib/api'
 import { User } from '/@/features/user/types'
 import { Group } from '/@/features/group/types'
@@ -7,13 +7,13 @@ import { Group } from '/@/features/group/types'
 export const useMySchedule = (
   me: Ref<User | undefined>,
   event:
-    | Ref<KnoqEvent | KnoqEventDetail | undefined>
-    | ComputedRef<KnoqEvent | KnoqEventDetail | undefined>,
+    | Ref<KnoqEventDetail | undefined>
+    | ComputedRef<KnoqEventDetail | undefined>,
   group?: Ref<Group | undefined>
 ) => {
   const mySchedule = computed(() => {
-    const mySchedule = event.value?.attendees.filter(
-      (v) => v.userId === me.value?.userId
+    const mySchedule = event.value?.attendees.filter((v) =>
+      typeof v === 'string' ? v : v.userId === me.value?.userId
     )
     if (!mySchedule || mySchedule.length === 0) {
       return
@@ -21,7 +21,7 @@ export const useMySchedule = (
     return mySchedule[0].schedule
   })
 
-  /* 
+  /*
     出席予定を設定可能か
     条件はイベント開始時刻より前かつ
     (メンバーである または 外部の参加可能)

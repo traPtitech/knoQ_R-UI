@@ -5,38 +5,72 @@
 
 export interface paths {
   '/rooms': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * 進捗部屋の情報を取得
      * @description 進捗部屋の情報を取得
      */
     get: operations['getRooms']
+    put?: never
     /**
      * 部屋の情報追加
      * @description 部屋の情報追加
      */
     post: operations['addRooms']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/rooms/{roomID}': {
+    parameters: {
+      query?: {
+        /**
+         * @description 除外するイベントのID。
+         * @example 3fa85f64-5717-4562-b3fc-2c963f66afa6
+         */
+        excludeEventID?: components['parameters']['excludeEventID']
+      }
+      header?: never
+      path: {
+        roomID: components['parameters']['roomID']
+      }
+      cookie?: never
+    }
     /**
      * 一件取得する
      * @description 一件取得する
      */
     get: operations['getRoom']
+    put?: never
+    post?: never
     /**
      * 部屋の情報を削除
      * @description (関連する予約を削除する) エラーを出して削除を促す予定
      */
     delete: operations['deleteRoom']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/rooms/{roomID}/verified': {
     parameters: {
-      query?: {
-        excludeEventID?: components['parameters']['excludeEventID']
-      }
+      query?: never
+      header?: never
       path: {
         roomID: components['parameters']['roomID']
       }
+      cookie?: never
     }
-  }
-  '/rooms/{roomID}/verified': {
+    get?: never
+    put?: never
     /**
      * 部屋を確認する
      * @description 特権が必要。部屋が使用できることを確認する
@@ -47,32 +81,64 @@ export interface paths {
      * @description 特権が必要。部屋が使用できることの確認を取り消す。
      */
     delete: operations['unverifyRoom']
-    parameters: {
-      path: {
-        roomID: components['parameters']['roomID']
-      }
-    }
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/rooms/all': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * traPで確保した部屋の情報追加
      * @description 特権が必要。
      */
     post: operations['addAllRooms']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * 使用宣言の情報を取得
      * @description 使用宣言の情報を取得
      */
     get: operations['getEvents']
+    put?: never
     /**
      * 部屋の使用宣言を行う
      * @description 部屋の使用宣言を行う
      */
     post: operations['addEvents']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/events/{eventID}': {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        eventID: components['parameters']['eventID']
+      }
+      cookie?: never
+    }
     /**
      * 一件取得
      * @description 一件取得
@@ -83,95 +149,188 @@ export interface paths {
      * @description adminsのみ
      */
     put: operations['updateEvent']
+    post?: never
     /**
      * 使用宣言を削除
      * @description adminsのみ
      */
     delete: operations['deleteEvent']
-    parameters: {
-      path: {
-        eventID: components['parameters']['eventID']
-      }
-    }
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/events/{eventID}/attendees/me': {
-    /** 自分の参加予定を編集 */
-    put: operations['updateSchedule']
     parameters: {
+      query?: never
+      header?: never
       path: {
         eventID: components['parameters']['eventID']
       }
+      cookie?: never
     }
+    get?: never
+    /** 自分の参加予定を編集 */
+    put: operations['updateSchedule']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/events/{eventID}/tags': {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        eventID: components['parameters']['eventID']
+      }
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /**
      * タグを追加
      * @description タグを追加
      */
     post: operations['addEventTag']
-    parameters: {
-      path: {
-        eventID: components['parameters']['eventID']
-      }
-    }
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/events/{eventID}/tags/{tagName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        eventID: components['parameters']['eventID']
+        tagName: string
+      }
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
     /**
      * タグを削除
      * @description locked=falseだけ
      */
     delete: operations['deleteEventTag']
-    parameters: {
-      path: {
-        eventID: components['parameters']['eventID']
-        tagName: string
-      }
-    }
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/users/me/events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** @description 所属しているイベントを返す */
     get: operations['getMyEvents']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/users/{userID}/events': {
-    /** @description 所属しているイベントを返す */
-    get: operations['getUserEvents']
     parameters: {
+      query?: never
+      header?: never
       path: {
         userID: components['parameters']['userID']
       }
+      cookie?: never
     }
+    /** @description 所属しているイベントを返す */
+    get: operations['getUserEvents']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/rooms/{roomID}/events': {
-    /** @description 指定した部屋で行われるイベントを返す */
-    get: operations['getEventsOfRoom']
     parameters: {
+      query?: never
+      header?: never
       path: {
         roomID: components['parameters']['roomID']
       }
+      cookie?: never
     }
+    /** @description 指定した部屋で行われるイベントを返す */
+    get: operations['getEventsOfRoom']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/groups/{groupID}/events': {
-    /** @description groupIdのeventsを取得 */
-    get: operations['getEventsOfGroup']
     parameters: {
+      query?: never
+      header?: never
       path: {
         groupID: components['parameters']['groupID']
       }
+      cookie?: never
     }
+    /** @description groupIdのeventsを取得 */
+    get: operations['getEventsOfGroup']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * グループを全て取得
      * @description すべてのグループを取得する
      */
     get: operations['getGroups']
+    put?: never
     /**
      * グループ作成
      * @description グループを作成します。traQのグループとは無関係です。
      */
     post: operations['createGroup']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/groups/{groupID}': {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        groupID: components['parameters']['groupID']
+      }
+      cookie?: never
+    }
     /**
      * 一件取得
      * @description 一件取得
@@ -179,108 +338,286 @@ export interface paths {
     get: operations['getGroup']
     /** @description adminsのみ変更可能 */
     put: operations['updateGroup']
+    post?: never
     /**
      * Delete group
      * @description グループの削除
      */
     delete: operations['deleteGroup']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/groups/{groupID}/members/me': {
     parameters: {
+      query?: never
+      header?: never
       path: {
         groupID: components['parameters']['groupID']
       }
+      cookie?: never
     }
-  }
-  '/groups/{groupID}/members/me': {
+    get?: never
     /**
      * 自分を追加。open=true
      * @description 自分をメンバーに追加する
      */
     put: operations['addMeToGroup']
+    post?: never
     /**
      * 自分しか削除出来ない。open=true
      * @description 自分しか削除出来ない。open=true
      */
     delete: operations['deleteMeFromGroup']
-    parameters: {
-      path: {
-        groupID: components['parameters']['groupID']
-      }
-    }
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/users/me/groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** @description 自分の所属しているグループのIDを返す */
     get: operations['getMyGroups']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/users/{userID}/groups': {
-    /** @description ユーザーが所属しているグループのIDを返す */
-    get: operations['getUserGroups']
     parameters: {
+      query?: never
+      header?: never
       path: {
         userID: components['parameters']['userID']
       }
+      cookie?: never
     }
+    /** @description ユーザーが所属しているグループのIDを返す */
+    get: operations['getUserGroups']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/users': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** @description ユーザー一覧を返す */
     get: operations['getUsers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/users/sync': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** @description 管理者権限が必要。 traQのuserと同期します。 存在していないユーザーは作成されます。 stateが同期されます。 */
     post: operations['syncUsers']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/users/me': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * 自分のユーザー情報を取得
      * @description 自分のユーザー情報を取得
      */
     get: operations['getMe']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/users/me/ical': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** @description /ical で使う`secret`を取得 */
     get: operations['getIcalSecret']
     /** @description /ical で使う`secret`を再生成 */
     put: operations['resetIcalSecret']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/users/{userID}/privileged': {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        userID: components['parameters']['userID']
+      }
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    /** @description 管理者権限を付与したいuserのuserIDをパラメータに入れる. APIを叩く本人が管理者権限を持っている必要がある. */
+    patch: operations['grantPrivilege']
+    trace?: never
   }
   '/tags': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * タグを全て取得
      * @description タグを全て取得
      */
     get: operations['getTag']
+    put?: never
     /**
      * タグを作成。
      * @description すでにある場合は、error
      */
     post: operations['postTag']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/activity/events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /**
      * @deprecated
      * @description 最近7日間に作成変更削除があったイベントを取得。
-     * 削除されたものを含んで返す。
+     *     削除されたものを含んで返す。
+     *
      */
     get: operations['getEventActivities']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/authParams': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** @description リクエストに必要な情報を返す */
     post: operations['getAuthParams']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/callback': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** @description コールバックを検知して、トークンを取得します。 */
     get: operations['getCallback']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/ical/v1/{icalToken}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** @description Icalを取得 */
     get: operations['getIcal']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/version': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** @description version情報を取得 */
     get: operations['getVersion']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
     /** @description UUIDの配列 */
@@ -396,8 +733,6 @@ export interface components {
       timeEnd: string
       /** @example S516 */
       place: string
-      /** @example room */
-      groupName: string
       /** Format: uuid */
       roomId: string
       /** Format: uuid */
@@ -413,15 +748,7 @@ export interface components {
         name: string
         locked?: boolean
       }[]
-      attendees: {
-        /** Format: uuid */
-        userId: string
-        /**
-         * @description pending or absent or attendance
-         * @enum {string}
-         */
-        schedule: 'pending' | 'absent' | 'attendance'
-      }[]
+      attendees: string[]
       /** Format: uuid */
       createdBy: string
       /** @example 2006-01-02T15:04:05Z */
@@ -559,76 +886,115 @@ export interface components {
   responses: {
     /** @description Nocontent */
     Nocontent: {
-      content: never
+      headers: {
+        [name: string]: unknown
+      }
+      content?: never
     }
     /** @description successful operation */
     UUIDArray: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['UUIDs']
       }
     }
     /** @description successful operation */
     Room: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['ResponseRoom']
       }
     }
     /** @description successful operation */
     RoomArray: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['ResponseRoom'][]
       }
     }
     /** @description successful operation */
     Event: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['ResponseEventDetail']
       }
     }
     /** @description successful operation */
     EventArray: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['ResponseEvent'][]
       }
     }
     /** @description successful operation */
     Group: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['ResponseGroup']
       }
     }
     /** @description successful operation */
     GroupArray: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['ResponseGroup'][]
       }
     }
     /** @description successful operation */
     User: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['ResponseUser']
       }
     }
     /** @description successful operation */
     UserArray: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['ResponseUser'][]
       }
     }
     /** @description successful operation */
     icalSecret: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['icalSecret']
       }
     }
     /** @description successful operation */
     Tag: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['ResponseTag']
       }
     }
     /** @description successful operation */
     TagArray: {
+      headers: {
+        [name: string]: unknown
+      }
       content: {
         'application/json': components['schemas']['ResponseTag'][]
       }
@@ -637,27 +1003,31 @@ export interface components {
   parameters: {
     session: string
     icalToken: components['schemas']['icalToken']
-    /** @description Syntax: <br> top  : ε | expr, expr : term ( ( "||" | "&&" ) term)*<br> term : cmp | "(" expr ")"<br> cmp  : Attr ( "==" | "!=" ) UUID<br> Attr : "event" | "user" | "group" | "tag" */
-    eventFilter?: string
+    /** @description Syntax: <br> top  : ε | expr, expr : term ( ( "||" | "&&" ) term)*<br> term : cmp | "(" expr ")"<br> cmp  : Attr ( "==" | "!=" ) UUID<br> Attr : "event" | "user" | "group" | "tag"  */
+    eventFilter: string
     /**
      * @description 特定の日時から。
      * @example 2006-01-02T15:04:05Z
      */
-    dateBegin?: string
+    dateBegin: string
     /**
      * @description 特定の日時まで。
      * @example 2006-01-02T15:04:05Z
      */
-    dateEnd?: string
+    dateEnd: string
     /**
      * @description 除外するイベントのID。
      * @example 3fa85f64-5717-4562-b3fc-2c963f66afa6
      */
-    excludeEventID?: string
+    excludeEventID: string
     /** @description アカウントがアクティブでないユーザーを含めるかどうか。 | traQ由来のquery。 | de */
-    'include-suspended'?: boolean
-    /** @description どのような関係性でユーザーと結びつけるか。| 取り得る値は、admins(ユーザーが管理者), belongs(ユーザーが所属している) | イベントはさらに、attendees(not absent)| 値がない場合は、belongs として振る舞う */
-    userRelation?: 'admins' | 'belongs' | 'attendees'
+    'include-suspended': boolean
+    /** @description どのような関係性でユーザーと結びつけるか。 取り得る値は、
+     *     admins(ユーザーが管理者), belongs(ユーザーが所属している),
+     *     belongs-or-admins(ユーザーが管理者または所属している)
+     *     イベントはさらに、attendees(not absent) 値がない場合は、belongs として振る舞う
+     *      */
+    userRelation: 'admins' | 'belongs' | 'belongs-or-admins' | 'attendees'
     userID: string
     groupID: string
     roomID: string
@@ -704,149 +1074,196 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
-export type external = Record<string, never>
-
 export interface operations {
-  /**
-   * 進捗部屋の情報を取得
-   * @description 進捗部屋の情報を取得
-   */
   getRooms: {
     parameters: {
       query?: {
+        /**
+         * @description 特定の日時から。
+         * @example 2006-01-02T15:04:05Z
+         */
         dateBegin?: components['parameters']['dateBegin']
+        /**
+         * @description 特定の日時まで。
+         * @example 2006-01-02T15:04:05Z
+         */
         dateEnd?: components['parameters']['dateEnd']
+        /**
+         * @description 除外するイベントのID。
+         * @example 3fa85f64-5717-4562-b3fc-2c963f66afa6
+         */
         excludeEventID?: components['parameters']['excludeEventID']
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['RoomArray']
     }
   }
-  /**
-   * 部屋の情報追加
-   * @description 部屋の情報追加
-   */
   addRooms: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: components['requestBodies']['Room']
     responses: {
       201: components['responses']['Room']
       /** @description Bad Request */
       400: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Forbidden */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * 一件取得する
-   * @description 一件取得する
-   */
   getRoom: {
     parameters: {
       query?: {
+        /**
+         * @description 除外するイベントのID。
+         * @example 3fa85f64-5717-4562-b3fc-2c963f66afa6
+         */
         excludeEventID?: components['parameters']['excludeEventID']
       }
+      header?: never
       path: {
         roomID: components['parameters']['roomID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['Room']
     }
   }
-  /**
-   * 部屋の情報を削除
-   * @description (関連する予約を削除する) エラーを出して削除を促す予定
-   */
   deleteRoom: {
     parameters: {
       query?: {
+        /**
+         * @description 除外するイベントのID。
+         * @example 3fa85f64-5717-4562-b3fc-2c963f66afa6
+         */
         excludeEventID?: components['parameters']['excludeEventID']
       }
+      header?: never
       path: {
         roomID: components['parameters']['roomID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description successful operation */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Bad Request */
       400: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Forbidden */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * 部屋を確認する
-   * @description 特権が必要。部屋が使用できることを確認する
-   */
   verifyRoom: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         roomID: components['parameters']['roomID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description successful operation */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Bad Request */
       400: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * 部屋を未確認にする
-   * @description 特権が必要。部屋が使用できることの確認を取り消す。
-   */
   unverifyRoom: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         roomID: components['parameters']['roomID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description successful operation */
       200: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Bad Request */
       400: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Forbidden */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * traPで確保した部屋の情報追加
-   * @description 特権が必要。
-   */
   addAllRooms: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** @description 進捗部屋情報 */
     requestBody: {
       content: {
-        /**
-         * @example Subject, Start date, End date, Start time, End time, Location
-         * , 2006/01/02, 2006/01/02, 15:04, 15:04, S516
-         */
+        /** @example Subject, Start date, End date, Start time, End time, Location
+         *     , 2006/01/02, 2006/01/02, 15:04, 15:04, S516
+         *      */
         'text/csv': {
           Subject?: string
           'Start date'?: string
@@ -861,459 +1278,734 @@ export interface operations {
       201: components['responses']['RoomArray']
       /** @description Forbidden */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * 使用宣言の情報を取得
-   * @description 使用宣言の情報を取得
-   */
   getEvents: {
     parameters: {
       query?: {
+        /**
+         * @description 特定の日時から。
+         * @example 2006-01-02T15:04:05Z
+         */
         dateBegin?: components['parameters']['dateBegin']
+        /**
+         * @description 特定の日時まで。
+         * @example 2006-01-02T15:04:05Z
+         */
         dateEnd?: components['parameters']['dateEnd']
+        /** @description Syntax: <br> top  : ε | expr, expr : term ( ( "||" | "&&" ) term)*<br> term : cmp | "(" expr ")"<br> cmp  : Attr ( "==" | "!=" ) UUID<br> Attr : "event" | "user" | "group" | "tag"  */
         q?: components['parameters']['eventFilter']
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['EventArray']
     }
   }
-  /**
-   * 部屋の使用宣言を行う
-   * @description 部屋の使用宣言を行う
-   */
   addEvents: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: components['requestBodies']['Event']
     responses: {
       201: components['responses']['Event']
       /** @description Bad Request */
       400: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Forbidden */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * 一件取得
-   * @description 一件取得
-   */
   getEventDetail: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         eventID: components['parameters']['eventID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['Event']
     }
   }
-  /**
-   * 部屋の使用宣言を更新
-   * @description adminsのみ
-   */
   updateEvent: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         eventID: components['parameters']['eventID']
       }
+      cookie?: never
     }
     requestBody: components['requestBodies']['Event']
     responses: {
       200: components['responses']['Event']
       /** @description Bad Request */
       400: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Forbidden */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * 使用宣言を削除
-   * @description adminsのみ
-   */
   deleteEvent: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         eventID: components['parameters']['eventID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       204: components['responses']['Nocontent']
       /** @description Forbidden */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Not Found */
       404: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /** 自分の参加予定を編集 */
   updateSchedule: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         eventID: components['parameters']['eventID']
       }
+      cookie?: never
     }
     requestBody: components['requestBodies']['Schedule']
     responses: {
       204: components['responses']['Nocontent']
     }
   }
-  /**
-   * タグを追加
-   * @description タグを追加
-   */
   addEventTag: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         eventID: components['parameters']['eventID']
       }
+      cookie?: never
     }
     requestBody: components['requestBodies']['EventTag']
     responses: {
       204: components['responses']['Nocontent']
     }
   }
-  /**
-   * タグを削除
-   * @description locked=falseだけ
-   */
   deleteEventTag: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         eventID: components['parameters']['eventID']
         tagName: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       204: components['responses']['Nocontent']
     }
   }
-  /** @description 所属しているイベントを返す */
   getMyEvents: {
     parameters: {
       query?: {
+        /** @description どのような関係性でユーザーと結びつけるか。 取り得る値は、
+         *     admins(ユーザーが管理者), belongs(ユーザーが所属している),
+         *     belongs-or-admins(ユーザーが管理者または所属している)
+         *     イベントはさらに、attendees(not absent) 値がない場合は、belongs として振る舞う
+         *      */
         relation?: components['parameters']['userRelation']
+        /**
+         * @description 特定の日時から。
+         * @example 2006-01-02T15:04:05Z
+         */
+        dateBegin?: components['parameters']['dateBegin']
+        /**
+         * @description 特定の日時まで。
+         * @example 2006-01-02T15:04:05Z
+         */
+        dateEnd?: components['parameters']['dateEnd']
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['EventArray']
     }
   }
-  /** @description 所属しているイベントを返す */
   getUserEvents: {
     parameters: {
       query?: {
+        /** @description どのような関係性でユーザーと結びつけるか。 取り得る値は、
+         *     admins(ユーザーが管理者), belongs(ユーザーが所属している),
+         *     belongs-or-admins(ユーザーが管理者または所属している)
+         *     イベントはさらに、attendees(not absent) 値がない場合は、belongs として振る舞う
+         *      */
         relation?: components['parameters']['userRelation']
+        /**
+         * @description 特定の日時から。
+         * @example 2006-01-02T15:04:05Z
+         */
+        dateBegin?: components['parameters']['dateBegin']
+        /**
+         * @description 特定の日時まで。
+         * @example 2006-01-02T15:04:05Z
+         */
+        dateEnd?: components['parameters']['dateEnd']
       }
+      header?: never
       path: {
         userID: components['parameters']['userID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['EventArray']
     }
   }
-  /** @description 指定した部屋で行われるイベントを返す */
   getEventsOfRoom: {
     parameters: {
+      query?: {
+        /**
+         * @description 特定の日時から。
+         * @example 2006-01-02T15:04:05Z
+         */
+        dateBegin?: components['parameters']['dateBegin']
+        /**
+         * @description 特定の日時まで。
+         * @example 2006-01-02T15:04:05Z
+         */
+        dateEnd?: components['parameters']['dateEnd']
+      }
+      header?: never
       path: {
         roomID: components['parameters']['roomID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['EventArray']
     }
   }
-  /** @description groupIdのeventsを取得 */
   getEventsOfGroup: {
     parameters: {
+      query?: {
+        /**
+         * @description 特定の日時から。
+         * @example 2006-01-02T15:04:05Z
+         */
+        dateBegin?: components['parameters']['dateBegin']
+        /**
+         * @description 特定の日時まで。
+         * @example 2006-01-02T15:04:05Z
+         */
+        dateEnd?: components['parameters']['dateEnd']
+      }
+      header?: never
       path: {
         groupID: components['parameters']['groupID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['EventArray']
     }
   }
-  /**
-   * グループを全て取得
-   * @description すべてのグループを取得する
-   */
   getGroups: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       200: components['responses']['GroupArray']
       /** @description Bad Request */
       400: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * グループ作成
-   * @description グループを作成します。traQのグループとは無関係です。
-   */
   createGroup: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: components['requestBodies']['Group']
     responses: {
       201: components['responses']['Group']
       /** @description Bad Request */
       400: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * 一件取得
-   * @description 一件取得
-   */
   getGroup: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         groupID: components['parameters']['groupID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['Group']
     }
   }
-  /** @description adminsのみ変更可能 */
   updateGroup: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         groupID: components['parameters']['groupID']
       }
+      cookie?: never
     }
     requestBody: components['requestBodies']['Group']
     responses: {
       200: components['responses']['Group']
       /** @description Bad Request */
       400: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Forbidden */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * Delete group
-   * @description グループの削除
-   */
   deleteGroup: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         groupID: components['parameters']['groupID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description successful operation */
       204: components['responses']['Nocontent']
       /** @description Forbidden */
       403: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Groupid not found */
       404: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * 自分を追加。open=true
-   * @description 自分をメンバーに追加する
-   */
   addMeToGroup: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         groupID: components['parameters']['groupID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       204: components['responses']['Nocontent']
     }
   }
-  /**
-   * 自分しか削除出来ない。open=true
-   * @description 自分しか削除出来ない。open=true
-   */
   deleteMeFromGroup: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         groupID: components['parameters']['groupID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       204: components['responses']['Nocontent']
     }
   }
-  /** @description 自分の所属しているグループのIDを返す */
   getMyGroups: {
     parameters: {
       query?: {
+        /** @description どのような関係性でユーザーと結びつけるか。 取り得る値は、
+         *     admins(ユーザーが管理者), belongs(ユーザーが所属している),
+         *     belongs-or-admins(ユーザーが管理者または所属している)
+         *     イベントはさらに、attendees(not absent) 値がない場合は、belongs として振る舞う
+         *      */
         relation?: components['parameters']['userRelation']
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['UUIDArray']
     }
   }
-  /** @description ユーザーが所属しているグループのIDを返す */
   getUserGroups: {
     parameters: {
       query?: {
+        /** @description どのような関係性でユーザーと結びつけるか。 取り得る値は、
+         *     admins(ユーザーが管理者), belongs(ユーザーが所属している),
+         *     belongs-or-admins(ユーザーが管理者または所属している)
+         *     イベントはさらに、attendees(not absent) 値がない場合は、belongs として振る舞う
+         *      */
         relation?: components['parameters']['userRelation']
       }
+      header?: never
       path: {
         userID: components['parameters']['userID']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['UUIDArray']
     }
   }
-  /** @description ユーザー一覧を返す */
   getUsers: {
     parameters: {
       query?: {
+        /** @description アカウントがアクティブでないユーザーを含めるかどうか。 | traQ由来のquery。 | de */
         'include-suspended'?: components['parameters']['include-suspended']
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       200: components['responses']['UserArray']
     }
   }
-  /** @description 管理者権限が必要。 traQのuserと同期します。 存在していないユーザーは作成されます。 stateが同期されます。 */
   syncUsers: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description OK */
       201: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * 自分のユーザー情報を取得
-   * @description 自分のユーザー情報を取得
-   */
   getMe: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       200: components['responses']['User']
     }
   }
-  /** @description /ical で使う`secret`を取得 */
   getIcalSecret: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       200: components['responses']['icalSecret']
     }
   }
-  /** @description /ical で使う`secret`を再生成 */
   resetIcalSecret: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       200: components['responses']['icalSecret']
     }
   }
-  /**
-   * タグを全て取得
-   * @description タグを全て取得
-   */
+  grantPrivilege: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        userID: components['parameters']['userID']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['Nocontent']
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   getTag: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       200: components['responses']['TagArray']
       /** @description Bad Request */
       400: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /**
-   * タグを作成。
-   * @description すでにある場合は、error
-   */
   postTag: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: components['requestBodies']['Tag']
     responses: {
       201: components['responses']['Tag']
     }
   }
-  /**
-   * @deprecated
-   * @description 最近7日間に作成変更削除があったイベントを取得。
-   * 削除されたものを含んで返す。
-   */
   getEventActivities: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       200: components['responses']['EventArray']
     }
   }
-  /** @description リクエストに必要な情報を返す */
   getAuthParams: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description リクエストに必要な情報を返す */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['authParams']
         }
       }
     }
   }
-  /** @description コールバックを検知して、トークンを取得します。 */
   getCallback: {
     parameters: {
       query: {
         /** @description OAuth2.0のcode */
         code: string
       }
+      header?: never
+      path?: never
       cookie: {
         session: components['parameters']['session']
       }
     }
+    requestBody?: never
     responses: {
       /** @description 成功。/callbackにリダイレクト。（その後はuiがリダイレクトする） */
       302: {
-        content: never
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
-  /** @description Icalを取得 */
   getIcal: {
     parameters: {
       query?: {
+        /** @description Syntax: <br> top  : ε | expr, expr : term ( ( "||" | "&&" ) term)*<br> term : cmp | "(" expr ")"<br> cmp  : Attr ( "==" | "!=" ) UUID<br> Attr : "event" | "user" | "group" | "tag"  */
         q?: components['parameters']['eventFilter']
       }
+      header?: never
       path: {
         icalToken: components['parameters']['icalToken']
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
-      /**
-       * @description iCal形式でイベントを出力
-       * 外部カレンダーを想定
-       */
+      /** @description iCal形式でイベントを出力
+       *     外部カレンダーを想定
+       *      */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
+          /** @example BEGIN:VCALENDAR
+           *     VERSION:2.0
+           *     PRODID:github.com/lestrrat-go/ical
+           *     BEGIN:VTIMEZONE
+           *     TZID:Asia/Tokyo
+           *     BEGIN:STANDARD
+           *     DTSTART:19700101T000000
+           *     TZNAME:JST
+           *     TZOFFSETFROM:+9000
+           *     TZOFFSETTO:+9000
+           *     END:STANDARD
+           *     END:VTIMEZONE
+           *     BEGIN:VEVENT
+           *     CREATED:20'200'827T09'400'8Z
+           *     DESCRIPTION:asd¥n-----------------------------------¥nイベント詳細ページ¥nhttp://loc
+           *     alhost:'400'0/events/855cff6d-aef6-4de2-8ba5-bc0c3e76a617
+           *     DTEND:20'200'828T1'400'00Z
+           *     DTSTAMP:20'200'904T145144Z
+           *     DTSTART:20'200'828T050000Z
+           *     LAST-MODIFIED:20'200'827T09'400'8Z
+           *     LOCATION:dfaaa
+           *     ORGANIZER:18984a38-4dc7-41ab-9c8d-f5469a8e30a9
+           *     SUMMARY:sadfwe
+           *     UID:855cff6d-aef6-4de2-8ba5-bc0c3e76a617
+           *     END:VEVENT
+           *     BEGIN:VEVENT
+           *     CREATED:20'200'827T09'400'8Z
+           *     DESCRIPTION:asd¥n-----------------------------------¥nイベント詳細ページ¥nhttp://loc
+           *     alhost:'400'0/events/855cff6d-aef6-4de2-8ba5-bc0c3e76a617
+           *     DTEND:20'200'828T1'400'00Z
+           *     DTSTAMP:20'200'904T145144Z
+           *     DTSTART:20'200'828T050000Z
+           *     LAST-MODIFIED:20'200'827T09'400'8Z
+           *     LOCATION:dfaaa
+           *     ORGANIZER:18984a38-4dc7-41ab-9c8d-f5469a8e30a9
+           *     SUMMARY:sadfwe
+           *     UID:855cff6d-aef6-4de2-8ba5-bc0c3e76a617
+           *     END:VEVENT
+           *     END:VCALENDAR */
           'text/calendar': string
         }
       }
     }
   }
-  /** @description version情報を取得 */
   getVersion: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description versionを出力 */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': {
             /** @example v2.1.3 */

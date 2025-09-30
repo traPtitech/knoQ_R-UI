@@ -8,7 +8,7 @@ export type SwrvState =
   | 'error'
   | 'staleIfError'
 
-export const useSwrvState = <Data = any, Error = any>(
+export const useSwrvState = <Data, Error>(
   data: Ref<Data | undefined>,
   error: Ref<Error | undefined>,
   isValidating: Ref<boolean>
