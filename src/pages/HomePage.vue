@@ -45,7 +45,7 @@ const { data: myGroupIds, error: myGroupsError } = useApiFetch(
     <div grid gap-4>
       <h3 hm>進捗部屋</h3>
       <div>
-        <div v-for="workspace in workspaces">
+        <div v-for="workspace in workspaces" :key="workspace.roomId">
           - {{ workspace.place }}: {{ workspace.timeStart }}から{{
             workspace.timeEnd
           }}
