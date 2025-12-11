@@ -2,18 +2,29 @@
 import { useApiFetch } from '/@/composables/useApiFetch'
 import AppHeader from '/@/components/AppHeader.vue'
 import EventCard from '/@/features/event/components/EventCard.vue'
+import InputField from '../components/UI/Form/InputField.vue'
+import DataFetchState from '/@/components/UI/DataFetchState.vue'
 
 const { data: events, state } = useApiFetch('/events', {})
+const modelValue = defineModel<string>('')
 </script>
 
 <template>
   <AppHeader />
   <div max-w-3xl my-8 mx-auto grid gap-4>
-    <h2 hl>イベント一覧</h2>
-    <div v-if="state">failed to load events</div>
-    <div v-else-if="!events">loading events</div>
-    <div v-else class="grid gap-4">
-      <EventCard v-for="event in events" :key="event.eventId" :event="event" />
+    <h1 hl>イベント</h1>
+    <div>
+      <h2 hl>検索</h2>
+      <InputField id="search" v-model="modelValue" />
     </div>
+    <DataFetchState :state="state" :is-empty="events?.length === 0">
+      <div class="grid gap-4">
+        <EventCard
+          v-for="event in events"
+          :key="event.eventId"
+          :event="event"
+        />
+      </div>
+    </DataFetchState>
   </div>
 </template>

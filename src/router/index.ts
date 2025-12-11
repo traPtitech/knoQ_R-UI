@@ -2,23 +2,29 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import Home from '../pages/HomePage.vue'
 import EventList from '../pages/EventList.vue'
 import EventDetail from '../pages/EventDetail.vue'
-import CreateEvent from '/@/pages/CreateEvent.vue'
+import CreateEvent from '../pages/CreateEvent.vue'
 import GroupList from '../pages/GroupList.vue'
 import MyPage from '../pages/MyPage.vue'
 import SearchPage from '../pages/SearchPage.vue'
 import ArrangementPage from '../pages/ArrangementPage.vue'
+import CreateRoom from '../pages/CreateRoom.vue'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'Home', component: Home },
   {
+    path: '/events/new',
+    name: 'create_event',
+    component: CreateEvent
+  },
+  {
+    path: '/rooms/new',
+    name: 'create_room',
+    component: CreateRoom
+  },
+  {
     path: '/events',
     name: 'events',
     component: EventList
-  },
-  {
-    path: '/events/new',
-    name: 'create event',
-    component: CreateEvent
   },
   {
     path: '/events/:id',

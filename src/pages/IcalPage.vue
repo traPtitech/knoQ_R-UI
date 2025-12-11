@@ -1,63 +1,59 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import InputField from '/@/components/UI/Form/InputField.vue'
 import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
 import AppHeader from '../components/AppHeader.vue'
-import DropdownMenu from '/@/components/UI/DropdownMenu.vue'
+import SelectMenu from '/@/components/UI/SelectMenu.vue'
 import { useTags } from '/@/features/tag/composables/useTags'
 import { useEvents } from '/@/features/event/composables/useEvents'
 import { useUsers } from '/@/features/user/composables/useUsers'
 import { useGroups } from '/@/features/group/composables/useGroups'
+import { apiClient } from '/@/lib/api'
+import { useMe } from '/@/features/user/composables/useMe'
 
-const icalToken = ref('')
+const { me } = useMe()
+const icalSecret = ref('')
 const eventFilter = ref('')
 const dateBegin = ref('')
 const dateEnd = ref('')
-
-const isTagDropdownOpen = ref(false)
-const isEventDropdownOpen = ref(false)
-const isUserDropdownOpen = ref(false)
-const isGroupDropdownOpen = ref(false)
-
-const tagDropdownRef = ref<HTMLElement | null>(null)
-const eventDropdownRef = ref<HTMLElement | null>(null)
-const userDropdownRef = ref<HTMLElement | null>(null)
-const groupDropdownRef = ref<HTMLElement | null>(null)
 
 const { tags, getTags } = useTags()
 const { events, getEvents } = useEvents()
 const { users } = useUsers()
 const { groups, getGroups } = useGroups()
 
+const fetchIcalSecret = async () => {
+  const res = await apiClient.GET('/users/me/ical')
+  if (res.data) {
+    icalSecret.value = res.data.secret
+  }
+}
+
+const resetIcalSecret = async () => {
+  if (
+    !confirm('iCalのシークレットを再生成しますか？既存のURLは無効になります。')
+  )
+    return
+  const res = await apiClient.PUT('/users/me/ical')
+  if (res.data) {
+    icalSecret.value = res.data.secret
+  }
+}
+
 onMounted(() => {
+  fetchIcalSecret()
   getTags()
   getEvents()
   getGroups()
-  document.addEventListener('click', handleClickOutside)
 })
 
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
-
-const handleClickOutside = (event: MouseEvent) => {
-  if (
-    tagDropdownRef.value &&
-    !tagDropdownRef.value.contains(event.target as Node) &&
-    eventDropdownRef.value &&
-    !eventDropdownRef.value.contains(event.target as Node) &&
-    userDropdownRef.value &&
-    !userDropdownRef.value.contains(event.target as Node) &&
-    groupDropdownRef.value &&
-    !groupDropdownRef.value.contains(event.target as Node)
-  ) {
-    isTagDropdownOpen.value = false
-    isEventDropdownOpen.value = false
-    isUserDropdownOpen.value = false
-    isGroupDropdownOpen.value = false
+const icalToken = computed(() => {
+  if (me.value && icalSecret.value) {
+    return me.value.userId + icalSecret.value
   }
-}
+  return ''
+})
 
 const icalUrl = computed(() => {
   if (icalToken.value) {
@@ -101,156 +97,127 @@ const clearFilter = () => {
   eventFilter.value = ''
 }
 
-const selectTag = (tag: { id: string; name: string }) => {
-  appendFilter(`tag==${tag.id}`)
-  isTagDropdownOpen.value = false
+const selectTag = (item: { id: string; name: string }) => {
+  appendFilter(`tag==${item.id}`)
 }
 
-const selectEvent = (event: { id: string; name: string }) => {
-  appendFilter(`event==${event.id}`)
-  isEventDropdownOpen.value = false
+const selectEvent = (item: { id: string; name: string }) => {
+  appendFilter(`event==${item.id}`)
 }
 
-const selectUser = (user: { id: string; name: string }) => {
-  appendFilter(`user==${user.id}`)
-  isUserDropdownOpen.value = false
+const selectUser = (item: { id: string; name: string }) => {
+  appendFilter(`user==${item.id}`)
 }
 
-const selectGroup = (group: { id: string; name: string }) => {
-  appendFilter(`group==${group.id}`)
-  isGroupDropdownOpen.value = false
+const selectGroup = (item: { id: string; name: string }) => {
+  appendFilter(`group==${item.id}`)
 }
 </script>
 
 <template>
   <AppHeader />
-  <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Generate iCal URL</h1>
-    <div class="space-y-4">
-      <!-- <InputField -->
-      <!-- v-model="icalToken" -->
-      <!-- label="iCal Token" -->
-      <!-- placeholder="Enter your iCal token" -->
-      <!-- /> -->
-      <!-- <TextareaField -->
-      <!-- v-model="eventFilter" -->
-      <!-- label="Event Filter (q)" -->
-      <!-- placeholder="e.g., event==UUID || user==UUID" -->
-      <!-- /> -->
-      <div class="text-sm text-gray-600">
-        <p>Syntax: <code>top : ε | expr</code></p>
-        <p><code>expr : term ( ( "||" | "&&" ) term)*</code></p>
-        <p><code>term : cmp | "(" expr ")"</code></p>
-        <p><code>cmp : Attr ( "==" | "!=" ) UUID</code></p>
-        <p><code>Attr : "event" | "user" | "group" | "tag"</code></p>
-        <p>
-          Example:
-          <code
-            >event==xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx ||
-            tag==yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy</code
+  <div class="max-w-4xl mx-auto p-4 grid gap-8">
+    <div flex justify-between items-center>
+      <h1 h1>iCal URL 生成</h1>
+      <button
+        class="text-sm text-red-600 hover:underline"
+        @click="resetIcalSecret"
+      >
+        シークレットを再生成
+      </button>
+    </div>
+
+    <div card grid gap-4>
+      <div grid gap-2>
+        <h2 h2>プレビュー & URL</h2>
+        <div
+          class="bg-surface-secondary p-4 rounded break-all font-mono text-sm border border-border-secondary"
+        >
+          {{ icalUrl || 'Loading...' }}
+        </div>
+        <PrimaryButton
+          :disabled="!icalUrl"
+          class="justify-self-start"
+          @click="copyToClipboard"
+        >
+          URLをコピー
+        </PrimaryButton>
+      </div>
+    </div>
+
+    <div card grid gap-6>
+      <h2 h2>フィルタ設定</h2>
+
+      <div grid gap-2>
+        <TextareaField
+          id="query-filter"
+          v-model="eventFilter"
+          label="検索クエリ (q)"
+        />
+
+        <div class="flex flex-wrap gap-2 items-center">
+          <SelectMenu
+            label="タグを追加"
+            :items="tags.map((t) => ({ id: t.tagId, name: t.name }))"
+            @select="selectTag"
+          />
+          <SelectMenu
+            label="イベントを追加"
+            :items="events.map((e) => ({ id: e.eventId, name: e.name }))"
+            @select="selectEvent"
+          />
+          <SelectMenu
+            label="ユーザーを追加"
+            :items="users.map((u) => ({ id: u.userId, name: u.name }))"
+            @select="selectUser"
+          />
+          <SelectMenu
+            label="グループを追加"
+            :items="groups.map((g) => ({ id: g.groupId, name: g.name }))"
+            @select="selectGroup"
+          />
+
+          <button
+            class="text-sm text-text-secondary hover:text-text-primary px-2"
+            @click="clearFilter"
           >
-        </p>
+            クリア
+          </button>
+        </div>
+
+        <details
+          class="text-sm text-text-secondary mt-2 p-2 border border-border-secondary rounded bg-surface-secondary/20"
+        >
+          <summary class="cursor-pointer font-bold select-none">
+            構文ヘルプ
+          </summary>
+          <div class="mt-2 space-y-1 font-mono text-xs">
+            <p>Syntax: <code>top : ε | expr</code></p>
+            <p><code>expr : term ( ( "||" | "&&" ) term)*</code></p>
+            <p><code>term : cmp | "(" expr ")"</code></p>
+            <p><code>cmp : Attr ( "==" | "!=" ) UUID</code></p>
+            <p><code>Attr : "event" | "user" | "group" | "tag"</code></p>
+            <p class="mt-2 text-text-primary">
+              例:
+              <code>event==xxxxxxxx... || tag==yyyyyyyy...</code>
+            </p>
+          </div>
+        </details>
       </div>
 
-      <div class="flex space-x-2">
-        <DropdownMenu ref="tagDropdownRef" v-model:is-open="isTagDropdownOpen">
-          <template #trigger>
-            <PrimaryButton>Add Tag Filter</PrimaryButton>
-          </template>
-          <div class="py-1">
-            <a
-              v-for="tag in tags"
-              :key="tag.tagId"
-              href="#"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              @click.prevent.stop="selectTag({ id: tag.tagId, name: tag.name })"
-            >
-              {{ tag.name }}
-            </a>
-          </div>
-        </DropdownMenu>
-
-        <DropdownMenu
-          ref="eventDropdownRef"
-          v-model:is-open="isEventDropdownOpen"
-        >
-          <template #trigger>
-            <PrimaryButton>Add Event Filter</PrimaryButton>
-          </template>
-          <div class="py-1 max-h-60 overflow-y-auto">
-            <a
-              v-for="event in events"
-              :key="event.eventId"
-              href="#"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              @click.prevent.stop="
-                selectEvent({ id: event.eventId, name: event.name })
-              "
-            >
-              {{ event.name }}
-            </a>
-          </div>
-        </DropdownMenu>
-
-        <DropdownMenu
-          ref="userDropdownRef"
-          v-model:is-open="isUserDropdownOpen"
-        >
-          <template #trigger>
-            <PrimaryButton>Add User Filter</PrimaryButton>
-          </template>
-          <div class="py-1 max-h-60 overflow-y-auto">
-            <a
-              v-for="user in users"
-              :key="user.userId"
-              href="#"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              @click.prevent.stop="
-                selectUser({ id: user.userId, name: user.name })
-              "
-            >
-              {{ user.name }}
-            </a>
-          </div>
-        </DropdownMenu>
-
-        <DropdownMenu
-          ref="groupDropdownRef"
-          v-model:is-open="isGroupDropdownOpen"
-        >
-          <template #trigger>
-            <PrimaryButton>Add Group Filter</PrimaryButton>
-          </template>
-          <div class="py-1 max-h-60 overflow-y-auto">
-            <a
-              v-for="group in groups"
-              :key="group.groupId"
-              href="#"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              @click.prevent.stop="
-                selectGroup({ id: group.groupId, name: group.name })
-              "
-            >
-              {{ group.name }}
-            </a>
-          </div>
-        </DropdownMenu>
-
-        <PrimaryButton @click="clearFilter">Clear Filter</PrimaryButton>
-      </div>
-
-      <!-- <InputField -->
-      <!-- v-model="dateBegin" -->
-      <!-- label="Date Begin" -->
-      <!-- type="datetime-local" -->
-      <!-- /> -->
-      <!-- <InputField v-model="dateEnd" label="Date End" type="datetime-local" /> -->
-
-      <PrimaryButton :disabled="!icalUrl" @click="copyToClipboard">
-        Copy iCal URL
-      </PrimaryButton>
-      <div v-if="icalUrl" class="bg-gray-100 p-4 rounded break-all">
-        <p class="font-mono text-sm">{{ icalUrl }}</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <InputField
+          id="date-begin"
+          v-model="dateBegin"
+          label="開始日時 (任意)"
+          type="datetime-local"
+        />
+        <InputField
+          id="date-end"
+          v-model="dateEnd"
+          label="終了日時 (任意)"
+          type="datetime-local"
+        />
       </div>
     </div>
   </div>

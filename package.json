@@ -15,6 +15,7 @@
     "generate": "openapi-typescript https://raw.githubusercontent.com/traPtitech/knoQ/master/docs/swagger.yaml -o src/lib/api/schema.d.ts"
   },
   "dependencies": {
+    "temporal-polyfill": "^0.3.0",
     "date-fns": "^4.1.0",
     "marked": "^16.3.0",
     "openapi-fetch": "^0.14.0",

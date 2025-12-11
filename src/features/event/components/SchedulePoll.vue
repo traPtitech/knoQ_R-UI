@@ -1,20 +1,129 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import SchedulePollButton from './SchedulePollButton.vue'
+import { ResponseEventDetail, ScheduleStatus } from '/@/lib/api/schema.d'
+import IconWithName from '/@/features/user/components/IconWithName.vue'
+
+const props = defineProps<{
+  event: ResponseEventDetail
+}>()
+
+const formatDateTime = (isoString: string) => {
+  const date = new Date(isoString)
+  return new Intl.DateTimeFormat('ja-JP', {
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    weekday: 'short'
+  }).format(date)
+}
+
+const getAttendeesByStatus = (
+  scheduleStartAt: string,
+  scheduleEndAt: string,
+  status: ScheduleStatus
+) => {
+  return computed(() =>
+    props.event.attendees.filter((attendee) =>
+      attendee.schedule.some(
+        (s) =>
+          s.startAt === scheduleStartAt &&
+          s.endAt === scheduleEndAt &&
+          s.status === status
+      )
+    )
+  ).value
+}
 </script>
 
 <template>
   <div grid gap-2>
-    <div grid grid-flow-col grid-justify-between>
-      6月14日(金) 15:00 - 17:00
-      <SchedulePollButton />
-    </div>
-    <div grid grid-flow-col grid-justify-between>
-      6月14日(金) 15:00 - 17:00
-      <SchedulePollButton />
-    </div>
-    <div grid grid-flow-col grid-justify-between>
-      6月14日(金) 15:00 - 17:00
-      <SchedulePollButton />
+    <div
+      v-for="scheduleOption in event.schedules"
+      :key="scheduleOption.startAt + scheduleOption.endAt"
+      class="border-b-2 border-solid border-gray-200 pb-2 mb-2"
+    >
+      <div grid grid-flow-col grid-justify-between items-center mb-2>
+        <p>
+          {{ formatDateTime(scheduleOption.startAt) }} -
+          {{ formatDateTime(scheduleOption.endAt) }}
+        </p>
+        <SchedulePollButton />
+      </div>
+      <div class="ml-4">
+        <p class="text-sm font-bold">参加</p>
+        <div class="flex flex-wrap gap-2 mb-1">
+          <IconWithName
+            v-for="attendee in getAttendeesByStatus(
+              scheduleOption.startAt,
+              scheduleOption.endAt,
+              'attending'
+            )"
+            :key="attendee.user.userId"
+            :user-id="attendee.user.userId"
+          />
+          <span
+            v-if="
+              getAttendeesByStatus(
+                scheduleOption.startAt,
+                scheduleOption.endAt,
+                'attending'
+              ).length === 0
+            "
+            class="text-gray-500"
+            >なし</span
+          >
+        </div>
+
+        <p class="text-sm font-bold">不参加</p>
+        <div class="flex flex-wrap gap-2 mb-1">
+          <IconWithName
+            v-for="attendee in getAttendeesByStatus(
+              scheduleOption.startAt,
+              scheduleOption.endAt,
+              'absent'
+            )"
+            :key="attendee.user.userId"
+            :user-id="attendee.user.userId"
+          />
+          <span
+            v-if="
+              getAttendeesByStatus(
+                scheduleOption.startAt,
+                scheduleOption.endAt,
+                'absent'
+              ).length === 0
+            "
+            class="text-gray-500"
+            >なし</span
+          >
+        </div>
+
+        <p class="text-sm font-bold">未回答</p>
+        <div class="flex flex-wrap gap-2">
+          <IconWithName
+            v-for="attendee in getAttendeesByStatus(
+              scheduleOption.startAt,
+              scheduleOption.endAt,
+              'pending'
+            )"
+            :key="attendee.user.userId"
+            :user-id="attendee.user.userId"
+          />
+          <span
+            v-if="
+              getAttendeesByStatus(
+                scheduleOption.startAt,
+                scheduleOption.endAt,
+                'pending'
+              ).length === 0
+            "
+            class="text-gray-500"
+            >なし</span
+          >
+        </div>
+      </div>
     </div>
   </div>
 </template>

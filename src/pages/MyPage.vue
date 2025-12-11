@@ -3,14 +3,21 @@ import AppHeader from '/@/components/AppHeader.vue'
 import { useMe } from '/@/features/user/composables/useMe'
 import { useApiFetch } from '/@/composables/useApiFetch'
 import { RouterLink } from 'vue-router'
+import DataFetchState from '/@/components/UI/DataFetchState.vue'
 
 const { me } = useMe()
 
-const { data: myEvents } = useApiFetch('/users/me/events', {
-  params: { query: { relation: 'attendees' } }
-})
+const { data: myEvents, state: myEventsState } = useApiFetch(
+  '/users/me/events',
+  {
+    params: { query: { relation: 'attendees' } }
+  }
+)
 
-const { data: myGroups } = useApiFetch('/users/me/groups', {})
+const { data: myGroups, state: myGroupsState } = useApiFetch(
+  '/users/me/groups',
+  {}
+)
 </script>
 
 <template>
@@ -24,25 +31,23 @@ const { data: myGroups } = useApiFetch('/users/me/groups', {})
     </div>
     <div card grid gap-6>
       <h3 hm>あなたのイベント</h3>
-      <div v-if="!myEvents">loading events</div>
-      <div v-else>
+      <DataFetchState :state="myEventsState" :is-empty="myEvents?.length === 0">
         <div v-for="event in myEvents" :key="event.eventId">
           <RouterLink :to="`/events/${event.eventId}`">
             {{ event.name }}
           </RouterLink>
         </div>
-      </div>
+      </DataFetchState>
     </div>
     <div card grid gap-6>
       <h3 hm>あなたのグループ</h3>
-      <div v-if="!myGroups">loading groups</div>
-      <div v-else>
+      <DataFetchState :state="myGroupsState" :is-empty="myGroups?.length === 0">
         <!-- <div v-for="group in myGroups" :key="group.groupId"> -->
         <!-- <RouterLink :to="`/groups/${group.groupId}`"> -->
         <!-- {{ group.name }} -->
         <!-- </RouterLink> -->
         <!-- </div> -->
-      </div>
+      </DataFetchState>
     </div>
   </div>
 </template>

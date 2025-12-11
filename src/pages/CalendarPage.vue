@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import {
   startOfMonth,
   endOfMonth,
@@ -8,24 +8,57 @@ import {
   isSameDay,
   addMonths,
   subMonths,
-  parseISO
+  parseISO,
+  startOfWeek,
+  endOfWeek,
+  isSameMonth
 } from 'date-fns'
 import AppHeader from '/@/components/AppHeader.vue'
 import EventCard from '/@/features/event/components/EventCard.vue'
-import { useApiFetch } from '/@/composables/useApiFetch'
-//import type { Event } from '/@/features/event/types'
+import RoomList from '/@/features/room/components/RoomList.vue'
+import { apiClient } from '/@/lib/api'
+import type { components } from '/@/lib/api/schema'
+import type { KnoqEvent } from '/@/features/event/types'
+
+type Room = components['schemas']['ResponseRoom']
 
 const currentMonth = ref(new Date())
+const events = ref<KnoqEvent[]>([])
+const rooms = ref<Room[]>([])
+const selectedDate = ref<Date>(new Date())
 
-const daysInMonth = computed(() => {
-  const start = startOfMonth(currentMonth.value)
-  const end = endOfMonth(currentMonth.value)
-  return eachDayOfInterval({ start, end })
+const calendarDays = computed(() => {
+  const startMonth = startOfMonth(currentMonth.value)
+  const endMonth = endOfMonth(currentMonth.value)
+  const startDate = startOfWeek(startMonth)
+  const endDate = endOfWeek(endMonth)
+  return eachDayOfInterval({ start: startDate, end: endDate })
 })
 
 const formattedMonth = computed(() => {
   return format(currentMonth.value, 'yyyy年MM月')
 })
+
+const fetchData = async () => {
+  const start = startOfWeek(startOfMonth(currentMonth.value)).toISOString()
+  const end = endOfWeek(endOfMonth(currentMonth.value)).toISOString()
+
+  const [eventsRes, roomsRes] = await Promise.all([
+    apiClient.GET('/events', {
+      params: { query: { dateBegin: start, dateEnd: end } }
+    }),
+    apiClient.GET('/rooms', {
+      params: { query: { dateBegin: start, dateEnd: end } }
+    })
+  ])
+
+  if (eventsRes.data) {
+    events.value = eventsRes.data
+  }
+  if (roomsRes.data) {
+    rooms.value = roomsRes.data
+  }
+}
 
 const goToPreviousMonth = () => {
   currentMonth.value = subMonths(currentMonth.value, 1)
@@ -35,91 +68,130 @@ const goToNextMonth = () => {
   currentMonth.value = addMonths(currentMonth.value, 1)
 }
 
-const selectedDate = ref<Date | null>(null)
-
 const selectDate = (date: Date) => {
   selectedDate.value = date
 }
 
-//const { data: events, error: eventsError } = useApiFetch<Event[]>('/events')
+const eventsForSelectedDate = computed(() => {
+  if (!selectedDate.value) return []
+  return events.value.filter((event) =>
+    isSameDay(parseISO(event.timeStart), selectedDate.value)
+  )
+})
 
-//const eventsForSelectedDate = computed(() => {
-//  if (!selectedDate.value || !events.value) return []
-//  return events.value.filter((event) =>
-//    isSameDay(parseISO(event.timeStart), selectedDate.value!)
-//  )
-//})
+const roomsForSelectedDate = computed(() => {
+  if (!selectedDate.value) return []
+  return rooms.value.filter((room) =>
+    isSameDay(parseISO(room.timeStart), selectedDate.value)
+  )
+})
+
+const getEventsForDay = (day: Date) => {
+  return events.value.filter((event) =>
+    isSameDay(parseISO(event.timeStart), day)
+  )
+}
+
+const getRoomsForDay = (day: Date) => {
+  return rooms.value.filter((room) => isSameDay(parseISO(room.timeStart), day))
+}
+
+watch(currentMonth, () => {
+  fetchData()
+})
+
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <template>
   <AppHeader />
-  <div class="max-w-3xl my-8 mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">カレンダー</h1>
-
+  <div class="max-w-3xl my-8 mx-auto p-4 grid gap-8">
     <div class="flex justify-between items-center mb-4">
       <button
-        class="px-4 py-2 bg-primary text-white rounded-md"
+        class="input-base w-auto cursor-pointer hover:bg-surface-secondary"
         @click="goToPreviousMonth"
       >
-        前月
+        &lt; 前月
       </button>
-      <h2 class="text-xl font-semibold">{{ formattedMonth }}</h2>
+      <h2 hl>{{ formattedMonth }}</h2>
       <button
-        class="px-4 py-2 bg-primary text-white rounded-md"
+        class="input-base w-auto cursor-pointer hover:bg-surface-secondary"
         @click="goToNextMonth"
       >
-        次月
+        次月 &gt;
       </button>
     </div>
 
-    <div class="grid grid-cols-7 gap-2 text-center font-bold mb-2">
-      <span>日</span>
-      <span>月</span>
-      <span>火</span>
-      <span>水</span>
-      <span>木</span>
-      <span>金</span>
-      <span>土</span>
+    <div>
+      <div class="grid grid-cols-7 gap-1 text-center font-bold mb-2">
+        <span class="text-red-500">日</span>
+        <span>月</span>
+        <span>火</span>
+        <span>水</span>
+        <span>木</span>
+        <span>金</span>
+        <span class="text-blue-500">土</span>
+      </div>
+
+      <div class="grid grid-cols-7 gap-1">
+        <div
+          v-for="day in calendarDays"
+          :key="day.toISOString()"
+          class="aspect-square p-1 border border-border-secondary rounded-md cursor-pointer flex flex-col items-center relative hover:bg-surface-secondary transition-colors"
+          :class="{
+            'bg-surface-accent-primary/10': isSameDay(day, new Date()),
+            'text-text-secondary bg-surface-secondary/30': !isSameMonth(
+              day,
+              currentMonth
+            ),
+            'ring-2 ring-surface-accent-primary': isSameDay(day, selectedDate)
+          }"
+          @click="selectDate(day)"
+        >
+          <span
+            class="text-sm"
+            :class="{ 'font-bold': isSameDay(day, new Date()) }"
+          >
+            {{ format(day, 'd') }}
+          </span>
+          <div
+            class="flex gap-0.5 mt-1 flex-wrap justify-center content-start w-full px-1"
+          >
+            <div
+              v-for="event in getEventsForDay(day)"
+              :key="event.eventId"
+              class="w-1.5 h-1.5 rounded-full bg-surface-accent-primary"
+              :title="event.name"
+            ></div>
+            <div
+              v-for="room in getRoomsForDay(day)"
+              :key="room.roomId"
+              class="w-1.5 h-1.5 rounded-full bg-text-secondary"
+              :title="room.place"
+            ></div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="grid grid-cols-7 gap-2">
-      <!-- <div -->
-      <!-- v-for="day in daysInMonth" -->
-      <!-- :key="day.toISOString()" -->
-      <!-- class="p-2 border rounded-md cursor-pointer" -->
-      <!-- :class="{ -->
-      <!-- 'bg-blue-200': isSameDay(day, new Date()), -->
-      <!-- 'bg-gray-100': -->
-      <!-- !isSameDay(day, new Date()) && !isSameDay(day, selectedDate), -->
-      <!-- 'bg-blue-400 text-white': isSameDay(day, selectedDate) -->
-      <!-- }" -->
-      <!-- @click="selectDate(day)" -->
-      <!-- > -->
-      <!-- {{ format(day, 'd') }} -->
-      <!-- </div> -->
+    <div>
+      <h3 hm mb-4>{{ format(selectedDate, 'yyyy年MM月dd日') }} のイベント</h3>
+      <div v-if="eventsForSelectedDate.length === 0">予定はありません</div>
+      <div v-else class="grid gap-4">
+        <EventCard
+          v-for="event in eventsForSelectedDate"
+          :key="event.eventId"
+          :event="event"
+        />
+      </div>
     </div>
 
-    <div class="mt-8">
-      <h3 class="text-xl font-semibold mb-4">
-        {{
-          selectedDate
-            ? format(selectedDate, 'yyyy年MM月dd日')
-            : '日付を選択してください'
-        }}
-        のイベント
-      </h3>
-      <!-- <div v-if="eventsError">イベントの読み込みに失敗しました</div> -->
-      <!-- <div v-else-if="!events">イベントを読み込み中...</div> -->
-      <!-- <div v-else-if="eventsForSelectedDate.length === 0"> -->
-      <!-- 選択された日付にイベントはありません -->
-      <!-- </div> -->
-      <!-- <div v-else class="grid gap-4"> -->
-      <!-- <EventCard -->
-      <!-- v-for="event in eventsForSelectedDate" -->
-      <!-- :key="event.eventId" -->
-      <!-- :event="event" -->
-      <!-- /> -->
-      <!-- </div> -->
+    <div>
+      <h3 hm mb-4>{{ format(selectedDate, 'yyyy年MM月dd日') }} の進捗部屋</h3>
+      <div v-if="roomsForSelectedDate.length === 0">予定はありません</div>
+      <RoomList v-else :rooms="roomsForSelectedDate" />
     </div>
   </div>
 </template>

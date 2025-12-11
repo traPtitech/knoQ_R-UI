@@ -1,81 +1,55 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
-import { computed } from 'vue'
 import { useApiFetch } from '/@/composables/useApiFetch'
-import AppHeader from '/@/components/AppHeader.vue'
-import { useMe } from '/@/features/user/composables/useMe'
-import EventCard from '/@/features/event/components/EventCard.vue'
-import { useWorkspace } from '../features/room/composables/useWorkspace'
-import { getEndOfToday, getStartOfToday } from '../utils'
+import RoomList from '/@/features/room/components/RoomList.vue'
+import DataFetchState from '/@/components/UI/DataFetchState.vue'
+import { now, today, todayEnd } from '../lib/time'
+import MainLayout from '../layouts/MainLayout.vue'
+import EventCardList from '../features/event/components/EventCardList.vue'
 
-const { me } = useMe()
-const today = new Intl.DateTimeFormat('ja-JP', {
-  month: 'numeric',
-  day: 'numeric',
-  weekday: 'short'
-}).format(new Date())
-
-const { workspaces } = useWorkspace(getStartOfToday(), getEndOfToday())
-
-const { data: todaysEvents, error: todaysEventsError } = useApiFetch(
+const { data: todaysEvents, state: todaysEventsState } = useApiFetch(
   '/events',
-  {
-    params: {
-      query: {
-        dateBegin: new Date().toISOString(),
-        dateEnd: new Date(new Date().setHours(23, 59, 59, 999)).toISOString()
-      }
-    }
-  }
+  { params: { query: { dateBegin: now(), dateEnd: todayEnd() } } }
 )
-const { data: myEvents, error: myEventsError } = useApiFetch(
+const { data: todaysRooms, state: todaysRoomsState } = useApiFetch('/rooms', {
+  params: { query: { dateBegin: now(), dateEnd: todayEnd() } }
+})
+const { data: myEvents, state: myEventsState } = useApiFetch(
   '/users/me/events',
-  { params: { query: { relation: 'attendees' } } }
-)
-const { data: myGroupIds, error: myGroupsError } = useApiFetch(
-  '/users/me/groups',
-  {}
+  { params: { query: { relation: 'attendees', dateBegin: now() } } }
 )
 </script>
 
 <template>
-  <AppHeader />
-  <div max-w-3xl my-8 mx-auto grid gap-8>
-    <h2 hl>{{ today }}</h2>
-    <div grid gap-4>
-      <h3 hm>進捗部屋</h3>
-      <div>
-        <div v-for="workspace in workspaces" :key="workspace.roomId">
-          - {{ workspace.place }}: {{ workspace.timeStart }}から{{
-            workspace.timeEnd
-          }}
+  <MainLayout>
+    <h1 h1>{{ today() }}</h1>
+    <div grid gap-2>
+      <h2 h2>今日の進捗部屋</h2>
+      <DataFetchState
+        :state="todaysRoomsState"
+        :is-empty="todaysRooms?.length === 0"
+      >
+        <template #empty>進捗部屋はありません</template>
+        <RoomList :rooms="todaysRooms!" />
+      </DataFetchState>
+    </div>
+    <div grid gap-2>
+      <h2 h2>今日のイベント</h2>
+      <DataFetchState
+        :state="todaysEventsState"
+        :is-empty="todaysEvents?.length === 0"
+      >
+        <template #empty>イベントはありません</template>
+        <EventCardList :events="todaysEvents!" />
+      </DataFetchState>
+    </div>
+    <div grid gap-2>
+      <h2 h2>今後のあなたのイベント</h2>
+      <DataFetchState :state="myEventsState" :is-empty="myEvents?.length === 0">
+        <template #empty>イベントはありません</template>
+        <div class="grid gap-4">
+          <EventCardList :events="myEvents!" />
         </div>
-      </div>
-      <h3 hm>今日のイベント</h3>
-      <div v-if="todaysEventsError">failed to load events</div>
-      <div v-else-if="!todaysEvents">loading events</div>
-      <div v-else-if="todaysEvents.length === 0">イベントはありません</div>
-      <div v-else class="grid gap-4">
-        <EventCard
-          v-for="event in todaysEvents"
-          :key="event.eventId"
-          :event="event"
-        />
-      </div>
+      </DataFetchState>
     </div>
-    <h2 hl>予定</h2>
-    <div grid gap-4>
-      <h3 hm>あなたのイベント</h3>
-      <div v-if="myEventsError">failed to load events</div>
-      <div v-else-if="!myEvents">loading events</div>
-      <div v-else-if="myEvents.length === 0">イベントはありません</div>
-      <div v-else class="grid gap-4">
-        <EventCard
-          v-for="event in myEvents"
-          :key="event.eventId"
-          :event="event"
-        />
-      </div>
-    </div>
-  </div>
+  </MainLayout>
 </template>

@@ -33,14 +33,15 @@ const clickLogout = async () => {
       <img :src="logo" alt="Logo" w-8 h-8 />
     </RouterLink>
     <div grid grid-flow-col gap-8>
-      <RouterLink hxs to="/arrangement">調整</RouterLink>
-      <RouterLink hxs to="/calendar">カレンダー</RouterLink>
-      <RouterLink hxs to="/ical">iCal</RouterLink>
-      <RouterLink hxs to="/search">探す</RouterLink>
+      <div h5 text-text-secondary cursor-default>調整</div>
+      <RouterLink h5 to="/calendar">カレンダー</RouterLink>
+      <RouterLink h5 to="/ical">iCal</RouterLink>
+      <RouterLink h5 to="/events">探す</RouterLink>
     </div>
     <div v-if="me" grid grid-flow-col grid-items-center gap-4>
+      <RouterLink btn-primary to="/rooms/new"> 進捗部屋作成 </RouterLink>
       <RouterLink btn-primary to="/events/new"> イベント作成 </RouterLink>
-      <DropdownMenu>
+      <DropdownMenu align="right">
         <template #trigger>
           <UserIcon :user-id="me.name" />
         </template>
