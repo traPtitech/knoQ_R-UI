@@ -199,14 +199,14 @@ const onSubmit = async () => {
   <AppHeader />
   <div
     v-if="isLoading"
-    class="max-w-3xl my-16 mx-auto p-4 text-center text-text-secondary"
+    class="mx-auto my-16 max-w-3xl p-4 text-center text-text-secondary"
   >
     読み込み中...
   </div>
-  <div v-else class="max-w-3xl my-8 mx-auto p-4 grid gap-8">
+  <div v-else class="grid mx-auto my-8 max-w-3xl gap-8 p-4">
     <h2 h2>イベントを作成する</h2>
 
-    <div card grid gap-6>
+    <div grid gap-6 card>
       <h3 h3>基本情報</h3>
       <div grid gap-1>
         <InputField
@@ -216,7 +216,7 @@ const onSubmit = async () => {
           placeholder="例: 第N回進捗会"
           :class="{ 'border-red-500': errors.name }"
         />
-        <p v-if="errors.name" class="text-red-500 text-xs">{{ errors.name }}</p>
+        <p v-if="errors.name" class="text-xs text-red-500">{{ errors.name }}</p>
       </div>
 
       <div grid gap-1>
@@ -226,7 +226,7 @@ const onSubmit = async () => {
           :items="groupItems"
           @select="selectGroup"
         />
-        <p v-if="errors.groupId" class="text-red-500 text-xs">
+        <p v-if="errors.groupId" class="text-xs text-red-500">
           {{ errors.groupId }}
         </p>
       </div>
@@ -238,19 +238,19 @@ const onSubmit = async () => {
         rows="5"
       />
 
-      <div class="flex gap-4 items-center">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input v-model="form.open" type="checkbox" class="w-4 h-4" />
+      <div class="flex items-center gap-4">
+        <label class="flex cursor-pointer items-center gap-2">
+          <input v-model="form.open" type="checkbox" class="h-4 w-4" />
           <span class="text-sm">誰でも参加可能にする</span>
         </label>
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input v-model="form.sharedRoom" type="checkbox" class="w-4 h-4" />
+        <label class="flex cursor-pointer items-center gap-2">
+          <input v-model="form.sharedRoom" type="checkbox" class="h-4 w-4" />
           <span class="text-sm">部屋を共有可能にする</span>
         </label>
       </div>
     </div>
 
-    <div card grid gap-6>
+    <div grid gap-6 card>
       <h3 h3>場所と日時</h3>
 
       <div grid gap-1>
@@ -272,7 +272,7 @@ const onSubmit = async () => {
           </div>
           <p
             v-if="form.roomId"
-            class="text-xs text-green-600 flex items-center gap-1"
+            class="flex items-center gap-1 text-xs text-green-600"
           >
             <span i-mdi:check-circle /> 既存の部屋「{{
               rooms.find((r) => r.roomId === form.roomId)?.place
@@ -281,7 +281,7 @@ const onSubmit = async () => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div grid gap-1>
           <InputField
             id="time-start"
@@ -290,7 +290,7 @@ const onSubmit = async () => {
             type="datetime-local"
             :class="{ 'border-red-500': errors.timeStart }"
           />
-          <p v-if="errors.timeStart" class="text-red-500 text-xs">
+          <p v-if="errors.timeStart" class="text-xs text-red-500">
             {{ errors.timeStart }}
           </p>
         </div>
@@ -302,28 +302,28 @@ const onSubmit = async () => {
             type="datetime-local"
             :class="{ 'border-red-500': errors.timeEnd }"
           />
-          <p v-if="errors.timeEnd" class="text-red-500 text-xs">
+          <p v-if="errors.timeEnd" class="text-xs text-red-500">
             {{ errors.timeEnd }}
           </p>
         </div>
       </div>
     </div>
 
-    <div card grid gap-6>
+    <div grid gap-6 card>
       <h3 h3>管理者</h3>
       <div grid gap-4>
         <div v-if="form.admins.length > 0" class="flex flex-wrap gap-2">
           <div
             v-for="adminId in form.admins"
             :key="adminId"
-            class="flex items-center gap-2 bg-surface-secondary px-3 py-1 rounded-full border border-border-secondary"
+            class="flex items-center gap-2 border border-border-secondary rounded-full bg-surface-secondary px-3 py-1"
           >
-            <UserIcon :user-id="adminId" class="w-6 h-6" />
+            <UserIcon :user-id="adminId" class="h-6 w-6" />
             <span class="text-sm">{{
               users?.find((u) => u.userId === adminId)?.name || adminId
             }}</span>
             <button
-              class="text-text-secondary hover:text-red-500 transition-colors"
+              class="text-text-secondary transition-colors hover:text-red-500"
               @click="removeAdmin(adminId)"
             >
               <span i-mdi:close class="block" />

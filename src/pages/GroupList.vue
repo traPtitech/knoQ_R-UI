@@ -9,7 +9,7 @@ const { data: groups, state } = useApiFetch('/groups', {})
 
 <template>
   <AppHeader />
-  <div max-w-3xl my-8 mx-auto grid gap-4>
+  <div grid mx-auto my-8 max-w-3xl gap-4>
     <h2 hl>グループ一覧</h2>
     <DataFetchState :state="state" :is-empty="groups?.length === 0">
       <div class="grid gap-4">

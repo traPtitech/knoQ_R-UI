@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <div grid gap-4 grid-cols-2>
+  <div grid grid-cols-2 gap-4>
     <RoomCard v-for="room in rooms" :key="room.roomId" :room="room" />
   </div>
 </template>

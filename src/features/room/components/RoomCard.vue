@@ -17,8 +17,8 @@ const timeRange = computed(() => {
 </script>
 
 <template>
-  <div card flex flex-row items-center justify-between gap-4>
-    <div font-bold text-lg>{{ room.place }}</div>
+  <div flex flex-row items-center justify-between gap-4 card>
+    <div text-lg font-bold>{{ room.place }}</div>
     <div flex flex-row items-center gap-2 text-text-secondary>
       <span i-mdi:clock-outline />
       <span>{{ timeRange }}</span>

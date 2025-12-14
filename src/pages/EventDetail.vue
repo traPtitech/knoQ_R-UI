@@ -43,7 +43,7 @@ const formatDateRange = (start: string, end: string) => {
 
 <template>
   <AppHeader />
-  <div class="max-w-5xl mx-auto px-4 py-8 grid gap-8">
+  <div class="grid mx-auto max-w-5xl gap-8 px-4 py-8">
     <DataFetchState :state="state">
       <div v-if="event" class="grid gap-8">
         <!-- Header Section -->
@@ -53,14 +53,14 @@ const formatDateRange = (start: string, end: string) => {
             <span
               v-for="tag in event.tags"
               :key="tag.tagId"
-              class="px-2 py-1 rounded text-sm font-medium bg-surface-secondary text-text-secondary"
+              class="rounded bg-surface-secondary px-2 py-1 text-sm text-text-secondary font-medium"
             >
               #{{ tag.name }}
             </span>
           </div>
 
           <!-- Title -->
-          <h1 class="text-3xl font-bold text-text-primary">{{ event.name }}</h1>
+          <h1 class="text-3xl text-text-primary font-bold">{{ event.name }}</h1>
 
           <!-- Meta Info -->
           <div class="flex flex-wrap gap-x-8 gap-y-3 text-text-primary">
@@ -82,22 +82,22 @@ const formatDateRange = (start: string, end: string) => {
             <!-- Admins/CreatedBy -->
             <div class="flex items-center gap-2">
               <div class="i-mdi:account-edit text-xl text-text-secondary" />
-              <span class="text-sm text-text-secondary mr-1">作成者:</span>
+              <span class="mr-1 text-sm text-text-secondary">作成者:</span>
               <IconWithName :user-id="event.createdBy" />
             </div>
           </div>
         </div>
 
         <!-- Main Content Grid -->
-        <div class="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
+        <div class="grid items-start gap-8 lg:grid-cols-[1fr_320px]">
           <!-- Left Column: Description & Poll -->
-          <div class="grid gap-8 min-w-0">
+          <div class="grid min-w-0 gap-8">
             <!-- Description -->
             <div
-              class="p-6 bg-surface-primary rounded-xl border border-border-secondary shadow-sm"
+              class="border border-border-secondary rounded-xl bg-surface-primary p-6 shadow-sm"
             >
               <h2
-                class="text-xl font-bold mb-6 flex items-center gap-2 border-b border-border-secondary pb-4"
+                class="mb-6 flex items-center gap-2 border-b border-border-secondary pb-4 text-xl font-bold"
               >
                 <div class="i-mdi:text-box-outline text-2xl" />
                 イベント概要
@@ -107,10 +107,10 @@ const formatDateRange = (start: string, end: string) => {
 
             <!-- Schedule Poll -->
             <div
-              class="p-6 bg-surface-primary rounded-xl border border-border-secondary shadow-sm"
+              class="border border-border-secondary rounded-xl bg-surface-primary p-6 shadow-sm"
             >
               <h2
-                class="text-xl font-bold mb-6 flex items-center gap-2 border-b border-border-secondary pb-4"
+                class="mb-6 flex items-center gap-2 border-b border-border-secondary pb-4 text-xl font-bold"
               >
                 <div class="i-mdi:calendar-check text-2xl" />
                 日程調整
@@ -123,27 +123,27 @@ const formatDateRange = (start: string, end: string) => {
           </div>
 
           <!-- Right Column: Actions & Status -->
-          <div class="grid gap-6 sticky top-4">
+          <div class="sticky top-4 grid gap-6">
             <!-- Participation Status -->
             <div
-              class="p-6 bg-surface-primary rounded-xl border border-border-secondary shadow-sm grid gap-4"
+              class="grid gap-4 border border-border-secondary rounded-xl bg-surface-primary p-6 shadow-sm"
             >
-              <h2 class="text-lg font-bold flex items-center gap-2">
+              <h2 class="flex items-center gap-2 text-lg font-bold">
                 <div class="i-mdi:account-check" />
                 参加登録
               </h2>
               <AttendanceButton
                 :schedule="mySchedule"
-                @update:schedule="onUpdateMySchedule"
                 class="w-full justify-center py-2"
+                @update:schedule="onUpdateMySchedule"
               />
             </div>
 
             <!-- Share -->
             <div
-              class="p-6 bg-surface-primary rounded-xl border border-border-secondary shadow-sm grid gap-4"
+              class="grid gap-4 border border-border-secondary rounded-xl bg-surface-primary p-6 shadow-sm"
             >
-              <h2 class="text-lg font-bold flex items-center gap-2">
+              <h2 class="flex items-center gap-2 text-lg font-bold">
                 <div class="i-mdi:share-variant" />
                 共有
               </h2>
@@ -153,15 +153,15 @@ const formatDateRange = (start: string, end: string) => {
             <!-- Admin Actions -->
             <div
               v-if="canUpdate"
-              class="p-6 bg-surface-primary rounded-xl border border-border-secondary shadow-sm grid gap-4"
+              class="grid gap-4 border border-border-secondary rounded-xl bg-surface-primary p-6 shadow-sm"
             >
-              <h2 class="text-lg font-bold flex items-center gap-2">
+              <h2 class="flex items-center gap-2 text-lg font-bold">
                 <div class="i-mdi:cog" />
                 管理者メニュー
               </h2>
               <PrimaryButton
+                class="bg-error hover:bg-error/90 w-full justify-center text-white"
                 @click="onDelete"
-                class="w-full bg-error text-white hover:bg-error/90 justify-center"
               >
                 イベントを削除
               </PrimaryButton>

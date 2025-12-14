@@ -42,9 +42,9 @@ const getAttendeesByStatus = (
     <div
       v-for="scheduleOption in event.schedules"
       :key="scheduleOption.startAt + scheduleOption.endAt"
-      class="border-b-2 border-solid border-gray-200 pb-2 mb-2"
+      class="mb-2 border-b-2 border-gray-200 border-solid pb-2"
     >
-      <div grid grid-flow-col grid-justify-between items-center mb-2>
+      <div grid grid-flow-col mb-2 items-center grid-justify-between>
         <p>
           {{ formatDateTime(scheduleOption.startAt) }} -
           {{ formatDateTime(scheduleOption.endAt) }}
@@ -53,7 +53,7 @@ const getAttendeesByStatus = (
       </div>
       <div class="ml-4">
         <p class="text-sm font-bold">参加</p>
-        <div class="flex flex-wrap gap-2 mb-1">
+        <div class="mb-1 flex flex-wrap gap-2">
           <IconWithName
             v-for="attendee in getAttendeesByStatus(
               scheduleOption.startAt,
@@ -77,7 +77,7 @@ const getAttendeesByStatus = (
         </div>
 
         <p class="text-sm font-bold">不参加</p>
-        <div class="flex flex-wrap gap-2 mb-1">
+        <div class="mb-1 flex flex-wrap gap-2">
           <IconWithName
             v-for="attendee in getAttendeesByStatus(
               scheduleOption.startAt,

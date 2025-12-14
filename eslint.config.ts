@@ -3,6 +3,7 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 import eslintPluginVue from 'eslint-plugin-vue'
 import typescriptEslint from 'typescript-eslint'
 import pluginVueA11y from 'eslint-plugin-vuejs-accessibility'
+import unocss from '@unocss/eslint-config/flat'
 import globals from 'globals'
 
 export default typescriptEslint.config(
@@ -11,6 +12,7 @@ export default typescriptEslint.config(
   typescriptEslint.configs.recommended,
   eslintPluginVue.configs['flat/recommended'],
   pluginVueA11y.configs['flat/recommended'],
+  unocss,
   {
     files: ['**/*.{ts,vue}'],
     languageOptions: {

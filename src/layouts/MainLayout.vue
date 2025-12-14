@@ -4,7 +4,7 @@ import AppHeader from '/@/components/AppHeader.vue'
 
 <template>
   <AppHeader />
-  <div max-w-3xl my-8 mx-auto grid gap-8>
+  <div grid mx-auto my-8 max-w-3xl gap-8>
     <slot />
   </div>
 </template>

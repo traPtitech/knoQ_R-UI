@@ -107,8 +107,8 @@ onMounted(() => {
 
 <template>
   <AppHeader />
-  <div class="max-w-3xl my-8 mx-auto p-4 grid gap-8">
-    <div class="flex justify-between items-center mb-4">
+  <div class="grid mx-auto my-8 max-w-3xl gap-8 p-4">
+    <div class="mb-4 flex items-center justify-between">
       <button
         class="input-base w-auto cursor-pointer hover:bg-surface-secondary"
         @click="goToPreviousMonth"
@@ -125,7 +125,7 @@ onMounted(() => {
     </div>
 
     <div>
-      <div class="grid grid-cols-7 gap-1 text-center font-bold mb-2">
+      <div class="grid grid-cols-7 mb-2 gap-1 text-center font-bold">
         <span class="text-red-500">日</span>
         <span>月</span>
         <span>火</span>
@@ -139,7 +139,7 @@ onMounted(() => {
         <div
           v-for="day in calendarDays"
           :key="day.toISOString()"
-          class="aspect-square p-1 border border-border-secondary rounded-md cursor-pointer flex flex-col items-center relative hover:bg-surface-secondary transition-colors"
+          class="relative aspect-square flex flex-col cursor-pointer items-center border border-border-secondary rounded-md p-1 transition-colors hover:bg-surface-secondary"
           :class="{
             'bg-surface-accent-primary/10': isSameDay(day, new Date()),
             'text-text-secondary bg-surface-secondary/30': !isSameMonth(
@@ -157,18 +157,18 @@ onMounted(() => {
             {{ format(day, 'd') }}
           </span>
           <div
-            class="flex gap-0.5 mt-1 flex-wrap justify-center content-start w-full px-1"
+            class="mt-1 w-full flex flex-wrap content-start justify-center gap-0.5 px-1"
           >
             <div
               v-for="event in getEventsForDay(day)"
               :key="event.eventId"
-              class="w-1.5 h-1.5 rounded-full bg-surface-accent-primary"
+              class="h-1.5 w-1.5 rounded-full bg-surface-accent-primary"
               :title="event.name"
             ></div>
             <div
               v-for="room in getRoomsForDay(day)"
               :key="room.roomId"
-              class="w-1.5 h-1.5 rounded-full bg-text-secondary"
+              class="h-1.5 w-1.5 rounded-full bg-text-secondary"
               :title="room.place"
             ></div>
           </div>

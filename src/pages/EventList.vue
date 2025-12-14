@@ -11,7 +11,7 @@ const modelValue = defineModel<string>('')
 
 <template>
   <AppHeader />
-  <div max-w-3xl my-8 mx-auto grid gap-4>
+  <div grid mx-auto my-8 max-w-3xl gap-4>
     <h1 hl>イベント</h1>
     <div>
       <h2 hl>検索</h2>

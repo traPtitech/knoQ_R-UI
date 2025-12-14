@@ -7,7 +7,7 @@ const props = withDefaults(
     align?: 'left' | 'right'
   }>(),
   {
-    align: 'left',
+    align: 'left'
   }
 )
 
@@ -46,7 +46,7 @@ onUnmounted(() => {
     </div>
     <div
       v-if="isOpen"
-      class="absolute mt-2 w-48 bg-surface-primary rounded-md shadow-lg z-10 border border-border-secondary max-h-60 overflow-y-auto"
+      class="absolute z-10 mt-2 max-h-60 w-48 overflow-y-auto border border-border-secondary rounded-md bg-surface-primary shadow-lg"
       :class="[align === 'right' ? 'right-0' : 'left-0']"
     >
       <slot />

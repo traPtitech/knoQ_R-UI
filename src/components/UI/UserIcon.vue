@@ -8,6 +8,6 @@ const userIconLink = (userId: string) =>
   <img
     :src="props.src ?? userIconLink(props.userId)"
     :alt="`${props.userId}'s icon`"
-    class="w-8 h-8 rounded-full"
+    class="h-8 w-8 rounded-full"
   />
 </template>
