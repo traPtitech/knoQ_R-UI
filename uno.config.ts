@@ -51,6 +51,10 @@ export default defineConfig({
       },
       background: {
         background: '#F8F8F8'
+      },
+      status: {
+        error: '#EF4444', // red-500
+        success: '#16A34A' // green-600
       }
     }
   },

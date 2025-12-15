@@ -8,6 +8,7 @@ import MyPage from '../pages/MyPage.vue'
 import SearchPage from '../pages/SearchPage.vue'
 import ArrangementPage from '../pages/ArrangementPage.vue'
 import CreateRoom from '../pages/CreateRoom.vue'
+import CreateDraftEvent from '../pages/CreateDraftEvent.vue'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'Home', component: Home },
@@ -56,6 +57,16 @@ const routes: RouteRecordRaw[] = [
     path: '/arrangement',
     name: 'arrangement',
     component: ArrangementPage
+  },
+  {
+    path: '/draft-events/new',
+    name: 'create_draft_event',
+    component: CreateDraftEvent
+  },
+  {
+    path: '/draft-events/:id',
+    name: 'DraftEventDetail',
+    component: () => import('../pages/DraftEventDetail.vue')
   },
   {
     path: '/search',

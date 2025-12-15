@@ -1,6 +1,8 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { apiClient } from '/@/lib/api'
 import type { Group } from '../types'
+
+type SelectItem = { id: string; name: string }
 
 export const useGroups = () => {
   const groups = ref<Group[]>([])
@@ -13,8 +15,13 @@ export const useGroups = () => {
     }
   }
 
+  const groupSelectItems = computed<SelectItem[]>(() =>
+    groups.value.map((g) => ({ id: g.groupId, name: g.name }))
+  )
+
   return {
     groups,
-    getGroups
+    getGroups,
+    groupSelectItems
   }
 }

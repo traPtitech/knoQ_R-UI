@@ -16,8 +16,8 @@ import type { components } from '/@/lib/api/schema'
 type Room = components['schemas']['ResponseRoom']
 
 const router = useRouter()
-const { groups, getGroups } = useGroups()
-const { users } = useUsers()
+const { groups, getGroups, groupSelectItems } = useGroups()
+const { users, getUserSelectItems } = useUsers()
 const { me } = useMe()
 
 const rooms = ref<Room[]>([])
@@ -59,23 +59,17 @@ const roomItems = computed(() =>
   rooms.value.map((r) => ({ id: r.roomId, name: r.place }))
 )
 
-const groupItems = computed(() =>
-  groups.value.map((g) => ({ id: g.groupId, name: g.name }))
-)
-
 const selectedGroupName = computed(
   () => groups.value.find((g) => g.groupId === form.value.groupId)?.name
 )
 
-const adminItems = computed(() => {
-  if (!users.value) return []
-  return users.value
-    .filter(
-      (u) =>
-        !form.value.admins.includes(u.userId) && u.userId !== me.value?.userId
-    )
-    .map((u) => ({ id: u.userId, name: u.name }))
-})
+const adminItems = getUserSelectItems(
+  computed(() => {
+    const ids = [...form.value.admins]
+    if (me.value?.userId) ids.push(me.value.userId)
+    return ids
+  })
+)
 
 const selectGroup = (item: { id: string; name: string }) => {
   form.value.groupId = item.id
@@ -223,7 +217,7 @@ const onSubmit = async () => {
         <h5 h5>主催グループ</h5>
         <SelectMenu
           :label="selectedGroupName || 'グループを選択'"
-          :items="groupItems"
+          :items="groupSelectItems"
           @select="selectGroup"
         />
         <p v-if="errors.groupId" class="text-xs text-red-500">
