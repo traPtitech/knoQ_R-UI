@@ -31,7 +31,7 @@ export default defineConfig({
       'box-border px-4 py-3 b b-solid b-border-primary rd-1 w-full bg-surface-primary text-text-primary placeholder:text-text-secondary focus:outline-none focus:b-border-accent-primary transition-colors',
     card: 'rd-xl px-5 py-6 bg-surface-primary b-1 b-solid b-border-secondary',
     'btn-primary':
-      'px-4 py-2 bg-surface-accent-primary rd-2 b b-solid b-border-accent-primary text-white btn-m'
+      'px-4 py-2 bg-surface-accent-primary rd-2 b b-solid b-border-accent-primary text-white btn-m disabled:opacity-50 disabled:cursor-not-allowed'
   },
   theme: {
     colors: {

@@ -156,6 +156,7 @@ export const mockSchedulingResults: ResponseSchedulingResults = {
 
 // ストレージ（作成されたdraftイベントを保持）
 let draftEventsStore: ResponseDraftEventDetail[] = [mockDraftEventDetail]
+const availabilitiesStore: ResponseAvailability[] = [...mockAvailabilities]
 
 // Mock API functions
 export const mockApi = {
@@ -199,6 +200,57 @@ export const mockApi = {
   deleteDraftEvent: async (id: string): Promise<void> => {
     await delay(300)
     draftEventsStore = draftEventsStore.filter((e) => e.draftEventId !== id)
+  },
+
+  // 参加可能時間一覧取得
+  getAvailabilities: async (
+    draftEventId: string
+  ): Promise<ResponseAvailability[]> => {
+    await delay(300)
+    return availabilitiesStore.filter((a) => a.draftEventId === draftEventId)
+  },
+
+  // 自分の参加可能時間を取得
+  getMyAvailability: async (
+    draftEventId: string,
+    userId: string
+  ): Promise<ResponseAvailability | null> => {
+    await delay(200)
+    return (
+      availabilitiesStore.find(
+        (a) => a.draftEventId === draftEventId && a.userId === userId
+      ) || null
+    )
+  },
+
+  // 参加可能時間を登録/更新
+  saveAvailability: async (
+    draftEventId: string,
+    userId: string,
+    data: { slotIds: string[]; comment?: string | null }
+  ): Promise<ResponseAvailability> => {
+    await delay(300)
+    const now = new Date().toISOString()
+    const existing = availabilitiesStore.find(
+      (a) => a.draftEventId === draftEventId && a.userId === userId
+    )
+
+    if (existing) {
+      existing.slotIds = data.slotIds
+      existing.comment = data.comment ?? null
+      existing.updatedAt = now
+      return existing
+    }
+
+    const newAvailability: ResponseAvailability = {
+      userId,
+      draftEventId,
+      slotIds: data.slotIds,
+      comment: data.comment ?? null,
+      updatedAt: now
+    }
+    availabilitiesStore.push(newAvailability)
+    return newAvailability
   }
 }
 
