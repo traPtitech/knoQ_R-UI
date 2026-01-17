@@ -8,7 +8,7 @@ permissions:
   packages: write
 
 env:
-  IMAGE_NAME: knoq-ui
+  IMAGE_NAME: knoq-r-ui
 
 jobs:
   build-preview-image:
