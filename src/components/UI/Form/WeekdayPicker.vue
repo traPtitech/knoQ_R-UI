@@ -82,11 +82,5 @@ const clearAll = () => {
       曜日をクリックして選択してください
     </p>
 
-    <!-- TODO: 曜日モードでのデータ送信方法は未実装 -->
-    <div
-      class="border border-yellow-200 rounded bg-yellow-50 p-3 text-xs text-yellow-700"
-    >
-      曜日指定モードのAPI連携は未実装です
-    </div>
   </div>
 </template>
