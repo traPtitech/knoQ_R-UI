@@ -139,6 +139,8 @@ onMounted(() => {
         <div
           v-for="day in calendarDays"
           :key="day.toISOString()"
+          role="button"
+          tabindex="0"
           class="relative aspect-square flex flex-col cursor-pointer items-center border border-border-secondary rounded-md p-1 transition-colors hover:bg-surface-secondary"
           :class="{
             'bg-surface-accent-primary/10': isSameDay(day, new Date()),
@@ -149,6 +151,8 @@ onMounted(() => {
             'ring-2 ring-surface-accent-primary': isSameDay(day, selectedDate)
           }"
           @click="selectDate(day)"
+          @keydown.enter="selectDate(day)"
+          @keydown.space.prevent="selectDate(day)"
         >
           <span
             class="text-sm"

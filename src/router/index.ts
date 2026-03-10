@@ -59,6 +59,11 @@ const routes: RouteRecordRaw[] = [
     component: ArrangementPage
   },
   {
+    path: '/draft-events',
+    name: 'draft_events',
+    component: () => import('../pages/DraftEventList.vue')
+  },
+  {
     path: '/draft-events/new',
     name: 'create_draft_event',
     component: CreateDraftEvent

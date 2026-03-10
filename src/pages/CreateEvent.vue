@@ -166,7 +166,7 @@ const onSubmit = async () => {
       body: {
         ...commonBody,
         roomId: form.value.roomId
-      } as any
+      } as Record<string, unknown>
     })
   } else {
     // Instant Event
@@ -174,7 +174,7 @@ const onSubmit = async () => {
       body: {
         ...commonBody,
         place: form.value.place
-      } as any
+      } as Record<string, unknown>
     })
   }
 
@@ -233,12 +233,12 @@ const onSubmit = async () => {
       />
 
       <div class="flex items-center gap-4">
-        <label class="flex cursor-pointer items-center gap-2">
-          <input v-model="form.open" type="checkbox" class="h-4 w-4" />
+        <label for="event-open" class="flex cursor-pointer items-center gap-2">
+          <input id="event-open" v-model="form.open" type="checkbox" class="h-4 w-4" />
           <span class="text-sm">誰でも参加可能にする</span>
         </label>
-        <label class="flex cursor-pointer items-center gap-2">
-          <input v-model="form.sharedRoom" type="checkbox" class="h-4 w-4" />
+        <label for="event-shared-room" class="flex cursor-pointer items-center gap-2">
+          <input id="event-shared-room" v-model="form.sharedRoom" type="checkbox" class="h-4 w-4" />
           <span class="text-sm">部屋を共有可能にする</span>
         </label>
       </div>

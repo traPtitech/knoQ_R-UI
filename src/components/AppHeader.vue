@@ -33,7 +33,7 @@ const clickLogout = async () => {
       <img :src="logo" alt="Logo" h-8 w-8 />
     </RouterLink>
     <div grid grid-flow-col gap-8>
-      <div cursor-default h5 text-text-secondary>調整</div>
+      <RouterLink h5 to="/draft-events">調整</RouterLink>
       <RouterLink h5 to="/calendar">カレンダー</RouterLink>
       <RouterLink h5 to="/ical">iCal</RouterLink>
       <RouterLink h5 to="/events">探す</RouterLink>

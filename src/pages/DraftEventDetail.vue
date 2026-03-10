@@ -5,6 +5,7 @@ import AppHeader from '/@/components/AppHeader.vue'
 import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
 import TimeSlotGrid from '/@/features/draft-event/components/TimeSlotGrid.vue'
+import DraftEventStatusBadge from '/@/features/draft-event/components/DraftEventStatusBadge.vue'
 import { useDraftEvents } from '/@/features/draft-event/composables/useDraftEvents'
 import { useAvailability } from '/@/features/draft-event/composables/useAvailability'
 import { useMe } from '/@/features/user/composables/useMe'
@@ -97,25 +98,7 @@ const onSubmit = async () => {
     <div v-else class="grid gap-6">
       <div class="flex items-center justify-between">
         <h2 h2>{{ currentDraftEvent.name }}</h2>
-        <!-- TODO: コンポーネント化する？ -->
-        <span
-          class="rounded-full px-3 py-1 text-sm"
-          :class="{
-            'bg-green-100 text-green-700': currentDraftEvent.status === 'open',
-            'bg-yellow-100 text-yellow-700':
-              currentDraftEvent.status === 'closed',
-            'bg-blue-100 text-blue-700':
-              currentDraftEvent.status === 'confirmed'
-          }"
-        >
-          {{
-            currentDraftEvent.status === 'open'
-              ? '回答受付中'
-              : currentDraftEvent.status === 'closed'
-                ? '締切済み'
-                : '確定済み'
-          }}
-        </span>
+        <DraftEventStatusBadge :status="currentDraftEvent.status" />
       </div>
 
       <div grid gap-4 card>
