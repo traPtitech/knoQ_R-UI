@@ -12,12 +12,8 @@ import { useMe } from '/@/features/user/composables/useMe'
 
 const route = useRoute()
 const { currentDraftEvent, getDraftEvent, isLoading } = useDraftEvents()
-const {
-  myAvailability,
-  getMyAvailability,
-  saveAvailability,
-  isSaving
-} = useAvailability()
+const { myAvailability, getMyAvailability, saveAvailability, isSaving } =
+  useAvailability()
 const { me } = useMe()
 
 const draftEventId = route.params.id as string
@@ -29,13 +25,19 @@ const isError = ref(false)
 
 onMounted(async () => {
   await getDraftEvent(draftEventId)
-  if (me.value?.userId) {
-    await getMyAvailability(draftEventId, me.value.userId)
-    if (myAvailability.value) {
-      selectedSlotIds.value = [...myAvailability.value.slotIds]
-      comment.value = myAvailability.value.comment ?? ''
-    }
+  if (!me.value?.userId) return
+  await getMyAvailability(draftEventId, me.value.userId)
+  if (myAvailability.value) {
+    selectedSlotIds.value = [...myAvailability.value.slotIds]
+    comment.value = myAvailability.value.comment ?? ''
   }
+})
+
+const displayStatus = computed(() => {
+  if (!currentDraftEvent.value) return 'unanswered' as const
+  if (currentDraftEvent.value.status === 'confirmed')
+    return 'confirmed' as const
+  return myAvailability.value ? ('answered' as const) : ('unanswered' as const)
 })
 
 const isOpen = computed(() => currentDraftEvent.value?.status === 'open')
@@ -98,7 +100,7 @@ const onSubmit = async () => {
     <div v-else class="grid gap-6">
       <div class="flex items-center justify-between">
         <h2 h2>{{ currentDraftEvent.name }}</h2>
-        <DraftEventStatusBadge :status="currentDraftEvent.status" />
+        <DraftEventStatusBadge :status="displayStatus" />
       </div>
 
       <div grid gap-4 card>
@@ -123,9 +125,7 @@ const onSubmit = async () => {
           <template v-if="!isOpen">
             締切を過ぎたため、回答できません。
           </template>
-          <template v-else>
-            この日程調整に回答する権限がありません。
-          </template>
+          <template v-else> この日程調整に回答する権限がありません。 </template>
         </div>
 
         <template v-else>

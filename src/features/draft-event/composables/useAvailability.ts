@@ -9,6 +9,20 @@ export const useAvailability = () => {
   const isSaving = ref(false)
   const error = ref<string | null>(null)
 
+  const getMyAllAvailabilities = async (userId: string) => {
+    isLoading.value = true
+    error.value = null
+    try {
+      const data = await mockApi.getMyAllAvailabilities(userId)
+      allAvailabilities.value = data
+    } catch (e) {
+      error.value = '回答一覧の取得に失敗しました'
+      console.error(e)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const getMyAvailability = async (draftEventId: string, userId: string) => {
     isLoading.value = true
     error.value = null
@@ -67,6 +81,7 @@ export const useAvailability = () => {
     isLoading,
     isSaving,
     error,
+    getMyAllAvailabilities,
     getMyAvailability,
     getAllAvailabilities,
     saveAvailability

@@ -1,22 +1,54 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { DraftEventStatus } from '../types'
+
+export type DisplayStatus = 'unanswered' | 'answered' | 'confirmed'
 
 const props = defineProps<{
-  status: DraftEventStatus
+  status: DisplayStatus
 }>()
 
-const statusMap: Record<DraftEventStatus, { label: string; class: string }> = {
-  open: { label: '回答受付中', class: 'bg-green-100 text-green-700' },
-  closed: { label: '締切済み', class: 'bg-yellow-100 text-yellow-700' },
-  confirmed: { label: '確定済み', class: 'bg-blue-100 text-blue-700' }
-}
-
-const current = computed(() => statusMap[props.status])
+const config = computed(() => {
+  switch (props.status) {
+    case 'unanswered':
+      return {
+        label: '未回答',
+        classes:
+          'bg-status-accepting/10 text-status-accepting b-status-accepting/30'
+      }
+    case 'answered':
+      return {
+        label: '回答済',
+        classes:
+          'bg-status-answered/10 text-status-answered b-status-answered/10'
+      }
+    case 'confirmed':
+      return {
+        label: '確定済',
+        classes:
+          'bg-status-confirmed/10 text-status-confirmed b-status-confirmed/20'
+      }
+    default:
+      return {
+        label: '',
+        classes: ''
+      }
+  }
+})
 </script>
 
 <template>
-  <span class="rounded-full px-3 py-1 text-xs font-medium" :class="current.class">
-    {{ current.label }}
-  </span>
+  <div
+    shrink-0
+    b-1
+    rounded-md
+    b-solid
+    px-2.5
+    py-1
+    text-xs
+    fw-500
+    tracking-wide
+    :class="config.classes"
+  >
+    {{ config.label }}
+  </div>
 </template>

@@ -139,16 +139,18 @@ const validate = () => {
     isValid = false
   }
 
-  if (dateSelectionMode.value === 'calendar') {
-    if (form.value.candidateDates.length === 0) {
-      errors.value.candidateDates = '候補日を1つ以上選択してください'
-      isValid = false
-    }
-  } else {
-    if (form.value.selectedWeekdays.length === 0) {
-      errors.value.candidateDates = '候補曜日を1つ以上選択してください'
-      isValid = false
-    }
+  if (
+    dateSelectionMode.value === 'calendar' &&
+    form.value.candidateDates.length === 0
+  ) {
+    errors.value.candidateDates = '候補日を1つ以上選択してください'
+    isValid = false
+  } else if (
+    dateSelectionMode.value !== 'calendar' &&
+    form.value.selectedWeekdays.length === 0
+  ) {
+    errors.value.candidateDates = '候補曜日を1つ以上選択してください'
+    isValid = false
   }
 
   if (!form.value.timeStart || !form.value.timeEnd) {

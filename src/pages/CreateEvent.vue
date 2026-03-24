@@ -94,11 +94,10 @@ const removeAdmin = (userId: string) => {
 watch(
   () => form.value.place,
   (newVal) => {
-    if (form.value.roomId) {
-      const room = rooms.value.find((r) => r.roomId === form.value.roomId)
-      if (room && room.place !== newVal) {
-        form.value.roomId = undefined
-      }
+    if (!form.value.roomId) return
+    const room = rooms.value.find((r) => r.roomId === form.value.roomId)
+    if (room && room.place !== newVal) {
+      form.value.roomId = undefined
     }
   }
 )
