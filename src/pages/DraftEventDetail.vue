@@ -2,18 +2,23 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import AppHeader from '/@/components/AppHeader.vue'
+import UserIcon from '/@/components/UI/UserIcon.vue'
 import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
-import TimeSlotGrid from '/@/features/draft-event/components/TimeSlotGrid.vue'
+import SlotGrid from '/@/features/draft-event/components/SlotGrid.vue'
 import DraftEventStatusBadge from '/@/features/draft-event/components/DraftEventStatusBadge.vue'
 import { useDraftEvents } from '/@/features/draft-event/composables/useDraftEvents'
 import { useAvailability } from '/@/features/draft-event/composables/useAvailability'
+import { useSchedulingResults } from '/@/features/draft-event/composables/useSchedulingResults'
+import { useUsers } from '/@/features/user/composables/useUsers'
 import { useMe } from '/@/features/user/composables/useMe'
 
 const route = useRoute()
 const { currentDraftEvent, getDraftEvent, isLoading } = useDraftEvents()
 const { myAvailability, getMyAvailability, saveAvailability, isSaving } =
   useAvailability()
+const { schedulingResults, getSchedulingResults } = useSchedulingResults()
+const { getUsersByIds } = useUsers()
 const { me } = useMe()
 
 const draftEventId = route.params.id as string
@@ -23,15 +28,22 @@ const comment = ref('')
 const statusMessage = ref('')
 const isError = ref(false)
 
-onMounted(async () => {
-  await getDraftEvent(draftEventId)
-  if (!me.value?.userId) return
-  await getMyAvailability(draftEventId, me.value.userId)
+const refreshAll = async () => {
+  const tasks: Promise<unknown>[] = [
+    getDraftEvent(draftEventId),
+    getSchedulingResults(draftEventId)
+  ]
+  if (me.value?.userId) {
+    tasks.push(getMyAvailability(draftEventId, me.value.userId))
+  }
+  await Promise.all(tasks)
   if (myAvailability.value) {
     selectedSlotIds.value = [...myAvailability.value.slotIds]
     comment.value = myAvailability.value.comment ?? ''
   }
-})
+}
+
+onMounted(refreshAll)
 
 const displayStatus = computed(() => {
   if (!currentDraftEvent.value) return 'unanswered' as const
@@ -45,7 +57,6 @@ const isOpen = computed(() => currentDraftEvent.value?.status === 'open')
 const canVote = computed(() => {
   if (!currentDraftEvent.value || !me.value?.userId) return false
   if (!isOpen.value) return false
-  // inviteesまたはadminsに含まれている または open eventである
   return (
     currentDraftEvent.value.open ||
     currentDraftEvent.value.invitees.includes(me.value.userId) ||
@@ -57,7 +68,6 @@ const hasChanges = computed(() => {
   if (!myAvailability.value) {
     return selectedSlotIds.value.length > 0 || comment.value !== ''
   }
-
   const prevSlotIds = myAvailability.value.slotIds
   const prevComment = myAvailability.value.comment ?? ''
   return (
@@ -66,6 +76,30 @@ const hasChanges = computed(() => {
     comment.value !== prevComment
   )
 })
+
+const respondentUserIds = computed(() =>
+  (schedulingResults.value?.respondents ?? []).map((r) => r.userId)
+)
+const nonRespondentUserIds = computed(
+  () => schedulingResults.value?.nonRespondents ?? []
+)
+const respondentUsersRef = getUsersByIds(respondentUserIds)
+const nonRespondentUsersRef = getUsersByIds(nonRespondentUserIds)
+
+const getUserName = (userId: string) => {
+  const user =
+    respondentUsersRef.value?.find((u) => u.userId === userId) ??
+    nonRespondentUsersRef.value?.find((u) => u.userId === userId)
+  return user?.name ?? userId
+}
+
+const formatRespondedAt = (dateStr: string) =>
+  new Date(dateStr).toLocaleDateString('ja-JP', {
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 
 const onSubmit = async () => {
   if (!me.value?.userId) return
@@ -80,6 +114,7 @@ const onSubmit = async () => {
       selectedSlotIds.value,
       comment.value || null
     )
+    await getSchedulingResults(draftEventId)
     statusMessage.value = '回答を保存しました'
   } catch {
     statusMessage.value = '保存に失敗しました'
@@ -115,11 +150,21 @@ const onSubmit = async () => {
               new Date(currentDraftEvent.deadline).toLocaleDateString('ja-JP')
             }}
           </p>
+          <p v-if="schedulingResults">
+            <span class="text-text-secondary">回答者:</span>
+            {{ schedulingResults.respondents.length }}人
+            <span
+              v-if="schedulingResults.nonRespondents.length > 0"
+              class="text-text-secondary"
+            >
+              / 未回答 {{ schedulingResults.nonRespondents.length }}人
+            </span>
+          </p>
         </div>
       </div>
 
       <div grid gap-4 card>
-        <h3 h3>参加可能な時間を選択</h3>
+        <h3 h3>参加可能な時間</h3>
 
         <div v-if="!canVote" class="text-sm text-text-secondary">
           <template v-if="!isOpen">
@@ -127,18 +172,20 @@ const onSubmit = async () => {
           </template>
           <template v-else> この日程調整に回答する権限がありません。 </template>
         </div>
+        <p v-else class="text-sm text-text-secondary">
+          クリック or
+          ドラッグで選択してください。セル内のアイコンは他の回答者です。
+        </p>
 
-        <template v-else>
-          <p class="text-sm text-text-secondary">
-            参加可能な時間帯をクリックまたはドラッグして選択してください
-          </p>
+        <SlotGrid
+          v-model="selectedSlotIds"
+          :slots="currentDraftEvent.candidateSlots"
+          :results="schedulingResults?.results ?? []"
+          :get-user-name="getUserName"
+          :disabled="!canVote"
+        />
 
-          <TimeSlotGrid
-            v-model="selectedSlotIds"
-            :slots="currentDraftEvent.candidateSlots"
-            :disabled="!canVote"
-          />
-
+        <template v-if="canVote">
           <div class="grid gap-2">
             <TextareaField
               id="comment"
@@ -170,6 +217,77 @@ const onSubmit = async () => {
           </div>
         </template>
       </div>
+
+      <details v-if="schedulingResults" class="group" card>
+        <summary
+          class="flex cursor-pointer list-none items-center justify-between"
+        >
+          <h3 h3>回答者詳細</h3>
+          <span
+            class="text-sm text-text-secondary transition-transform group-open:rotate-180"
+          >
+            ▼
+          </span>
+        </summary>
+
+        <div class="grid mt-4 gap-6">
+          <div class="grid gap-3">
+            <p class="text-sm font-bold">
+              回答者 ({{ schedulingResults.respondents.length }}人)
+            </p>
+            <div
+              v-if="schedulingResults.respondents.length > 0"
+              class="grid gap-3"
+            >
+              <div
+                v-for="respondent in schedulingResults.respondents"
+                :key="respondent.userId"
+                class="flex items-start gap-3 border-b border-border-secondary pb-3 last:border-b-0 last:pb-0"
+              >
+                <UserIcon :user-id="respondent.userId" />
+                <div class="grid gap-0.5">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold">
+                      {{ getUserName(respondent.userId) }}
+                    </span>
+                    <span class="text-xs text-text-secondary">
+                      {{ formatRespondedAt(respondent.respondedAt) }}
+                    </span>
+                  </div>
+                  <p
+                    v-if="respondent.comment"
+                    class="text-sm text-text-secondary"
+                  >
+                    {{ respondent.comment }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <p v-else class="text-sm text-text-secondary">
+              まだ回答がありません
+            </p>
+          </div>
+
+          <div
+            v-if="schedulingResults.nonRespondents.length > 0"
+            class="grid gap-3"
+          >
+            <p class="text-sm font-bold">
+              未回答者 ({{ schedulingResults.nonRespondents.length }}人)
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <div
+                v-for="userId in schedulingResults.nonRespondents"
+                :key="userId"
+                class="flex items-center gap-2"
+              >
+                <UserIcon :user-id="userId" />
+                <span class="text-sm">{{ getUserName(userId) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
     </div>
   </div>
 </template>
