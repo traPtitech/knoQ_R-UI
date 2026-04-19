@@ -209,16 +209,6 @@ const confirmedRangeLabel = computed(() => {
               new Date(currentDraftEvent.deadline).toLocaleDateString('ja-JP')
             }}
           </p>
-          <p v-if="schedulingResults">
-            <span class="text-text-secondary">回答者:</span>
-            {{ schedulingResults.respondents.length }}人
-            <span
-              v-if="schedulingResults.nonRespondents.length > 0"
-              class="text-text-secondary"
-            >
-              / 未回答 {{ schedulingResults.nonRespondents.length }}人
-            </span>
-          </p>
         </div>
       </div>
 
