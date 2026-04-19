@@ -74,6 +74,27 @@ export const useDraftEvents = () => {
     }
   }
 
+  const confirmDraftEvent = async (
+    id: string,
+    timeStart: string,
+    timeEnd: string
+  ) => {
+    isLoading.value = true
+    error.value = null
+    try {
+      // TODO: 本番APIに置き換え
+      const result = await mockApi.confirmDraftEvent(id, timeStart, timeEnd)
+      if (result) currentDraftEvent.value = result
+      return result
+    } catch (e) {
+      error.value = 'draftイベントの確定に失敗しました'
+      console.error(e)
+      throw e
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     draftEvents,
     currentDraftEvent,
@@ -82,6 +103,7 @@ export const useDraftEvents = () => {
     getDraftEvents,
     getDraftEvent,
     createDraftEvent,
-    deleteDraftEvent
+    deleteDraftEvent,
+    confirmDraftEvent
   }
 }

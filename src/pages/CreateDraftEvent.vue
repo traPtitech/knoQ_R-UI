@@ -117,8 +117,8 @@ const generateSlots = (): RequestCandidateSlot[] => {
       const timeEndStr = `${String(currentHour).padStart(2, '0')}:${String(currentMin).padStart(2, '0')}`
 
       slots.push({
-        timeStart: `${date}T${timeStartStr}:00`,
-        timeEnd: `${date}T${timeEndStr}:00`
+        timeStart: `${date}T${timeStartStr}:00+09:00`,
+        timeEnd: `${date}T${timeEndStr}:00+09:00`
       })
     }
   }
@@ -186,7 +186,7 @@ const onSubmit = async () => {
     const result = await createDraftEvent({
       name: form.value.name,
       description: form.value.description || undefined,
-      deadline: new Date(form.value.deadline).toISOString(),
+      deadline: `${form.value.deadline}T23:59:59+09:00`,
       open: form.value.open,
       admins: form.value.admins,
       invitees: form.value.invitees,

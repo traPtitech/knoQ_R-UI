@@ -1,86 +1,54 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '/@/components/AppHeader.vue'
 import UserIcon from '/@/components/UI/UserIcon.vue'
-import TextareaField from '/@/components/UI/Form/TextareaField.vue'
+import InputField from '/@/components/UI/Form/InputField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
 import SlotGrid from '/@/features/draft-event/components/SlotGrid.vue'
-import DraftEventStatusBadge from '/@/features/draft-event/components/DraftEventStatusBadge.vue'
 import { useDraftEvents } from '/@/features/draft-event/composables/useDraftEvents'
-import { useAvailability } from '/@/features/draft-event/composables/useAvailability'
 import { useSchedulingResults } from '/@/features/draft-event/composables/useSchedulingResults'
+import { usePendingEventCreationStore } from '/@/features/draft-event/stores/pendingEventCreation'
 import { useUsers } from '/@/features/user/composables/useUsers'
 import { useMe } from '/@/features/user/composables/useMe'
 
 const route = useRoute()
+const router = useRouter()
 const { currentDraftEvent, getDraftEvent, isLoading } = useDraftEvents()
-const { myAvailability, getMyAvailability, saveAvailability, isSaving } =
-  useAvailability()
 const { schedulingResults, getSchedulingResults } = useSchedulingResults()
+const pendingEventCreationStore = usePendingEventCreationStore()
 const { getUsersByIds } = useUsers()
 const { me } = useMe()
 
 const draftEventId = route.params.id as string
 
-const selectedSlotIds = ref<string[]>([])
-const comment = ref('')
-const statusMessage = ref('')
-const isError = ref(false)
+const timeStart = ref<string>('')
+const timeEnd = ref<string>('')
+
+const toDatetimeLocal = (iso: string) => iso.slice(0, 16)
 
 const refreshAll = async () => {
-  const tasks: Promise<unknown>[] = [
+  await Promise.all([
     getDraftEvent(draftEventId),
     getSchedulingResults(draftEventId)
-  ]
-  if (me.value?.userId) {
-    tasks.push(getMyAvailability(draftEventId, me.value.userId))
-  }
-  await Promise.all(tasks)
-  if (myAvailability.value) {
-    selectedSlotIds.value = [...myAvailability.value.slotIds]
-    comment.value = myAvailability.value.comment ?? ''
+  ])
+  const draft = currentDraftEvent.value
+  if (draft?.confirmedTimeStart && draft?.confirmedTimeEnd) {
+    timeStart.value = toDatetimeLocal(draft.confirmedTimeStart)
+    timeEnd.value = toDatetimeLocal(draft.confirmedTimeEnd)
   }
 }
 
 onMounted(refreshAll)
-
-const displayStatus = computed(() => {
-  if (!currentDraftEvent.value) return 'unanswered' as const
-  if (currentDraftEvent.value.status === 'confirmed')
-    return 'confirmed' as const
-  return myAvailability.value ? ('answered' as const) : ('unanswered' as const)
-})
-
-const isOpen = computed(() => currentDraftEvent.value?.status === 'open')
 
 const isAdmin = computed(() => {
   if (!currentDraftEvent.value || !me.value?.userId) return false
   return currentDraftEvent.value.admins.includes(me.value.userId)
 })
 
-const canVote = computed(() => {
-  if (!currentDraftEvent.value || !me.value?.userId) return false
-  if (!isOpen.value) return false
-  return (
-    currentDraftEvent.value.open ||
-    currentDraftEvent.value.invitees.includes(me.value.userId) ||
-    currentDraftEvent.value.admins.includes(me.value.userId)
-  )
-})
-
-const hasChanges = computed(() => {
-  if (!myAvailability.value) {
-    return selectedSlotIds.value.length > 0 || comment.value !== ''
-  }
-  const prevSlotIds = myAvailability.value.slotIds
-  const prevComment = myAvailability.value.comment ?? ''
-  return (
-    selectedSlotIds.value.length !== prevSlotIds.length ||
-    !selectedSlotIds.value.every((id) => prevSlotIds.includes(id)) ||
-    comment.value !== prevComment
-  )
-})
+const isConfirmed = computed(
+  () => currentDraftEvent.value?.status === 'confirmed'
+)
 
 const respondentUserIds = computed(() =>
   (schedulingResults.value?.respondents ?? []).map((r) => r.userId)
@@ -106,26 +74,83 @@ const formatRespondedAt = (dateStr: string) =>
     minute: '2-digit'
   })
 
-const onSubmit = async () => {
-  if (!me.value?.userId) return
-
-  statusMessage.value = '保存中...'
-  isError.value = false
-
-  try {
-    await saveAvailability(
-      draftEventId,
-      me.value.userId,
-      selectedSlotIds.value,
-      comment.value || null
-    )
-    await getSchedulingResults(draftEventId)
-    statusMessage.value = '回答を保存しました'
-  } catch {
-    statusMessage.value = '保存に失敗しました'
-    isError.value = true
-  }
+const formatRange = (start: string, end: string) => {
+  const s = new Date(start)
+  const e = new Date(end)
+  const dateStr = s.toLocaleDateString('ja-JP', {
+    month: 'numeric',
+    day: 'numeric',
+    weekday: 'short'
+  })
+  const timeFmt = (d: Date) =>
+    d.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
+  return `${dateStr} ${timeFmt(s)}〜${timeFmt(e)}`
 }
+
+const overlappingSlotIds = computed<string[]>(() => {
+  if (!timeStart.value || !timeEnd.value) return []
+  const startDate = new Date(timeStart.value)
+  const endDate = new Date(timeEnd.value)
+  if (
+    Number.isNaN(startDate.getTime()) ||
+    Number.isNaN(endDate.getTime()) ||
+    startDate >= endDate
+  ) {
+    return []
+  }
+  const slots = currentDraftEvent.value?.candidateSlots ?? []
+  return slots
+    .filter((s) => {
+      const sStart = new Date(s.timeStart)
+      const sEnd = new Date(s.timeEnd)
+      return sStart < endDate && sEnd > startDate
+    })
+    .map((s) => s.slotId)
+})
+
+const canCreate = computed(() => {
+  if (!timeStart.value || !timeEnd.value) return false
+  const s = new Date(timeStart.value)
+  const e = new Date(timeEnd.value)
+  return !Number.isNaN(s.getTime()) && !Number.isNaN(e.getTime()) && s < e
+})
+
+const onGridSelectionChange = (slotIds: string[]) => {
+  if (slotIds.length === 0) {
+    timeStart.value = ''
+    timeEnd.value = ''
+    return
+  }
+  const slots = currentDraftEvent.value?.candidateSlots ?? []
+  const selected = slots.filter((s) => slotIds.includes(s.slotId))
+  if (selected.length === 0) return
+  const earliestStart = selected.reduce(
+    (min, s) => (s.timeStart < min ? s.timeStart : min),
+    selected[0].timeStart
+  )
+  const latestEnd = selected.reduce(
+    (max, s) => (s.timeEnd > max ? s.timeEnd : max),
+    selected[0].timeEnd
+  )
+  timeStart.value = toDatetimeLocal(earliestStart)
+  timeEnd.value = toDatetimeLocal(latestEnd)
+}
+
+const goToCreateEvent = () => {
+  if (!canCreate.value) return
+  pendingEventCreationStore.set({
+    draftEventId,
+    timeStart: timeStart.value,
+    timeEnd: timeEnd.value
+  })
+  router.push({ name: 'create_event' })
+}
+
+const confirmedRangeLabel = computed(() => {
+  const draft = currentDraftEvent.value
+  if (!draft?.confirmedTimeStart || !draft?.confirmedTimeEnd) return null
+  return formatRange(draft.confirmedTimeStart, draft.confirmedTimeEnd)
+})
 </script>
 
 <template>
@@ -137,18 +162,38 @@ const onSubmit = async () => {
     <div v-else-if="!currentDraftEvent" class="text-center text-text-secondary">
       日程調整が見つかりません
     </div>
+    <div v-else-if="!isAdmin" class="text-center text-text-secondary">
+      この画面は管理者のみ閲覧できます。
+    </div>
     <div v-else class="grid gap-6">
       <div class="flex items-center justify-between">
-        <h2 h2>{{ currentDraftEvent.name }}</h2>
-        <div class="flex items-center gap-3">
-          <RouterLink
-            v-if="isAdmin"
-            :to="{ name: 'DraftEventManage', params: { id: draftEventId } }"
-            class="text-sm text-surface-accent-primary hover:underline"
-          >
-            管理画面へ
-          </RouterLink>
-          <DraftEventStatusBadge :status="displayStatus" />
+        <div class="grid gap-1">
+          <p class="text-xs text-text-secondary">管理画面</p>
+          <h2 h2>{{ currentDraftEvent.name }}</h2>
+        </div>
+        <div
+          shrink-0
+          b-1
+          rounded-md
+          b-solid
+          px-2.5
+          py-1
+          text-xs
+          fw-500
+          tracking-wide
+          :class="
+            isConfirmed
+              ? 'bg-status-confirmed/10 text-status-confirmed b-status-confirmed/20'
+              : 'bg-status-accepting/10 text-status-accepting b-status-accepting/30'
+          "
+        >
+          {{
+            isConfirmed
+              ? '確定済'
+              : currentDraftEvent.status === 'open'
+                ? '受付中'
+                : '締切'
+          }}
         </div>
       </div>
 
@@ -178,56 +223,54 @@ const onSubmit = async () => {
       </div>
 
       <div grid gap-4 card>
-        <h3 h3>参加可能な時間</h3>
+        <h3 h3>本イベントの作成</h3>
 
-        <div v-if="!canVote" class="text-sm text-text-secondary">
-          <template v-if="!isOpen">
-            締切を過ぎたため、回答できません。
-          </template>
-          <template v-else> この日程調整に回答する権限がありません。 </template>
+        <div
+          v-if="isConfirmed"
+          class="flex items-start gap-2 border border-status-success/30 rounded bg-status-success/10 p-3 text-sm"
+        >
+          <span i-mdi:check-circle class="mt-0.5 text-status-success" />
+          <div class="grid gap-1">
+            <p class="font-bold">この日程調整はすでに確定済みです</p>
+            <p v-if="confirmedRangeLabel" class="text-text-secondary">
+              確定時刻: {{ confirmedRangeLabel }}
+            </p>
+          </div>
         </div>
+
         <p v-else class="text-sm text-text-secondary">
-          クリック or
-          ドラッグで選択してください。セル内のアイコンは他の回答者です。
+          投票結果表をドラッグで範囲選択すると、下の日時入力欄に自動で反映されます。時刻の微調整は入力欄で直接編集してください。作成すると日程調整は「確定済み」になります。
         </p>
 
         <SlotGrid
-          v-model="selectedSlotIds"
+          :model-value="overlappingSlotIds"
           :slots="currentDraftEvent.candidateSlots"
           :results="schedulingResults?.results ?? []"
           :get-user-name="getUserName"
-          :disabled="!canVote"
+          :disabled="isConfirmed"
+          @update:model-value="onGridSelectionChange"
         />
 
-        <template v-if="canVote">
-          <div class="grid gap-2">
-            <TextareaField
-              id="comment"
-              v-model="comment"
-              label="コメント"
-              placeholder="捕捉事項を入力してください"
-              rows="2"
+        <template v-if="!isConfirmed">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <InputField
+              id="manage-time-start"
+              v-model="timeStart"
+              label="開始日時"
+              type="datetime-local"
             />
-            <p class="text-xs text-text-secondary">
-              {{ comment.length }}/500文字
-            </p>
+            <InputField
+              id="manage-time-end"
+              v-model="timeEnd"
+              label="終了日時"
+              type="datetime-local"
+            />
           </div>
 
           <div class="flex items-center gap-4">
-            <PrimaryButton
-              :disabled="isSaving || !hasChanges"
-              @click="onSubmit"
-            >
-              {{ myAvailability ? '回答を更新' : '回答を送信' }}
+            <PrimaryButton :disabled="!canCreate" @click="goToCreateEvent">
+              この時間で本イベント作成
             </PrimaryButton>
-            <!-- TODO: トーストメッセージみたいなものを実装したい -->
-            <span
-              v-if="statusMessage"
-              :class="isError ? 'text-status-error' : 'text-status-success'"
-              class="text-sm font-bold"
-            >
-              {{ statusMessage }}
-            </span>
           </div>
         </template>
       </div>

@@ -48,6 +48,8 @@ export interface ResponseDraftEvent {
   invitees: string[]
   createdAt: string
   updatedAt: string
+  confirmedTimeStart?: string // ISO8601
+  confirmedTimeEnd?: string // ISO8601
 }
 
 export interface ResponseDraftEventDetail extends ResponseDraftEvent {

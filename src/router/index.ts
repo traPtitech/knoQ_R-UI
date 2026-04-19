@@ -74,6 +74,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../pages/DraftEventDetail.vue')
   },
   {
+    path: '/draft-events/:id/manage',
+    name: 'DraftEventManage',
+    component: () => import('../pages/DraftEventManage.vue')
+  },
+  {
     path: '/search',
     name: 'search',
     component: SearchPage
