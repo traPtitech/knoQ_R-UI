@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Schedule } from '../../types'
+import { Schedule } from '../types'
 
 defineProps<{
-  schedule: Schedule
+  schedule: Schedule | undefined
 }>()
 
 const emit = defineEmits<{

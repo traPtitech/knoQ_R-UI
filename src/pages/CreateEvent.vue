@@ -7,7 +7,7 @@ import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
 import SelectMenu from '/@/components/UI/SelectMenu.vue'
 import UserIcon from '/@/components/UI/UserIcon.vue'
-import Alert from '/@/components/UI/Alert.vue'
+import AlertBox from '/@/components/UI/AlertBox.vue'
 import { apiClient } from '/@/lib/api'
 import { useGroups } from '/@/features/group/composables/useGroups'
 import { useUsers } from '/@/features/user/composables/useUsers'
@@ -206,7 +206,7 @@ const onSubmit = async () => {
       body: {
         ...commonBody,
         roomId: form.value.roomId
-      } as Record<string, unknown>
+      }
     })
   } else {
     // Instant Event
@@ -214,7 +214,7 @@ const onSubmit = async () => {
       body: {
         ...commonBody,
         place: form.value.place
-      } as Record<string, unknown>
+      }
     })
   }
 
@@ -254,12 +254,12 @@ const tryConfirmFromDraft = async () => {
   <div v-else class="grid mx-auto my-8 max-w-3xl gap-8 p-4">
     <h2 h2>イベントを作成する</h2>
 
-    <Alert v-if="pendingDraftEventId && fromDraftEventName" variant="info">
+    <AlertBox v-if="pendingDraftEventId && fromDraftEventName" variant="info">
       <p>
         日程調整「<span class="font-bold">{{ fromDraftEventName }}</span
         >」から作成中です。作成すると自動的に確定済みになります。
       </p>
-    </Alert>
+    </AlertBox>
 
     <div grid gap-6 card>
       <h3 h3>基本情報</h3>

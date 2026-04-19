@@ -16,9 +16,10 @@ const submit = async () => {
   isError.value = false
 
   const { error } = await apiClient.POST('/rooms/all', {
-    body: csvContent.value,
+    // スキーマ上 body はパース済み配列型だが、実際は CSV テキストを直送する
+    body: csvContent.value as never,
     headers: { 'Content-Type': 'text/csv' },
-    bodySerializer: (s) => s
+    bodySerializer: (s) => s as unknown as string
   })
 
   if (error) {

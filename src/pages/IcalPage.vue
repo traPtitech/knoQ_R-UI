@@ -56,26 +56,25 @@ const icalToken = computed(() => {
 })
 
 const icalUrl = computed(() => {
-  if (icalToken.value) {
-    let url = `${window.location.origin}/api/ical/v1/${icalToken.value}`
-    const params = []
+  if (!icalToken.value) return ''
 
-    if (eventFilter.value) {
-      params.push(`q=${encodeURIComponent(eventFilter.value)}`)
-    }
-    if (dateBegin.value) {
-      params.push(`dateBegin=${new Date(dateBegin.value).toISOString()}`)
-    }
-    if (dateEnd.value) {
-      params.push(`dateEnd=${new Date(dateEnd.value).toISOString()}`)
-    }
+  let url = `${window.location.origin}/api/ical/v1/${icalToken.value}`
+  const params = []
 
-    if (params.length > 0) {
-      url += `?${params.join('&')}`
-    }
-    return url
+  if (eventFilter.value) {
+    params.push(`q=${encodeURIComponent(eventFilter.value)}`)
   }
-  return ''
+  if (dateBegin.value) {
+    params.push(`dateBegin=${new Date(dateBegin.value).toISOString()}`)
+  }
+  if (dateEnd.value) {
+    params.push(`dateEnd=${new Date(dateEnd.value).toISOString()}`)
+  }
+
+  if (params.length > 0) {
+    url += `?${params.join('&')}`
+  }
+  return url
 })
 
 const copyToClipboard = async () => {
@@ -168,7 +167,7 @@ const selectGroup = (item: { id: string; name: string }) => {
           />
           <SelectMenu
             label="ユーザーを追加"
-            :items="users.map((u) => ({ id: u.userId, name: u.name }))"
+            :items="(users ?? []).map((u) => ({ id: u.userId, name: u.name }))"
             @select="selectUser"
           />
           <SelectMenu

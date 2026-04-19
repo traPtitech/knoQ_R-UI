@@ -150,7 +150,7 @@ const clearAll = () => {
         <tbody>
           <tr v-for="(time, rowIndex) in timeSlots" :key="time.start">
             <td
-              class="border border-border-secondary bg-surface-secondary px-2 text-center align-middle text-xs tabular-nums leading-tight"
+              class="border border-border-secondary bg-surface-secondary px-2 text-center align-middle text-xs leading-tight tabular-nums"
             >
               <div class="flex flex-col items-center gap-0.5">
                 <span>{{ time.start }}</span>
