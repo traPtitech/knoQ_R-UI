@@ -223,7 +223,7 @@ const confirmedRangeLabel = computed(() => {
       </div>
 
       <div grid gap-4 card>
-        <h3 h3>本イベントの作成</h3>
+        <h3 h3>イベント作成</h3>
 
         <div
           v-if="isConfirmed"
@@ -269,7 +269,7 @@ const confirmedRangeLabel = computed(() => {
 
           <div class="flex items-center gap-4">
             <PrimaryButton :disabled="!canCreate" @click="goToCreateEvent">
-              この時間で本イベント作成
+              この時間でイベント作成
             </PrimaryButton>
           </div>
         </template>
