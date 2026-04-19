@@ -32,7 +32,10 @@ const timeSlots = computed(() => {
   const firstDate = dates.value[0]
   if (!firstDate) return []
   const slots = groupedSlots.value.get(firstDate) || []
-  return slots.map((s) => s.timeStart.split('T')[1].substring(0, 5))
+  return slots.map((s) => ({
+    start: s.timeStart.split('T')[1].substring(0, 5),
+    end: s.timeEnd.split('T')[1].substring(0, 5)
+  }))
 })
 
 const formatDate = (dateStr: string) => {
@@ -145,15 +148,19 @@ const clearAll = () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(time, rowIndex) in timeSlots" :key="time">
+          <tr v-for="(time, rowIndex) in timeSlots" :key="time.start">
             <td
-              class="border border-border-secondary bg-surface-secondary p-2 text-center align-top text-sm"
+              class="border border-border-secondary bg-surface-secondary px-2 text-center align-middle text-xs tabular-nums leading-tight"
             >
-              {{ time }}
+              <div class="flex flex-col items-center gap-0.5">
+                <span>{{ time.start }}</span>
+                <span class="text-[10px] text-text-secondary">〜</span>
+                <span>{{ time.end }}</span>
+              </div>
             </td>
             <td
               v-for="(date, colIndex) in dates"
-              :key="`${date}-${time}`"
+              :key="`${date}-${time.start}`"
               class="p-0 align-top"
               :class="[
                 colIndex < dates.length - 1
@@ -165,48 +172,50 @@ const clearAll = () => {
               ]"
             >
               <button
-                v-if="getSlot(date, time)"
+                v-if="getSlot(date, time.start)"
                 type="button"
                 :disabled="disabled"
-                :aria-pressed="isSelected(getSlot(date, time)!.slotId)"
+                :aria-pressed="isSelected(getSlot(date, time.start)!.slotId)"
                 class="relative block h-full min-h-14 w-full cursor-pointer appearance-none border-0 bg-transparent p-1.5 text-left transition-colors"
                 :class="[
-                  isSelected(getSlot(date, time)!.slotId)
+                  isSelected(getSlot(date, time.start)!.slotId)
                     ? 'bg-surface-accent-primary/20 outline-2 outline-surface-accent-primary -outline-offset-2 outline-solid'
                     : !disabled
                       ? 'hover:bg-surface-accent-primary/5'
                       : '',
                   disabled ? 'cursor-default' : ''
                 ]"
-                @mousedown.prevent="onDragStart(getSlot(date, time)!.slotId)"
-                @mouseenter="onDragEnter(getSlot(date, time)!.slotId)"
-                @focusin="onDragEnter(getSlot(date, time)!.slotId)"
+                @mousedown.prevent="
+                  onDragStart(getSlot(date, time.start)!.slotId)
+                "
+                @mouseenter="onDragEnter(getSlot(date, time.start)!.slotId)"
+                @focusin="onDragEnter(getSlot(date, time.start)!.slotId)"
               >
                 <template
-                  v-if="resultBySlotId.get(getSlot(date, time)!.slotId)"
+                  v-if="resultBySlotId.get(getSlot(date, time.start)!.slotId)"
                 >
                   <span
                     v-if="
-                      resultBySlotId.get(getSlot(date, time)!.slotId)!
+                      resultBySlotId.get(getSlot(date, time.start)!.slotId)!
                         .availableCount > 0
                     "
                     class="absolute right-1.5 top-0.5 text-xs tabular-nums"
                     :class="
-                      resultBySlotId.get(getSlot(date, time)!.slotId)!
+                      resultBySlotId.get(getSlot(date, time.start)!.slotId)!
                         .availableCount === maxAvailableCount
                         ? 'text-text-primary fw-700'
                         : 'text-text-secondary'
                     "
                   >
                     {{
-                      resultBySlotId.get(getSlot(date, time)!.slotId)!
+                      resultBySlotId.get(getSlot(date, time.start)!.slotId)!
                         .availableCount
                     }}
                   </span>
                   <div class="flex flex-wrap content-start gap-1 pt-4">
                     <UserIcon
                       v-for="userId in resultBySlotId.get(
-                        getSlot(date, time)!.slotId
+                        getSlot(date, time.start)!.slotId
                       )!.availableUsers"
                       :key="userId"
                       :user-id="userId"
