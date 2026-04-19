@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { computed, useAttrs, type HTMLAttributes, type StyleValue } from 'vue'
 
 defineOptions({
   inheritAttrs: false
@@ -15,8 +15,8 @@ const model = defineModel<string>()
 const attrs = useAttrs()
 
 // wrapper receives class and style (layout)
-const wrapperClass = computed(() => attrs.class)
-const wrapperStyle = computed(() => attrs.style)
+const wrapperClass = computed(() => attrs.class as HTMLAttributes['class'])
+const wrapperStyle = computed(() => attrs.style as StyleValue)
 
 // input receives functional attributes (type, placeholder, etc.)
 const inputAttrs = computed(() => {

@@ -17,8 +17,8 @@ const user = computed(() => {
 </script>
 
 <template>
-  <RouterLink :to="`/users/${userId}`" class="inline-flex gap-1 items-center">
-    <UserIcon :user-id="userId" :src="user?.icon" class="w-6 h-6" />
+  <RouterLink :to="`/users/${userId}`" class="inline-flex items-center gap-1">
+    <UserIcon :user-id="userId" :src="user?.icon" class="h-6 w-6" />
     {{ user?.name ?? '' }}
   </RouterLink>
 </template>

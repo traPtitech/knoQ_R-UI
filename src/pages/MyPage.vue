@@ -22,14 +22,14 @@ const { data: myGroups, state: myGroupsState } = useApiFetch(
 
 <template>
   <AppHeader />
-  <div v-if="me" max-w-3xl my-8 mx-auto grid gap-4>
+  <div v-if="me" grid mx-auto my-8 max-w-3xl gap-4>
     <h2 hl>マイページ</h2>
-    <div card grid gap-6>
+    <div grid gap-6 card>
       <h3 hm>プロフィール</h3>
       <p>名前: {{ me.name }}</p>
       <p>表示名: {{ me.displayName }}</p>
     </div>
-    <div card grid gap-6>
+    <div grid gap-6 card>
       <h3 hm>あなたのイベント</h3>
       <DataFetchState :state="myEventsState" :is-empty="myEvents?.length === 0">
         <div v-for="event in myEvents" :key="event.eventId">
@@ -39,7 +39,7 @@ const { data: myGroups, state: myGroupsState } = useApiFetch(
         </div>
       </DataFetchState>
     </div>
-    <div card grid gap-6>
+    <div grid gap-6 card>
       <h3 hm>あなたのグループ</h3>
       <DataFetchState :state="myGroupsState" :is-empty="myGroups?.length === 0">
         <!-- <div v-for="group in myGroups" :key="group.groupId"> -->

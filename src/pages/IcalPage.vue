@@ -56,26 +56,25 @@ const icalToken = computed(() => {
 })
 
 const icalUrl = computed(() => {
-  if (icalToken.value) {
-    let url = `${window.location.origin}/api/ical/v1/${icalToken.value}`
-    const params = []
+  if (!icalToken.value) return ''
 
-    if (eventFilter.value) {
-      params.push(`q=${encodeURIComponent(eventFilter.value)}`)
-    }
-    if (dateBegin.value) {
-      params.push(`dateBegin=${new Date(dateBegin.value).toISOString()}`)
-    }
-    if (dateEnd.value) {
-      params.push(`dateEnd=${new Date(dateEnd.value).toISOString()}`)
-    }
+  let url = `${window.location.origin}/api/ical/v1/${icalToken.value}`
+  const params = []
 
-    if (params.length > 0) {
-      url += `?${params.join('&')}`
-    }
-    return url
+  if (eventFilter.value) {
+    params.push(`q=${encodeURIComponent(eventFilter.value)}`)
   }
-  return ''
+  if (dateBegin.value) {
+    params.push(`dateBegin=${new Date(dateBegin.value).toISOString()}`)
+  }
+  if (dateEnd.value) {
+    params.push(`dateEnd=${new Date(dateEnd.value).toISOString()}`)
+  }
+
+  if (params.length > 0) {
+    url += `?${params.join('&')}`
+  }
+  return url
 })
 
 const copyToClipboard = async () => {
@@ -116,8 +115,8 @@ const selectGroup = (item: { id: string; name: string }) => {
 
 <template>
   <AppHeader />
-  <div class="max-w-4xl mx-auto p-4 grid gap-8">
-    <div flex justify-between items-center>
+  <div class="grid mx-auto max-w-4xl gap-8 p-4">
+    <div flex items-center justify-between>
       <h1 h1>iCal URL 生成</h1>
       <button
         class="text-sm text-red-600 hover:underline"
@@ -127,11 +126,11 @@ const selectGroup = (item: { id: string; name: string }) => {
       </button>
     </div>
 
-    <div card grid gap-4>
+    <div grid gap-4 card>
       <div grid gap-2>
         <h2 h2>プレビュー & URL</h2>
         <div
-          class="bg-surface-secondary p-4 rounded break-all font-mono text-sm border border-border-secondary"
+          class="break-all border border-border-secondary rounded bg-surface-secondary p-4 text-sm font-mono"
         >
           {{ icalUrl || 'Loading...' }}
         </div>
@@ -145,7 +144,7 @@ const selectGroup = (item: { id: string; name: string }) => {
       </div>
     </div>
 
-    <div card grid gap-6>
+    <div grid gap-6 card>
       <h2 h2>フィルタ設定</h2>
 
       <div grid gap-2>
@@ -155,7 +154,7 @@ const selectGroup = (item: { id: string; name: string }) => {
           label="検索クエリ (q)"
         />
 
-        <div class="flex flex-wrap gap-2 items-center">
+        <div class="flex flex-wrap items-center gap-2">
           <SelectMenu
             label="タグを追加"
             :items="tags.map((t) => ({ id: t.tagId, name: t.name }))"
@@ -168,7 +167,7 @@ const selectGroup = (item: { id: string; name: string }) => {
           />
           <SelectMenu
             label="ユーザーを追加"
-            :items="users.map((u) => ({ id: u.userId, name: u.name }))"
+            :items="(users ?? []).map((u) => ({ id: u.userId, name: u.name }))"
             @select="selectUser"
           />
           <SelectMenu
@@ -178,7 +177,7 @@ const selectGroup = (item: { id: string; name: string }) => {
           />
 
           <button
-            class="text-sm text-text-secondary hover:text-text-primary px-2"
+            class="px-2 text-sm text-text-secondary hover:text-text-primary"
             @click="clearFilter"
           >
             クリア
@@ -186,12 +185,12 @@ const selectGroup = (item: { id: string; name: string }) => {
         </div>
 
         <details
-          class="text-sm text-text-secondary mt-2 p-2 border border-border-secondary rounded bg-surface-secondary/20"
+          class="mt-2 border border-border-secondary rounded bg-surface-secondary/20 p-2 text-sm text-text-secondary"
         >
-          <summary class="cursor-pointer font-bold select-none">
+          <summary class="cursor-pointer select-none font-bold">
             構文ヘルプ
           </summary>
-          <div class="mt-2 space-y-1 font-mono text-xs">
+          <div class="mt-2 text-xs font-mono space-y-1">
             <p>Syntax: <code>top : ε | expr</code></p>
             <p><code>expr : term ( ( "||" | "&&" ) term)*</code></p>
             <p><code>term : cmp | "(" expr ")"</code></p>
@@ -205,7 +204,7 @@ const selectGroup = (item: { id: string; name: string }) => {
         </details>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <InputField
           id="date-begin"
           v-model="dateBegin"

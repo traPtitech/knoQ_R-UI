@@ -2,12 +2,14 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const isOpen = defineModel<boolean>('isOpen', { default: false })
-const props = withDefaults(
+withDefaults(
   defineProps<{
     align?: 'left' | 'right'
+    widthClass?: string
   }>(),
   {
     align: 'left',
+    widthClass: 'w-48'
   }
 )
 
@@ -46,8 +48,8 @@ onUnmounted(() => {
     </div>
     <div
       v-if="isOpen"
-      class="absolute mt-2 w-48 bg-surface-primary rounded-md shadow-lg z-10 border border-border-secondary max-h-60 overflow-y-auto"
-      :class="[align === 'right' ? 'right-0' : 'left-0']"
+      class="absolute z-10 mt-2 max-h-60 overflow-y-auto border border-border-secondary rounded-md bg-surface-primary shadow-lg"
+      :class="[widthClass, align === 'right' ? 'right-0' : 'left-0']"
     >
       <slot />
     </div>

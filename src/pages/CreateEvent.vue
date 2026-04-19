@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '/@/components/AppHeader.vue'
 import InputField from '/@/components/UI/Form/InputField.vue'
@@ -7,18 +7,28 @@ import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
 import SelectMenu from '/@/components/UI/SelectMenu.vue'
 import UserIcon from '/@/components/UI/UserIcon.vue'
+import AlertBox from '/@/components/UI/AlertBox.vue'
 import { apiClient } from '/@/lib/api'
 import { useGroups } from '/@/features/group/composables/useGroups'
 import { useUsers } from '/@/features/user/composables/useUsers'
 import { useMe } from '/@/features/user/composables/useMe'
+import { useDraftEvents } from '/@/features/draft-event/composables/useDraftEvents'
+import { usePendingEventCreationStore } from '/@/features/draft-event/stores/pendingEventCreation'
 import type { components } from '/@/lib/api/schema'
 
 type Room = components['schemas']['ResponseRoom']
 
 const router = useRouter()
-const { groups, getGroups } = useGroups()
-const { users } = useUsers()
+const { groups, getGroups, groupSelectItems } = useGroups()
+const { users, getUserSelectItems } = useUsers()
 const { me } = useMe()
+const { currentDraftEvent, getDraftEvent, confirmDraftEvent } = useDraftEvents()
+const pendingEventCreationStore = usePendingEventCreationStore()
+
+const pendingDraftEventId = ref<string | null>(null)
+const pendingTimeStart = ref<string | null>(null)
+const pendingTimeEnd = ref<string | null>(null)
+const fromDraftEventName = ref<string>('')
 
 const rooms = ref<Room[]>([])
 const isLoading = ref(true)
@@ -39,13 +49,40 @@ const form = ref({
   admins: [] as string[]
 })
 
+const prefillFromDraft = async () => {
+  if (!pendingDraftEventId.value) return
+  await getDraftEvent(pendingDraftEventId.value)
+  const draft = currentDraftEvent.value
+  if (!draft) return
+  fromDraftEventName.value = draft.name
+  form.value.name = draft.name
+  form.value.description = draft.description ?? ''
+  form.value.open = draft.open
+  form.value.admins = [...draft.admins]
+  if (pendingTimeStart.value) {
+    form.value.timeStart = pendingTimeStart.value
+  }
+  if (pendingTimeEnd.value) {
+    form.value.timeEnd = pendingTimeEnd.value
+  }
+}
+
 onMounted(async () => {
+  const pending = pendingEventCreationStore.pending
+  if (pending) {
+    pendingDraftEventId.value = pending.draftEventId
+    pendingTimeStart.value = pending.timeStart
+    pendingTimeEnd.value = pending.timeEnd
+    pendingEventCreationStore.clear()
+  }
+
   try {
     await Promise.all([getGroups(), apiClient.GET('/rooms')])
     const res = await apiClient.GET('/rooms')
     if (res.data) {
       rooms.value = res.data
     }
+    await prefillFromDraft()
   } catch (e) {
     console.error(e)
     statusMessage.value = 'データの読み込みに失敗しました'
@@ -55,27 +92,25 @@ onMounted(async () => {
   }
 })
 
+onBeforeUnmount(() => {
+  pendingEventCreationStore.clear()
+})
+
 const roomItems = computed(() =>
   rooms.value.map((r) => ({ id: r.roomId, name: r.place }))
-)
-
-const groupItems = computed(() =>
-  groups.value.map((g) => ({ id: g.groupId, name: g.name }))
 )
 
 const selectedGroupName = computed(
   () => groups.value.find((g) => g.groupId === form.value.groupId)?.name
 )
 
-const adminItems = computed(() => {
-  if (!users.value) return []
-  return users.value
-    .filter(
-      (u) =>
-        !form.value.admins.includes(u.userId) && u.userId !== me.value?.userId
-    )
-    .map((u) => ({ id: u.userId, name: u.name }))
-})
+const adminItems = getUserSelectItems(
+  computed(() => {
+    const ids = [...form.value.admins]
+    if (me.value?.userId) ids.push(me.value.userId)
+    return ids
+  })
+)
 
 const selectGroup = (item: { id: string; name: string }) => {
   form.value.groupId = item.id
@@ -100,11 +135,10 @@ const removeAdmin = (userId: string) => {
 watch(
   () => form.value.place,
   (newVal) => {
-    if (form.value.roomId) {
-      const room = rooms.value.find((r) => r.roomId === form.value.roomId)
-      if (room && room.place !== newVal) {
-        form.value.roomId = undefined
-      }
+    if (!form.value.roomId) return
+    const room = rooms.value.find((r) => r.roomId === form.value.roomId)
+    if (room && room.place !== newVal) {
+      form.value.roomId = undefined
     }
   }
 )
@@ -157,8 +191,8 @@ const onSubmit = async () => {
     name: form.value.name,
     description: form.value.description,
     groupId: form.value.groupId,
-    timeStart: new Date(form.value.timeStart).toISOString(),
-    timeEnd: new Date(form.value.timeEnd).toISOString(),
+    timeStart: `${form.value.timeStart}:00+09:00`,
+    timeEnd: `${form.value.timeEnd}:00+09:00`,
     sharedRoom: form.value.sharedRoom,
     open: form.value.open,
     admins: admins,
@@ -172,7 +206,7 @@ const onSubmit = async () => {
       body: {
         ...commonBody,
         roomId: form.value.roomId
-      } as any
+      }
     })
   } else {
     // Instant Event
@@ -180,7 +214,7 @@ const onSubmit = async () => {
       body: {
         ...commonBody,
         place: form.value.place
-      } as any
+      }
     })
   }
 
@@ -188,9 +222,23 @@ const onSubmit = async () => {
     statusMessage.value = 'エラーが発生しました'
     isError.value = true
     console.error(res.error)
-  } else if (res.data) {
-    statusMessage.value = '作成しました'
-    router.push(`/events/${res.data.eventId}`)
+    return
+  }
+  if (!res.data) return
+
+  await tryConfirmFromDraft()
+  statusMessage.value = '作成しました'
+  router.push(`/events/${res.data.eventId}`)
+}
+
+const tryConfirmFromDraft = async () => {
+  if (!pendingDraftEventId.value) return
+  try {
+    const timeStart = `${form.value.timeStart}:00+09:00`
+    const timeEnd = `${form.value.timeEnd}:00+09:00`
+    await confirmDraftEvent(pendingDraftEventId.value, timeStart, timeEnd)
+  } catch (e) {
+    console.error(e)
   }
 }
 </script>
@@ -199,14 +247,21 @@ const onSubmit = async () => {
   <AppHeader />
   <div
     v-if="isLoading"
-    class="max-w-3xl my-16 mx-auto p-4 text-center text-text-secondary"
+    class="mx-auto my-16 max-w-3xl p-4 text-center text-text-secondary"
   >
     読み込み中...
   </div>
-  <div v-else class="max-w-3xl my-8 mx-auto p-4 grid gap-8">
+  <div v-else class="grid mx-auto my-8 max-w-3xl gap-8 p-4">
     <h2 h2>イベントを作成する</h2>
 
-    <div card grid gap-6>
+    <AlertBox v-if="pendingDraftEventId && fromDraftEventName" variant="info">
+      <p>
+        日程調整「<span class="font-bold">{{ fromDraftEventName }}</span
+        >」から作成中です。作成すると自動的に確定済みになります。
+      </p>
+    </AlertBox>
+
+    <div grid gap-6 card>
       <h3 h3>基本情報</h3>
       <div grid gap-1>
         <InputField
@@ -216,17 +271,17 @@ const onSubmit = async () => {
           placeholder="例: 第N回進捗会"
           :class="{ 'border-red-500': errors.name }"
         />
-        <p v-if="errors.name" class="text-red-500 text-xs">{{ errors.name }}</p>
+        <p v-if="errors.name" class="text-xs text-red-500">{{ errors.name }}</p>
       </div>
 
       <div grid gap-1>
         <h5 h5>主催グループ</h5>
         <SelectMenu
           :label="selectedGroupName || 'グループを選択'"
-          :items="groupItems"
+          :items="groupSelectItems"
           @select="selectGroup"
         />
-        <p v-if="errors.groupId" class="text-red-500 text-xs">
+        <p v-if="errors.groupId" class="text-xs text-red-500">
           {{ errors.groupId }}
         </p>
       </div>
@@ -238,19 +293,19 @@ const onSubmit = async () => {
         rows="5"
       />
 
-      <div class="flex gap-4 items-center">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input v-model="form.open" type="checkbox" class="w-4 h-4" />
+      <div class="flex items-center gap-4">
+        <label for="event-open" class="flex cursor-pointer items-center gap-2">
+          <input id="event-open" v-model="form.open" type="checkbox" class="h-4 w-4" />
           <span class="text-sm">誰でも参加可能にする</span>
         </label>
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input v-model="form.sharedRoom" type="checkbox" class="w-4 h-4" />
+        <label for="event-shared-room" class="flex cursor-pointer items-center gap-2">
+          <input id="event-shared-room" v-model="form.sharedRoom" type="checkbox" class="h-4 w-4" />
           <span class="text-sm">部屋を共有可能にする</span>
         </label>
       </div>
     </div>
 
-    <div card grid gap-6>
+    <div grid gap-6 card>
       <h3 h3>場所と日時</h3>
 
       <div grid gap-1>
@@ -272,7 +327,7 @@ const onSubmit = async () => {
           </div>
           <p
             v-if="form.roomId"
-            class="text-xs text-green-600 flex items-center gap-1"
+            class="flex items-center gap-1 text-xs text-green-600"
           >
             <span i-mdi:check-circle /> 既存の部屋「{{
               rooms.find((r) => r.roomId === form.roomId)?.place
@@ -281,7 +336,7 @@ const onSubmit = async () => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div grid gap-1>
           <InputField
             id="time-start"
@@ -290,7 +345,7 @@ const onSubmit = async () => {
             type="datetime-local"
             :class="{ 'border-red-500': errors.timeStart }"
           />
-          <p v-if="errors.timeStart" class="text-red-500 text-xs">
+          <p v-if="errors.timeStart" class="text-xs text-red-500">
             {{ errors.timeStart }}
           </p>
         </div>
@@ -302,28 +357,28 @@ const onSubmit = async () => {
             type="datetime-local"
             :class="{ 'border-red-500': errors.timeEnd }"
           />
-          <p v-if="errors.timeEnd" class="text-red-500 text-xs">
+          <p v-if="errors.timeEnd" class="text-xs text-red-500">
             {{ errors.timeEnd }}
           </p>
         </div>
       </div>
     </div>
 
-    <div card grid gap-6>
+    <div grid gap-6 card>
       <h3 h3>管理者</h3>
       <div grid gap-4>
         <div v-if="form.admins.length > 0" class="flex flex-wrap gap-2">
           <div
             v-for="adminId in form.admins"
             :key="adminId"
-            class="flex items-center gap-2 bg-surface-secondary px-3 py-1 rounded-full border border-border-secondary"
+            class="flex items-center gap-2 border border-border-secondary rounded-full bg-surface-secondary px-3 py-1"
           >
-            <UserIcon :user-id="adminId" class="w-6 h-6" />
+            <UserIcon :user-id="adminId" class="h-6 w-6" />
             <span class="text-sm">{{
               users?.find((u) => u.userId === adminId)?.name || adminId
             }}</span>
             <button
-              class="text-text-secondary hover:text-red-500 transition-colors"
+              class="text-text-secondary transition-colors hover:text-red-500"
               @click="removeAdmin(adminId)"
             >
               <span i-mdi:close class="block" />

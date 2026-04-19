@@ -16,9 +16,10 @@ const submit = async () => {
   isError.value = false
 
   const { error } = await apiClient.POST('/rooms/all', {
-    body: csvContent.value,
+    // スキーマ上 body はパース済み配列型だが、実際は CSV テキストを直送する
+    body: csvContent.value as never,
     headers: { 'Content-Type': 'text/csv' },
-    bodySerializer: (s) => s
+    bodySerializer: (s) => s as unknown as string
   })
 
   if (error) {
@@ -33,15 +34,15 @@ const submit = async () => {
 
 <template>
   <AppHeader />
-  <div class="max-w-3xl mx-auto p-4 grid gap-8">
+  <div class="grid mx-auto max-w-3xl gap-8 p-4">
     <h1 hl>進捗部屋作成</h1>
 
-    <div card grid gap-6>
+    <div grid gap-6 card>
       <div class="text-text-secondary">
         <p class="mb-2">CSV形式で進捗部屋を一括登録できます。</p>
-        <p class="text-sm mb-1 font-bold">フォーマット例:</p>
+        <p class="mb-1 text-sm font-bold">フォーマット例:</p>
         <div
-          class="bg-surface-secondary p-4 rounded text-sm font-mono border border-border-secondary overflow-x-auto whitespace-pre"
+          class="overflow-x-auto whitespace-pre border border-border-secondary rounded bg-surface-secondary p-4 text-sm font-mono"
         >
           Subject,Location,Start date,End date,Start time,End time<br />進捗部屋,S2-201
           (S224),2025/12/25,2025/12/25,12:25,18:55
