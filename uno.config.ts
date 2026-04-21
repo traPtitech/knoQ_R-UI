@@ -54,7 +54,17 @@ export default defineConfig({
       },
       status: {
         error: '#EF4444', // red-500
-        success: '#16A34A' // green-600
+        success: '#16A34A', // green-600
+        accepting: '#0E9888',
+        answered: '#6f6fa0',
+        closed: '#8892a0',
+        confirmed: '#3b82f6'
+      },
+      tag: {
+        invited: '#5a8a6a',
+        invitedBg: '#ecf3ee',
+        public: '#2a8a9e',
+        publicBg: '#e6f3f6'
       }
     }
   },
