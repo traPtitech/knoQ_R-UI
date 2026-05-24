@@ -2,14 +2,21 @@
 import { computed } from 'vue'
 import SchedulePollButton from './SchedulePollButton.vue'
 import IconWithName from '/@/features/user/components/IconWithName.vue'
+import type {
+  SchedulePollAttendee,
+  SchedulePollEvent,
+  SchedulePollScheduleOption,
+  SchedulePollScheduleStatus
+} from '/@/features/event/types'
 
-// NOTE: 本コンポーネントは日程調整ポーリング機能を見越した実装で、
-// 現行の API スキーマの ResponseEventDetail とは形が異なる。
-// バックエンド側が揃うまで any で受け取る
-type ScheduleStatus = 'attending' | 'absent' | 'pending'
+const props = defineProps<{ event: SchedulePollEvent }>()
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const props = defineProps<{ event: any }>()
+const schedules = computed<SchedulePollScheduleOption[]>(
+  () => props.event.schedules ?? []
+)
+const attendees = computed<SchedulePollAttendee[]>(
+  () => props.event.attendees ?? []
+)
 
 const formatDateTime = (isoString: string) => {
   const date = new Date(isoString)
@@ -25,15 +32,12 @@ const formatDateTime = (isoString: string) => {
 const getAttendeesByStatus = (
   scheduleStartAt: string,
   scheduleEndAt: string,
-  status: ScheduleStatus
+  status: SchedulePollScheduleStatus
 ) => {
   return computed(() =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    props.event.attendees.filter((attendee: any) =>
-       
+    attendees.value.filter((attendee) =>
       attendee.schedule.some(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (s: any) =>
+        (s) =>
           s.startAt === scheduleStartAt &&
           s.endAt === scheduleEndAt &&
           s.status === status
@@ -46,7 +50,7 @@ const getAttendeesByStatus = (
 <template>
   <div grid gap-2>
     <div
-      v-for="scheduleOption in event.schedules"
+      v-for="scheduleOption in schedules"
       :key="scheduleOption.startAt + scheduleOption.endAt"
       class="mb-2 border-b-2 border-gray-200 border-solid pb-2"
     >

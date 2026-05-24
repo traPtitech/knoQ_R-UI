@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Schedule } from '../types'
+import { Schedule } from '/@/features/event/types'
 
 defineProps<{
   schedule: Schedule | undefined

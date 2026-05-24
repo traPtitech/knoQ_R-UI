@@ -1,6 +1,6 @@
 import { ref } from 'vue'
-import type { ResponseAvailability } from '../types'
-import { mockApi } from '../mock'
+import type { ResponseAvailability } from '/@/features/draft-event/types'
+import { mockApi } from '/@/features/draft-event/mock'
 
 export const useAvailability = () => {
   const myAvailability = ref<ResponseAvailability | null>(null)

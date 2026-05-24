@@ -3,18 +3,19 @@ import { ComputedRef, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
-import { fetchEvent } from '../features/event/api'
-import { useMySchedule } from '../features/event/composables/useMySchedule'
+import { fetchEvent } from '/@/features/event/api'
+import { useMySchedule } from '/@/features/event/composables/useMySchedule'
 import { useMe } from '/@/features/user/composables/useMe'
 import { Schedule } from '/@/features/event/types'
 import AppHeader from '/@/components/AppHeader.vue'
-import IconWithName from '../features/user/components/IconWithName.vue'
-import AttendanceButton from '../features/event/components/AttendanceButton.vue'
-import SchedulePoll from '../features/event/components/SchedulePoll.vue'
-import InvitationLinkButton from '../features/event/components/InvitationLinkButton.vue'
-import DescriptionMd from '../features/event/components/DescriptionMd.vue'
+import IconWithName from '/@/features/user/components/IconWithName.vue'
+import AttendanceButton from '/@/features/event/components/AttendanceButton.vue'
+import SchedulePoll from '/@/features/event/components/SchedulePoll.vue'
+import InvitationLinkButton from '/@/features/event/components/InvitationLinkButton.vue'
+import DescriptionMd from '/@/features/event/components/DescriptionMd.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
 import DataFetchState from '/@/components/UI/DataFetchState.vue'
+import type { SchedulePollEvent } from '/@/features/event/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -115,8 +116,13 @@ const formatDateRange = (start: string, end: string) => {
                 <div class="i-mdi:calendar-check text-2xl" />
                 日程調整
               </h2>
+              <!--
+                SchedulePoll は将来の日程調整 API を見越したプロトタイプ実装で、
+                現行の event (ResponseEventDetail) とは構造が異なる。バックエンドが
+                追従するまではフィールドが無い前提で渡す (component 側で optional 扱い)。
+              -->
               <SchedulePoll
-                :event="event"
+                :event="event as unknown as SchedulePollEvent"
                 @update:my-schedule="onUpdateMySchedule"
               />
             </div>

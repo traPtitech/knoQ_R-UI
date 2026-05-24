@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "vue-tsc --noEmit && vite build",
+    "type-check": "vue-tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -12,7 +13,17 @@
     "preview": "vite preview",
     "analyze": "vite build --mode analyze",
     "test": "vitest --ui --coverage.enabled=true",
-    "generate": "openapi-typescript https://raw.githubusercontent.com/traPtitech/knoQ/master/docs/swagger.yaml -o src/lib/api/schema.d.ts"
+    "generate": "openapi-typescript https://raw.githubusercontent.com/traPtitech/knoQ/master/docs/swagger.yaml -o src/lib/api/schema.d.ts",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,vue,js,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css,html,yaml,yml}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "date-fns": "^4.1.0",
@@ -26,6 +37,7 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.7.1",
     "@iconify-json/material-symbols": "^1.2.40",
     "@iconify-json/mdi": "^1.2.3",
     "@unocss/eslint-config": "^66.5.10",
@@ -33,9 +45,12 @@
     "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-unicorn": "^64.0.0",
     "eslint-plugin-vue": "^10.5.0",
     "eslint-plugin-vuejs-accessibility": "^2.4.1",
+    "husky": "^9.1.7",
     "jiti": "^2.6.0",
+    "lint-staged": "^17.0.4",
     "openapi-typescript": "^7.9.1",
     "openapi-typescript-helpers": "^0.0.15",
     "prettier": "^3.6.2",

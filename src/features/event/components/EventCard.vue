@@ -3,7 +3,7 @@ import type { KnoqEvent } from '/@/features/event/types'
 import { computed } from 'vue'
 import { compareAsc, format, parseISO } from 'date-fns'
 import IconWithName from '/@/features/user/components/IconWithName.vue'
-import { useUsers } from '../../user/composables/useUsers'
+import { useUsers } from '/@/features/user/composables/useUsers'
 
 const props = defineProps<{
   event: KnoqEvent

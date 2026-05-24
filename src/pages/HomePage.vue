@@ -2,9 +2,9 @@
 import { useApiFetch } from '/@/composables/useApiFetch'
 import RoomList from '/@/features/room/components/RoomList.vue'
 import DataFetchState from '/@/components/UI/DataFetchState.vue'
-import { now, today, todayEnd } from '../lib/time'
-import MainLayout from '../layouts/MainLayout.vue'
-import EventCardList from '../features/event/components/EventCardList.vue'
+import { now, today, todayEnd } from '/@/lib/time'
+import MainLayout from '/@/layouts/MainLayout.vue'
+import EventCardList from '/@/features/event/components/EventCardList.vue'
 
 const { data: todaysEvents, state: todaysEventsState } = useApiFetch(
   '/events',

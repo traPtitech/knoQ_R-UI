@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { KnoqEvent } from '../types'
+import { KnoqEvent } from '/@/features/event/types'
 import EventCard from './EventCard.vue'
 
 defineProps<{
