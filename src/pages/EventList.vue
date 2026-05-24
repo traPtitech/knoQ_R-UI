@@ -2,7 +2,7 @@
 import { useApiFetch } from '/@/composables/useApiFetch'
 import AppHeader from '/@/components/AppHeader.vue'
 import EventCard from '/@/features/event/components/EventCard.vue'
-import InputField from '../components/UI/Form/InputField.vue'
+import InputField from '/@/components/UI/Form/InputField.vue'
 import DataFetchState from '/@/components/UI/DataFetchState.vue'
 
 const { data: events, state } = useApiFetch('/events', {})

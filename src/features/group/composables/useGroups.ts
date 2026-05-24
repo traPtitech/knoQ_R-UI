@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { apiClient } from '/@/lib/api'
-import type { Group } from '../types'
+import type { Group } from '/@/features/group/types'
 
 type SelectItem = { id: string; name: string }
 

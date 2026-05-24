@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Group } from '../types'
+import type { Group } from '/@/features/group/types'
 
 defineProps<{ group: Group }>()
 </script>

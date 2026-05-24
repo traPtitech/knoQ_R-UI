@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { differenceInCalendarDays, parseISO, format } from 'date-fns'
-import type { ResponseDraftEvent } from '../types'
+import type { ResponseDraftEvent } from '/@/features/draft-event/types'
 import DraftEventStatusBadge from './DraftEventStatusBadge.vue'
 import type { DisplayStatus } from './DraftEventStatusBadge.vue'
 

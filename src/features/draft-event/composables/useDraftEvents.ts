@@ -1,6 +1,9 @@
 import { ref } from 'vue'
-import type { ResponseDraftEvent, ResponseDraftEventDetail } from '../types'
-import { mockApi } from '../mock'
+import type {
+  ResponseDraftEvent,
+  ResponseDraftEventDetail
+} from '/@/features/draft-event/types'
+import { mockApi } from '/@/features/draft-event/mock'
 
 export const useDraftEvents = () => {
   const draftEvents = ref<ResponseDraftEvent[]>([])

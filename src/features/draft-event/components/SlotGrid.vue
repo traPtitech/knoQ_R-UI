@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import type { ResponseCandidateSlot, SlotResult } from '../types'
+import type {
+  ResponseCandidateSlot,
+  SlotResult
+} from '/@/features/draft-event/types'
 import UserIcon from '/@/components/UI/UserIcon.vue'
 
 const props = withDefaults(

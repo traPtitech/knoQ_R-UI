@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import AppHeader from '../components/AppHeader.vue'
-import PrimaryButton from '../components/UI/Button/PrimaryButton.vue'
-import TextareaField from '../components/UI/Form/TextareaField.vue'
-import { apiClient } from '../lib/api'
+import AppHeader from '/@/components/AppHeader.vue'
+import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
+import TextareaField from '/@/components/UI/Form/TextareaField.vue'
+import { apiClient } from '/@/lib/api'
 
 const csvContent = ref('')
 const statusMessage = ref('')
