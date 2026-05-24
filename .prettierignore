@@ -1,1 +1,11 @@
-src/lib/api-schema.d.ts
+# dependencies
+node_modules
+
+# build outputs
+dist
+build
+coverage
+
+# generated
+src/lib/api/schema.d.ts
+src/env.d.ts
