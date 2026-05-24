@@ -12,8 +12,7 @@ const props = withDefaults(
 
 const variantClasses = {
   info: {
-    wrapper:
-      'border-surface-accent-primary/30 bg-surface-accent-primary/10',
+    wrapper: 'border-surface-accent-primary/30 bg-surface-accent-primary/10',
     icon: 'i-mdi:information text-surface-accent-primary'
   },
   warning: {
@@ -31,7 +30,7 @@ const classes = computed(() => variantClasses[props.variant])
 
 <template>
   <div
-    class="flex items-start gap-2 rounded border border-solid p-3 text-sm"
+    class="flex items-start gap-2 border rounded border-solid p-3 text-sm"
     :class="classes.wrapper"
   >
     <span class="mt-0.5" :class="classes.icon" />
