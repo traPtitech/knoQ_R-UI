@@ -49,6 +49,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../pages/CalendarPage.vue')
   },
   {
+    path: '/rooms',
+    name: 'rooms',
+    component: () => import('../pages/RoomsCalendarPage.vue')
+  },
+  {
     path: '/callback',
     name: 'Callback',
     redirect: '/'

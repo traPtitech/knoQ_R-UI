@@ -1,3 +1,4 @@
+import { format, parseISO } from 'date-fns'
 import { Temporal } from 'temporal-polyfill'
 
 export const now = () =>
@@ -23,6 +24,10 @@ export const todayEnd = () =>
   Temporal.Now.plainDateISO('Asia/Tokyo')
     .toZonedDateTime({ timeZone: 'Asia/Tokyo', plainTime: '23:59:59' })
     .toString({ timeZoneName: 'never' })
+
+// "HH:mm–HH:mm" 形式の時間帯文字列を返す
+export const formatTimeRange = (startIso: string, endIso: string): string =>
+  `${format(parseISO(startIso), 'HH:mm')}–${format(parseISO(endIso), 'HH:mm')}`
 
 export const timeFormat = (datetimeStr: string, today?: string) => {
   const datetime = new Date(datetimeStr)
