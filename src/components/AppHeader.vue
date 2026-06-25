@@ -35,6 +35,7 @@ const clickLogout = async () => {
     <div grid grid-flow-col gap-8>
       <RouterLink h5 to="/draft-events">調整</RouterLink>
       <RouterLink h5 to="/calendar">カレンダー</RouterLink>
+      <RouterLink h5 to="/rooms">進捗部屋</RouterLink>
       <RouterLink h5 to="/ical">iCal</RouterLink>
       <RouterLink h5 to="/events">探す</RouterLink>
     </div>

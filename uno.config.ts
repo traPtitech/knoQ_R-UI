@@ -37,6 +37,8 @@ export default defineConfig({
     colors: {
       surface: {
         accentPrimary: '#0E9888',
+        accentStrong: '#0A7D70',
+        accentSoft: '#E7F4F2',
         primary: '#FFFFFF',
         secondary: '#F1F4F3'
       },
@@ -47,7 +49,8 @@ export default defineConfig({
       },
       text: {
         primary: '#111C18',
-        secondary: '#6A716E'
+        secondary: '#6A716E',
+        tertiary: '#9AA1A7'
       },
       background: {
         background: '#F8F8F8'
@@ -65,6 +68,18 @@ export default defineConfig({
         invitedBg: '#ecf3ee',
         public: '#2a8a9e',
         publicBg: '#e6f3f6'
+      },
+      weekday: {
+        sun: '#D2544F',
+        sat: '#3F74C2'
+      },
+      room: {
+        openBg: '#D2EAE5',
+        openBorder: '#C2E4DE',
+        exclusiveBg: '#F8EAD2',
+        exclusiveBorder: '#ECD6A4',
+        exclusiveFg: '#8A5E16',
+        exclusiveTime: '#A07D3E'
       }
     }
   },
