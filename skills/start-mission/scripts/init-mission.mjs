@@ -17,6 +17,7 @@ const templateSpecs = [
   {
     source: 'mission-brief.template.md',
     target: 'mission-brief.md',
+    fillMissionDate: true,
     requiredTokens: [
       'mission_id: <YYYYMMDD-short-slug>',
       'branch: mission/<YYYYMMDD-short-slug>',
@@ -30,7 +31,7 @@ const templateSpecs = [
     requiredTokens: [
       'mission_id: <YYYYMMDD-short-slug>',
       '# Handoff / Continuity Pack: <ミッションタイトル>',
-      '<YYYY-MM-DDTHH:MM:SSZ>'
+      'created_at: <ISO-8601-UTC-datetime>'
     ]
   },
   {
@@ -39,7 +40,7 @@ const templateSpecs = [
     requiredTokens: [
       'mission_id: <YYYYMMDD-short-slug>',
       '# Merge-Readiness Pack: <ミッションタイトル>',
-      '<YYYY-MM-DDTHH:MM:SSZ>'
+      'generated_at: <ISO-8601-UTC-datetime>'
     ]
   }
 ]
@@ -186,12 +187,17 @@ const loadTemplates = (templateDirectory) =>
     return { ...spec, content }
   })
 
-const renderTemplate = (content, { id, title, date, initializedAt }) =>
-  content
-    .replaceAll('<YYYYMMDD-short-slug>', id)
-    .replaceAll('<YYYY-MM-DDTHH:MM:SSZ>', initializedAt)
-    .replaceAll('<YYYY-MM-DD>', date)
-    .replace(/<ミッションの一文タイトル>|<ミッションタイトル>/g, () => title)
+const renderTemplate = (content, { id, title, date }, fillMissionDate) => {
+  const withId = content.replaceAll('<YYYYMMDD-short-slug>', id)
+  const withDate = fillMissionDate
+    ? withId.replaceAll('<YYYY-MM-DD>', date)
+    : withId
+
+  return withDate.replace(
+    /<ミッションの一文タイトル>|<ミッションタイトル>/g,
+    () => title
+  )
+}
 
 const initialize = ({ id, title }) => {
   const date = dateFromMissionId(id)
@@ -206,10 +212,9 @@ const initialize = ({ id, title }) => {
   }
 
   const templates = loadTemplates(templateDirectory)
-  const initializedAt = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')
-  const outputs = templates.map(({ target, content }) => ({
+  const outputs = templates.map(({ target, content, fillMissionDate }) => ({
     target,
-    content: renderTemplate(content, { id, title, date, initializedAt })
+    content: renderTemplate(content, { id, title, date }, fillMissionDate)
   }))
 
   mkdirSync(targetDirectory)

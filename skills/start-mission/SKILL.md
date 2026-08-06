@@ -32,7 +32,7 @@ node skills/start-mission/scripts/init-mission.mjs \
   --title 'Example mission'
 ```
 
-The initializer only copies and fills repository templates. It deliberately refuses dirty, detached, non-root, wrong-branch, malformed-ID, missing-template, missing-token, and existing-target states. It never creates a branch, issue, commit, or network action.
+The initializer only copies repository templates and fills stable mission-start fields: ID, title, branch, and Mission Brief dates. It deliberately leaves Handoff/MRPack lifecycle timestamps and evidence fields as placeholders until those artifacts are actually authored. It refuses dirty, detached, non-root, wrong-branch, malformed-ID, missing-template, missing-token, and existing-target states. It never creates a branch, issue, commit, or network action.
 
 5. Fill the Brief's intent, must/should constraints, non-goals, provisional property-based acceptance conditions, task-specific autonomy boundary, and issue reference. Do not prescribe detailed implementation steps.
 
