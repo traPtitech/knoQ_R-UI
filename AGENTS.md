@@ -20,7 +20,7 @@
 
 ## ミッション運用
 
-- まとまった機能追加，バグ修正，リファクタリング，調査を伴う変更では `start-mission` スキルを使い，必要になった時点で [`docs/missions/README.md`](./docs/missions/README.md) を読む．質問，レビュー，軽微な単発編集にはミッションを作らない．
+- 1つのまとまった機能追加，バグ修正，リファクタリング，調査を伴う変更では `start-mission` スキルを使う．独立した対話セッションとPRを複数立ち上げる場合は `start-multi-mission` を使う．必要になった時点で [`docs/missions/README.md`](./docs/missions/README.md) を読み，質問，レビュー，軽微な単発編集にはミッションを作らない．
 - 既存ミッションの続きでは，新しいミッションを作らず，該当する `docs/missions/<mission-id>/mission-brief.md` と `handoff.md` から再開する．
 
 ## 共通の作法

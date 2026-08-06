@@ -47,6 +47,12 @@ docs/missions/
 6. セッションを跨ぐ場合は [Handoff ガイド](./_guides/how-to-handoff.md) に沿って最小再開状態を残します．
 7. 完了時は [Merge-Readiness Pack ガイド](./_guides/how-to-merge-rationale.md) に沿って証拠を整理し，レビューを依頼します．
 
+## 複数の独立ミッション
+
+ユーザーが各Agentと別々に対話し，各変更を独立したPRとしてレビュー・マージしたい場合は `start-multi-mission` スキルを使います．このスキルは1ミッションにつき1つの `mission/<mission-id>` ブランチ，worktree，Mission Brief，対話セッションを用意します．各セッションが自身の計画承認，テスト設計承認，commit，push，PRを管理し，中央のintegrationブランチには集約しません．
+
+1つの調整セッションが内部subagentへ作業を分配し，最後に1本の成果へ統合する場合は `parallel-feature-development` を使います．この2つの運用を混在させません．
+
 ## 受け入れと証拠
 
 受け入れ条件は具体例だけでなく，常に成り立つプロパティまたは不変量として記述します．各プロパティを検証方法と期待する証拠に結び付け，Merge-Readiness Pack で実測結果へ 1 対 1 に対応させます．

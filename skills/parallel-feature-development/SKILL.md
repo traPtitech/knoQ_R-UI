@@ -1,11 +1,11 @@
 ---
 name: parallel-feature-development
-description: Coordinate two or more independent feature implementations in parallel by assigning supported subagents or agent-team workers to isolated Git worktrees and branches, then reviewing and integrating their commits. Use when a user asks to implement multiple features, issues, or UI changes concurrently in the knoQ_R-UI repository, especially when simultaneous edits in one checkout could conflict. Do not use for a single feature, tightly coupled changes, or read-only parallel research.
+description: Coordinate two or more implementation tasks inside one controlling conversation by assigning supported subagents or agent-team workers to isolated Git worktrees, then reviewing and combining their commits into one integration branch. Use when the user wants one agent to return one integrated result. Do not use for separate user-visible sessions or independent pull requests; use start-multi-mission for that workflow.
 ---
 
 # Parallel Feature Development
 
-Implement independent features concurrently without allowing agents to edit the same checkout. Keep planning, integration, destructive operations, and user communication in the coordinating agent.
+Implement independent features concurrently without allowing agents to edit the same checkout. Keep planning, integration, destructive operations, and all user communication in the coordinating agent. If the user wants to converse with each worker or open one PR per branch, stop and use `start-multi-mission` instead.
 
 ## Preconditions
 

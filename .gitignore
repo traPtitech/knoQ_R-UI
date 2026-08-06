@@ -26,3 +26,6 @@ coverage
 
 # Local worktrees created by the parallel feature development skill
 /.agent-worktrees/
+
+# Long-lived worktrees created by the multi-mission skill
+/.mission-worktrees/
