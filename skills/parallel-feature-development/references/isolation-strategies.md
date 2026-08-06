@@ -11,7 +11,7 @@ Use this reference only when deciding how to isolate parallel implementation age
 | Separate clones         | Separate working files and Git metadata                                | Host environment is shared                       | Medium                         | Duplicate Git objects and dependencies           | Independent credentials or remote operations        |
 | Worktree plus container | Worktree-level source isolation                                        | Container-level process and dependency isolation | Medium to high                 | Images, containers, volumes, and ports           | Conflicting native toolchains or untrusted commands |
 | GitHub Codespaces       | Remote checkout and branch per codespace                               | Dedicated remote VM and development container    | High without prebuilds         | Metered compute and storage                      | Remote collaboration or insufficient local capacity |
-| Codex cloud             | Remote checkout per task                                               | Managed task container                           | Medium after environment setup | Product usage and remote-environment constraints | Offloaded Codex tasks and PR-oriented handoff       |
+| Managed agent cloud     | Remote checkout per task                                               | Provider-managed task environment                | Medium after environment setup | Product usage and remote-environment constraints | Offloaded tasks and pull-request-oriented handoff   |
 
 ## Selection Rules
 
@@ -44,9 +44,9 @@ Choose one codespace per branch when work must continue remotely, contributors n
 
 Before creating codespaces, confirm repository access, organization policy, spending limits, secret configuration, machine size, idle timeout, and cleanup ownership. Prebuilds reduce startup time but consume storage and require repository administration.
 
-### Use Codex Cloud For Managed Offload
+### Use Managed Agent Clouds For Offload
 
-Choose Codex cloud when the user wants managed remote task containers and diff or pull-request handoff. Confirm that the repository and selected base commit are available remotely. Local uncommitted changes are not an appropriate base unless committed or otherwise transferred explicitly.
+Choose a managed agent cloud when the user wants remote task environments and diff or pull-request handoff. Confirm that the repository and selected base commit are available remotely. Local uncommitted changes are not an appropriate base unless committed or otherwise transferred explicitly.
 
 Cloud setup scripts can install dependencies, while agent-phase internet access and secrets follow the configured environment policy. Do not assume local credentials or services exist remotely.
 
