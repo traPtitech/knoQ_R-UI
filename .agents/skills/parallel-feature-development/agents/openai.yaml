@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Parallel Feature Development'
+  short_description: 'Implement independent features in isolated worktrees'
+  default_prompt: 'Use $parallel-feature-development to implement several independent features in parallel using isolated Git worktrees.'
