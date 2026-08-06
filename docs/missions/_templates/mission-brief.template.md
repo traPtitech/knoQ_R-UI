@@ -12,6 +12,7 @@ issue_status: not-applicable # not-applicable | draft | approved-created
 approvals:
   conceptual_plan: pending # pending | approved | changes-requested
   acceptance_properties: pending # pending | approved | changes-requested
+  test_design: pending # pending | approved | changes-requested
 related:
   handoff: ./handoff.md
   merge_rationale: ./merge-rationale.md
@@ -42,13 +43,23 @@ related:
 
 ## Property-controlled Acceptance
 
-| ID  | プロパティまたは不変量 | 検証方法               | 期待する証拠                         |
-| --- | ---------------------- | ---------------------- | ------------------------------------ |
-| P1  | <常に成り立つべき性質> | <テストまたは確認方法> | <ログ，スクリーンショット，差分など> |
-| P2  | <性質>                 | <検証方法>             | <証拠>                               |
+| ID  | プロパティまたは不変量 |
+| --- | ---------------------- |
+| P1  | <常に成り立つべき性質> |
+| P2  | <性質>                 |
 
 - **プロパティ承認**: pending
 - **承認者 / 日時 / 根拠**: <承認後に記録>
+
+### Test Design Consultation
+
+| ID  | テスト方法             | 失敗経路 / 回帰境界    | 期待する機械可読な証拠     |
+| --- | ---------------------- | ---------------------- | -------------------------- |
+| P1  | <焦点を絞った検証方法> | <境界値，失敗時，回帰> | <ログ，レポート，差分など> |
+| P2  | <テストまたは確認方法> | <境界>                 | <証拠>                     |
+
+- **テスト設計承認**: pending
+- **承認者 / 日時 / 根拠**: <Conceptual Plan とプロパティの承認後に，別 CRPack の結果を記録>
 
 ## Autonomy Envelope
 
@@ -59,6 +70,7 @@ related:
 ### must_consult
 
 - Conceptual Plan または受け入れプロパティを確定，変更するとき
+- プロパティとテスト方法，失敗境界，期待する証拠の対応を確定，変更するとき
 - スコープ，制約，公開 API，ユーザー向け挙動を変更するとき
 - Issue 作成，コメント，push，PR，デプロイなど外部へ影響する操作を行うとき
 - <ミッション固有の上申事項と上申先>

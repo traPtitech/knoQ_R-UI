@@ -33,11 +33,19 @@ docs/missions/
 ## 開始から終了まで
 
 1. `mission/<mission-id>` ブランチを作ります．
-2. [\_templates](./_templates/) の 3 ファイルを `docs/missions/<mission-id>/` にコピーし，`.template` をファイル名から外します．
+2. リポジトリルートで次の initializer を実行します．
+
+   ```bash
+   node skills/start-mission/scripts/init-mission.mjs --id <id> --title '<title>'
+   ```
+
+   initializer は [\_templates](./_templates/) の 3 ファイルを `docs/missions/<mission-id>/` へコピーし，`.template` をファイル名から外します．mission ID，タイトル，ブランチ，Brief の日付だけを埋め，Handoff と Merge-Readiness Pack の日時や証拠は実際に作成するまでプレースホルダーとして残します．ブランチ，Issue，commit，外部操作は作成しません．手動で初期化する場合も同じコピーと置換の意味を保ちます．
+
 3. [Mission Brief ガイド](./_guides/how-to-mission-brief.md) に沿って Brief を作ります．
-4. Conceptual Plan と受け入れプロパティについて人間の承認を得て，Brief に記録してから実装を始めます．
-5. セッションを跨ぐ場合は [Handoff ガイド](./_guides/how-to-handoff.md) に沿って最小再開状態を残します．
-6. 完了時は [Merge-Readiness Pack ガイド](./_guides/how-to-merge-rationale.md) に沿って証拠を整理し，レビューを依頼します．
+4. Conceptual Plan と受け入れプロパティについて人間の承認を得て，Brief に記録します．承認前に実装を始めません．
+5. 各プロパティをテスト方法，失敗境界，期待する証拠へ対応付け，別の test-design CRPack で承認を得ます．両方の承認を Brief に記録して `status: active` としてから本実装を始めます．
+6. セッションを跨ぐ場合は [Handoff ガイド](./_guides/how-to-handoff.md) に沿って最小再開状態を残します．
+7. 完了時は [Merge-Readiness Pack ガイド](./_guides/how-to-merge-rationale.md) に沿って証拠を整理し，レビューを依頼します．
 
 ## 受け入れと証拠
 
@@ -48,7 +56,7 @@ knoQ_R-UI では変更範囲に応じて，次のコマンドから必要なも�
 - `npm run lint`
 - `npm run type-check`
 - `npm run build`
-- `npx vitest run --coverage.enabled=true`
+- `npm exec -- vitest run --coverage.enabled=true`
 - 文書のみの変更では `npx prettier --check docs/missions` と `git diff --check`
 
 証拠にはコマンド，結果，実行日時，実行環境，対象 commit SHA，ログや成果物へのポインタを含めます．主張と異なる commit の証拠を流用せず，生成元が追跡できる状態を保ちます．
@@ -58,7 +66,7 @@ knoQ_R-UI では変更範囲に応じて，次のコマンドから必要なも�
 Brief の **Autonomy Envelope** は，操作を次の 3 区分にします．
 
 - `may_decide`: 合意済みの範囲でエージェントが自分で決定できます．
-- `must_consult`: 実行前に人間の承認が必要です．Conceptual Plan の確定，受け入れプロパティの確定，Brief のスコープ変更は必ず含めます．
+- `must_consult`: 実行前に人間の承認が必要です．Conceptual Plan と受け入れプロパティの確定，test design の確定，Brief のスコープ変更は必ず含めます．
 - `prohibited`: 承認の有無にかかわらず，このミッションでは実行しません．
 
 上申には **Consultation Request Pack（CRPack）** を使い，次を簡潔に提示します．
@@ -70,6 +78,8 @@ Brief の **Autonomy Envelope** は，操作を次の 3 区分にします．
 5. 承認後に行う操作
 
 Issue 作成，コメント投稿，push，PR 作成，デプロイ，外部サービスのデータ変更など，リポジトリ外へ影響する操作は `must_consult` です．対象と操作を示して明示的な承認を得るまで実行しません．ローカルでの調査，編集，検証，commit は Brief の境界内で進められます．
+
+Conceptual Plan と受け入れプロパティの承認後も，test design が未承認なら，本実装を先取りするプロダクト変更は行いません．テスト設計のための読み取り専用調査と破棄可能なプローブだけを進められます．
 
 ## コンテキスト
 

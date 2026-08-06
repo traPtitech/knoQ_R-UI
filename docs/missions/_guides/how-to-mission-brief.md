@@ -9,9 +9,11 @@ Mission Brief は，エージェントに細かな手順を与える文書では
 1. `YYYYMMDD-short-slug` の mission ID と `mission/<mission-id>` ブランチを決めます．
 2. Intent に動機，テスト可能な目的，スコープ，非目標，制約を書きます．
 3. Conceptual Plan には比較した方針，大まかな道筋，確認点，停止条件だけを書きます．
-4. 受け入れ条件をプロパティまたは不変量で書き，各項目を検証方法と証拠に結び付けます．
-5. Autonomy Envelope で `may_decide`，`must_consult`，`prohibited` を具体化します．
-6. 人間が Conceptual Plan と受け入れプロパティを承認し，承認者，日時，根拠を記録した後に `status: active` として実装を始めます．
+4. 受け入れ条件をプロパティまたは不変量で書きます．
+5. Conceptual Plan と受け入れプロパティを 1 つ目の CRPack で承認し，承認者，日時，根拠を記録します．承認前に実装を始めません．
+6. 承認済みの各プロパティを，焦点を絞ったテスト方法，失敗経路と回帰境界，期待する機械可読な証拠へ対応付けます．
+7. test design を別の CRPack で承認し，両ゲートの承認を Brief へ記録して `status: active` としてから本実装を始めます．承認前に許されるのは，読み取り専用調査と破棄可能なプローブだけです．
+8. Autonomy Envelope で `may_decide`，`must_consult`，`prohibited` を具体化します．両ゲートの変更を `must_consult` に含めます．
 
 ## セクションの判断基準
 
@@ -25,9 +27,11 @@ Mission Brief は，エージェントに細かな手順を与える文書では
 
 ### Property-controlled Acceptance
 
-各行は「入力や状態が変わっても守る性質」として読み取れるようにします．正常例だけでなく，空状態，失敗時，境界値，既存挙動の不変条件を検討します．検証には `npm run lint`，`npm run type-check`，`npm run build`，`npx vitest run --coverage.enabled=true`，必要な画面確認などを選びます．
+各プロパティは「入力や状態が変わっても守る性質」として読み取れるようにします．正常例だけでなく，空状態，失敗時，境界値，既存挙動の不変条件を検討します．Conceptual Plan とプロパティを先に承認し，この時点ではテスト方法を確定しません．
 
-プロパティの追加や意味変更は完了条件の変更です．実装中でも CRPack で再承認し，Brief の version と Changelog を更新します．
+承認後に Test Design Consultation で各 ID を検証方法と証拠へ結び付けます．検証には `npm run lint`，`npm run type-check`，`npm run build`，`npm exec -- vitest run --coverage.enabled=true`，必要な画面確認などを選びます．対応表を 2 つ目の CRPack として明示的に承認し，承認情報を Brief に反映してから本実装へ進みます．
+
+プロパティの追加や意味変更は完了条件の変更です．実装中でも Conceptual Plan / プロパティと test design の影響するゲートを再承認し，Brief の version と Changelog を更新します．
 
 ### Autonomy Envelope
 

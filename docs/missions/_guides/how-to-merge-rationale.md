@@ -6,7 +6,7 @@
 
 ## 作成手順
 
-1. 対象 commit を固定し，Brief の version，計画承認，プロパティ承認を確認します．
+1. 対象 commit を固定し，Brief の version，計画承認，プロパティ承認，テスト設計承認を確認します．
 2. 行ったこと，行わなかったこと，線引きの理由を Brief に沿って要約します．
 3. Brief のプロパティ ID をそのまま Property Coverage 表へ移します．
 4. 各プロパティに，実行した検証，出力へ結び付く証拠，`pass` / `fail` / `n-a` を対応させます．
@@ -23,7 +23,7 @@
 - **段階的に読める**: Pack には結論を置き，長いログやスクリーンショットはポインタで示します．
 - **出所を追跡できる**: commit SHA，コマンド，日時，Node / npm などの環境，成果物の生成元を記録します．
 
-knoQ_R-UI の標準候補は `npm run lint`，`npm run type-check`，`npm run build`，`npx vitest run --coverage.enabled=true` です．すべてを機械的に実行するのではなく，Brief のプロパティと変更範囲に合わせます．未実行項目は `not-run` と理由を記録します．証拠取得後に変更した場合は，対象 commit で再実行します．
+knoQ_R-UI の標準候補は `npm run lint`，`npm run type-check`，`npm run build`，`npm exec -- vitest run --coverage.enabled=true` です．すべてを機械的に実行するのではなく，Brief のプロパティと変更範囲に合わせます．未実行項目は `not-run` と理由を記録します．証拠取得後に変更した場合は，対象 commit で再実行します．
 
 ## Property Coverage
 

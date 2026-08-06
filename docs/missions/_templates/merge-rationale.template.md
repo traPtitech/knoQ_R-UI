@@ -38,12 +38,12 @@ related:
 
 ## Evidence and Provenance
 
-| 検証       | 結果                  | 実行コマンド                             | 証拠                         |
-| ---------- | --------------------- | ---------------------------------------- | ---------------------------- |
-| lint       | pass / fail / not-run | `npm run lint`                           | <要約またはログへのポインタ> |
-| type check | pass / fail / not-run | `npm run type-check`                     | <要約またはログへのポインタ> |
-| build      | pass / fail / not-run | `npm run build`                          | <要約またはログへのポインタ> |
-| tests      | pass / fail / not-run | `npx vitest run --coverage.enabled=true` | <要約またはログへのポインタ> |
+| 検証       | 結果                  | 実行コマンド                                     | 証拠                         |
+| ---------- | --------------------- | ------------------------------------------------ | ---------------------------- |
+| lint       | pass / fail / not-run | `npm run lint`                                   | <要約またはログへのポインタ> |
+| type check | pass / fail / not-run | `npm run type-check`                             | <要約またはログへのポインタ> |
+| build      | pass / fail / not-run | `npm run build`                                  | <要約またはログへのポインタ> |
+| tests      | pass / fail / not-run | `npm exec -- vitest run --coverage.enabled=true` | <要約またはログへのポインタ> |
 
 - **対象 commit**: `<SHA>`
 - **実行環境**: Node `<version>` / npm `<version>` / `<OS または CI>`
@@ -58,6 +58,7 @@ related:
 
 - **Conceptual Plan 承認**: <承認者 / 日時 / Brief の version>
 - **受け入れプロパティ承認**: <承認者 / 日時 / Brief の version>
+- **テスト設計承認**: <承認者 / 日時 / Brief の version>
 - **CRPack と結果**: <なければ none>
 - **Brief からの逸脱**: <なければ none．あれば承認と Brief 反映先>
 - **外部操作**: <実行していなければ none．実行した場合は対象，承認，結果>
