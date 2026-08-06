@@ -57,7 +57,7 @@ knoQ_R-UI では変更範囲に応じて，次のコマンドから必要なも�
 - `npm run type-check`
 - `npm run build`
 - `npm exec -- vitest run --coverage.enabled=true`
-- 文書のみの変更では `npx prettier --check docs/missions` と `git diff --check`
+- 文書のみの変更では `npm exec -- prettier --check docs/missions` と `git diff --check`
 
 証拠にはコマンド，結果，実行日時，実行環境，対象 commit SHA，ログや成果物へのポインタを含めます．主張と異なる commit の証拠を流用せず，生成元が追跡できる状態を保ちます．
 

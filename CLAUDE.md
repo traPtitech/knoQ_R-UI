@@ -18,6 +18,11 @@
 - `quality` / `tooling` は検証設定，テスト，ビルド，Git hook を変更するときにロードする．
 - 本文中の `[[card-id]]` は，その追加情報が必要な場合だけ辿る．
 
+## ミッション運用
+
+- まとまった機能追加，バグ修正，リファクタリング，調査を伴う変更では `start-mission` スキルを使い，必要になった時点で [`docs/missions/README.md`](./docs/missions/README.md) を読む．質問，レビュー，軽微な単発編集にはミッションを作らない．
+- 既存ミッションの続きでは，新しいミッションを作らず，該当する `docs/missions/<mission-id>/mission-brief.md` と `handoff.md` から再開する．
+
 ## 共通の作法
 
 - カードは圧縮された案内であり，コードの代替ではない．変更や提案の前に `source_pointer` の実物を確認する．
