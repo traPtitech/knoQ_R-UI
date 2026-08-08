@@ -1,33 +1,33 @@
-# Tool Adapter Reference
+# 実行環境ごとのツール対応
 
-The workflow in `SKILL.md` is host-neutral. Map discovery, consultation gates, parallel execution, and outward actions to the active product without changing the shared governance rules.
+`SKILL.md`のワークフローは，特定の実行環境へ依存しない．探索，承認ゲート，並行実行，外部操作を，以下の対応に沿って現在の製品へ割り当てる．共通の運用規則は変更しない．
 
 ## Codex
 
-- Discover the skill through `.agents/skills/start-mission`, which points to the canonical directory under `skills/`.
-- Invoke it explicitly as `$start-mission`, or request a governed mission in natural language.
-- Use Codex plan/user-input controls for the conceptual-plan and test-design Consultation Request Packs. A plan-control transition is not itself approval; require an affirmative user response to the proposed decision.
-- Use Codex subagents only through a referenced skill that calls for them, such as `$parallel-feature-development`. Keep the coordinating conversation responsible for the Brief and user decisions.
-- Read applicable `AGENTS.md` files before planning or editing. Treat `agents/openai.yaml` as optional UI metadata, not part of the workflow contract.
+- 正本の`skills/start-mission`を指す`.agents/skills/start-mission`からスキルを検出する．
+- `$start-mission`で明示するか，自然言語で管理されたミッションを依頼する．
+- Conceptual Planとテスト設計のConsultation Request Packには，Codexの計画機能とユーザー入力機能を使う．計画状態の遷移だけでは承認とみなさず，提示した判断に対する肯定的な回答を得る．
+- Codexのsubagentは，`$parallel-feature-development`など，利用を指示するスキルを通してだけ使う．調整役の対話がBriefとユーザー判断に責任を持つ．
+- 計画や編集の前に，適用される`AGENTS.md`を読む．`agents/openai.yaml`は任意のUIメタデータであり，ワークフロー契約には含めない．
 
 ## Claude Code
 
-- Discover the skill through `.claude/skills/start-mission`, which points to the same canonical directory under `skills/`.
-- Invoke it explicitly as `/start-mission`, or request a governed mission in natural language.
-- Use plan mode and `AskUserQuestion` as appropriate for the two Consultation Request Packs. Exiting plan mode is not sufficient when the user has not affirmatively approved the specific conceptual plan or test design.
-- Use Claude Code subagents only through a referenced skill that calls for them, such as `/parallel-feature-development`. Keep the coordinating conversation responsible for the Brief and user decisions.
-- Read applicable `CLAUDE.md` and `AGENTS.md` files before planning or editing. Verify the working directory explicitly when hooks or scripts run from a linked worktree.
+- 正本の`skills/start-mission`を指す`.claude/skills/start-mission`からスキルを検出する．
+- `/start-mission`で明示するか，自然言語で管理されたミッションを依頼する．
+- 2つのConsultation Request Packでは，必要に応じてplan modeと`AskUserQuestion`を使う．ユーザーが具体的なConceptual Planまたはテスト設計を肯定していなければ，plan modeの終了だけで承認済みにしない．
+- Claude Codeのsubagentは，`/parallel-feature-development`など，利用を指示するスキルを通してだけ使う．調整役の対話がBriefとユーザー判断に責任を持つ．
+- 計画や編集の前に，適用される`CLAUDE.md`と`AGENTS.md`を読む．リンクされたworktreeでhookやscriptを実行する場合は，作業ディレクトリを明示的に確認する．
 
-## GitHub And Git Operations
+## GitHubとGit
 
-- Use an available GitHub connector or `gh` CLI to create an issue or pull request. Before invoking either, show the exact title and body to the user and obtain explicit approval.
-- Use normal Git tooling to inspect state and create the agreed mission branch. Do not hide, stash, discard, or commit pre-existing user changes to satisfy the initializer's clean-tree requirement.
-- Treat push, pull-request creation, and branch/worktree removal as separate outward or destructive actions. Ask immediately before each action and state the exact branch, remote, repository, or paths affected.
-- Use `skills/start-mission/scripts/init-mission.mjs` from the repository root in every host. Do not reimplement its template substitution with host editing tools.
+- IssueまたはPRの作成には，利用可能なGitHub connectorか`gh` CLIを使う．実行前にタイトルと本文をそのまま示し，ユーザーの明示的な承認を得る．
+- Gitの通常機能で状態を確認し，合意したミッションブランチを作る．初期化スクリプトが要求するclean treeを得るために，既存のユーザー変更を隠したり，stashしたり，破棄したり，commitしたりしない．
+- push，PR作成，ブランチやworktreeの削除は，それぞれ独立した外部操作または破壊的操作として扱う．実行直前に，対象のブランチ，remote，リポジトリ，パスを示して承認を得る．
+- どの実行環境でも，リポジトリルートから`skills/start-mission/scripts/init-mission.mjs`を使う．テンプレート置換を各製品の編集機能で再実装しない．
 
-## Shared Rules
+## 共通規則
 
-- Keep the canonical implementation in `skills/start-mission`; do not create product-specific copies.
-- Preserve continuation detection and both mandatory consultation gates regardless of the host's planning interface.
-- Record approved decisions in the Mission Brief immediately. Chat or plan-mode state is not the source of truth.
-- Never let a host permission grant substitute for user approval of an issue, push, pull request, or cleanup.
+- 正本は`skills/start-mission`に置き，製品ごとのコピーを作らない．
+- 実行環境の計画UIにかかわらず，継続ミッションの検出と2つの必須承認ゲートを維持する．
+- 承認された判断は，直ちにMission Briefへ記録する．チャットやplan modeの状態を正本にしない．
+- 実行環境に対する権限付与を，Issue，push，PR，後片付けに対するユーザー承認の代わりにしない．

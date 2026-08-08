@@ -22,13 +22,13 @@ retirement_status: active
 access_notes: all-roles
 ---
 
-# API，データ取得，生成スキーマ
+# API呼び出しとデータ取得状態
 
-## 概要
+## GETのキャッシュにはSWRVを使う
 
-`src/lib/api/index.ts` は `openapi-fetch` の型付きクライアントを公開する．開発時の base URL は `http://localhost:3000/api`，それ以外は `/api` で，cookie を含めるため `credentials: 'include'` を指定している．GET の再利用には SWRV ベースの `useApiFetch` があり，読み込み状態は `useSwrvState` が 6 状態へ整理する．
+`src/lib/api/index.ts`は，`openapi-fetch`の型付きクライアントを公開する．開発時のbase URLは`http://localhost:3000/api`，それ以外は`/api`である．Cookieを含めるため，`credentials: 'include'`を指定している．GETのキャッシュにはSWRVベースの`useApiFetch`を使い，`useSwrvState`が取得状態を6種類に整理する．
 
-## 不変条件
+## 変更時に守ること
 
 - API 呼び出しは `apiClient` を直接使う．GET をリアクティブにキャッシュする場合は `useApiFetch` を使い，独自ラッパー層や新しいストア経由を先に増やさない．
 - `useApiFetch` は GET の path と `FetchOptions` を生成済み `paths` から型付けし，キャッシュキーは path と options の JSON で構成する．mutation は `apiClient.POST` / `PUT` / `DELETE` などを直接呼び，必要なら既存データを `mutate` する．

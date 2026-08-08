@@ -16,15 +16,15 @@ retirement_status: active
 access_notes: all-roles
 ---
 
-# プロジェクト概要
+# knoQ_R-UIの全体像
 
-## 概要
+## 通常APIと日程調整ではデータの境界が異なる
 
-knoQ_R-UI は Vue 3，TypeScript，Vite で構成された knoQ のフロントエンドである．イベント，進捗部屋，グループ，ユーザー，タグ，カレンダー，iCal，検索，日程調整の画面を持つ．通常の API 契約は OpenAPI 生成型を使う一方，draft-event は現在 mock API に閉じている．
+knoQ_R-UIは，Vue 3，TypeScript，Viteで構成されたknoQのフロントエンドである．イベント，進捗部屋，グループ，ユーザー，タグ，カレンダー，iCal，検索，日程調整の画面を持つ．通常のAPI契約にはOpenAPI生成型を使う．日程調整を扱うdraft-eventだけは，現在もmock APIとローカル型で実装されている．
 
-## 不変条件
+## 変更時に守ること
 
 - 実装前に [`docs/conventions.md`](../conventions.md) を読み，詳細カードは `index.yaml` のタグと `load_when` が作業に一致する場合だけロードする．全カードを一括ロードしない．
-- アプリケーションコードは `src/pages/`，`src/features/`，`src/components/`，`src/composables/`，`src/lib/` の既存責務へ配置する．構成とルーティングの詳細は [[frontend-architecture-routing]] を参照する．
-- 通常 API と draft-event のデータ境界を混同しない．通常 API は生成スキーマ，draft-event はローカル型と mock 実装が現時点の事実である．変更時は [[api-data-schema]] と [[event-draft-event-domain]] の該当箇所を確認する．
+- アプリケーションコードは，`src/pages/`，`src/features/`，`src/components/`，`src/composables/`，`src/lib/`の既存責務に沿って配置する．構成とルーティングの詳細は[[frontend-architecture-routing]]を参照する．
+- 通常APIとdraft-eventのデータ境界を混同しない．変更時は[[api-data-schema]]と[[event-draft-event-domain]]の該当箇所を確認する．
 - `src/lib/api/schema.d.ts` は生成物であり，手編集しない．

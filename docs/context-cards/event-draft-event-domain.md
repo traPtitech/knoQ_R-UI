@@ -28,13 +28,13 @@ retirement_status: active
 access_notes: all-roles
 ---
 
-# event と draft-event のドメイン
+# eventとdraft-eventは別のデータ契約を持つ
 
-## 概要
+## eventは生成型，draft-eventはローカル型を使う
 
-event は確定した日時を持つ通常 API のドメインで，型は OpenAPI の `ResponseEvent`，`ResponseEventDetail`，`RequestSchedule` から導出する．draft-event は候補スロットへの回答と集計を扱う日程調整ドメインで，ローカル型，mock API，専用 composable によって実装されている．
+eventは，確定した日時を持つ通常APIのドメインである．型はOpenAPIの`ResponseEvent`，`ResponseEventDetail`，`RequestSchedule`から導出する．draft-eventは候補時間への回答と集計を扱う日程調整ドメインで，ローカル型，mock API，専用composableによって実装されている．
 
-## 不変条件
+## 変更時に守ること
 
 - event の API 型を手書きで複製せず，`components['schemas']` から導出する．参加予定値は生成スキーマ上の `pending | absent | attendance` を保つ．
 - event 作成は場所文字列を渡す instant event と，`roomId` を渡す stock event の union である．`CreateEvent.vue` は部屋選択の有無で body を分けるため，両形式を変更時に検証する．

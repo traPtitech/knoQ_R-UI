@@ -1,30 +1,30 @@
 ---
 name: start-mission
-description: Start or resume a governed knoQ_R-UI development mission from scope alignment through evidence-based closeout. Use for substantial features, bug fixes, refactors, or investigations that need a Mission Brief, explicit conceptual-plan and test-design consultations, continuity across sessions, and a Merge-Readiness Pack. Do not use for questions, reviews, or trivial one-file edits that do not warrant mission governance.
+description: Mission Briefによる作業範囲の合意から，証拠に基づく完了判断まで，knoQ_R-UIの開発ミッションを開始または再開する．明示的な方針承認とテスト設計承認，セッションをまたぐ継続性，Merge-Readiness Packが必要な機能追加，バグ修正，リファクタリング，調査で使う．質問，レビュー，ミッション管理を必要としない軽微な単一ファイル編集には使わない．
 ---
 
 # Start Mission
 
-Coordinate one substantial development task through Mission Engineering, Context Engineering, and evidence-based closeout. Keep `docs/missions/<mission-id>/mission-brief.md` as the current source of truth. Record outcomes and reasons, not a transcript of exploration.
+1つのまとまった開発タスクを，Mission Engineering，Context Engineering，証拠に基づく完了判断まで一貫して進め，`docs/missions/<mission-id>/mission-brief.md`には探索の全文を貼らず，採用した結論と理由を記録する．Briefが正本である．
 
-Read [references/tool-adapters.md](references/tool-adapters.md) before interacting with the user or using host-specific controls. Read `docs/missions/README.md` and its linked guides when present; they define the repository's mission document semantics.
+ユーザーと対話したり，実行環境に固有の機能を使ったりする前に，[ツール対応表](references/tool-adapters.md)を読む．`docs/missions/README.md`が存在する場合は，まずその入口を確認し，現在の工程に対応するガイドだけを読む．リポジトリにおけるミッション文書の意味は，これらの文書に従う．
 
-## 1. Check Scope And Continuation
+## 1．作業範囲と継続ミッションを確認する
 
-1. Read the applicable `AGENTS.md`, `CLAUDE.md`, and repository guidance before planning or editing.
-2. Restate the request as a testable intent with explicit in-scope and out-of-scope boundaries. Ask only the minimum questions needed to remove material ambiguity.
-3. Decide whether mission governance is proportional. Handle a question, review, or trivial isolated edit without creating a mission.
-4. Search `docs/missions/*/mission-brief.md` for the request, referenced issue, branch, or mission ID. Also inspect the current `mission/*` branch, if any.
-5. If this is a continuation, do not create another issue, branch, or document set. Verify the current branch matches the Brief, then read the Brief and `handoff.md`, load only their active context pointers, refresh stale current-state fields, and resume at the first incomplete gate.
+1. 計画や編集を始める前に，適用される`AGENTS.md`，`CLAUDE.md`，リポジトリ内のガイドを読む．
+2. 依頼を，検証可能な目的，対象範囲，対象外へ言い換える．結果を左右する曖昧さだけを，最小限の質問で解消する．
+3. ミッション管理が作業規模に見合うか判断する．質問，レビュー，軽微な単発編集にはミッションを作らない．
+4. 依頼，Issue，ブランチ，mission IDに対応する`docs/missions/*/mission-brief.md`を探す．現在のブランチが`mission/*`であれば，その関係も確認する．
+5. 既存ミッションの続きなら，Issue，ブランチ，文書一式を新しく作らない．現在のブランチとBriefが一致することを確かめ，Briefと`handoff.md`を読む．有効なContext Pointerだけをロードし，古いCurrent Stateを更新して，未完了の最初のゲートから再開する．
 
-## 2. Establish The Mission
+## 2．新しいミッションを用意する
 
-For a new mission:
+新しいミッションでは，次の順に進める．
 
-1. Choose `YYYYMMDD-<short-slug>`. Use the current repository-local date and a lowercase kebab-case slug of at most 48 characters.
-2. Decide with the user whether GitHub tracking is needed. If it is, prepare an issue draft containing motivation, scope, non-goals, and provisional acceptance properties. Present the exact title and body, and create nothing until the user explicitly approves that draft. Record the resulting issue reference in the Brief.
-3. Require a clean checkout. Create and enter `mission/<mission-id>` from the agreed base. If that branch already exists, investigate whether this is a continuation instead of overwriting it.
-4. Initialize the document set only after entering the mission branch:
+1. mission IDを`YYYYMMDD-<short-slug>`形式で決める．日付にはリポジトリ所在地の現在日を使い，slugは48文字以内の小文字kebab-caseにする．
+2. GitHub上で追跡する必要があるか，ユーザーと決める．必要な場合は，動機，作業範囲，非目標，暫定的な受け入れプロパティを含むIssue案を作る．タイトルと本文をそのまま提示し，ユーザーが明示的に承認するまでは作成しない．作成後のIssue参照はBriefへ記録する．
+3. 作業ツリーがcleanであることを確認する．合意したbaseから`mission/<mission-id>`を作成し，そのブランチへ移動する．同名ブランチがすでにある場合は上書きせず，既存ミッションの続きか調べる．
+4. ミッションブランチへ移動した後に，文書一式を初期化する．
 
 ```bash
 node skills/start-mission/scripts/init-mission.mjs \
@@ -32,62 +32,57 @@ node skills/start-mission/scripts/init-mission.mjs \
   --title 'Example mission'
 ```
 
-The initializer only copies repository templates and fills stable mission-start fields: ID, title, branch, and Mission Brief dates. It deliberately leaves Handoff/MRPack lifecycle timestamps and evidence fields as placeholders until those artifacts are actually authored. It refuses dirty, detached, non-root, wrong-branch, malformed-ID, missing-template, missing-token, and existing-target states. It never creates a branch, issue, commit, or network action.
+初期化スクリプトは，テンプレートをコピーし，mission ID，タイトル，ブランチ，Mission Briefの日付だけを設定する．HandoffとMerge-Readiness Packの日時や証拠は，実際に記録するまでプレースホルダーとして残す．dirty tree，detached HEAD，リポジトリルート外，ブランチ不一致，不正なID，テンプレートや置換tokenの不足，出力先の重複があれば，エラーで終了する．ブランチやIssueは作成せず，commitやネットワーク操作も行わない．
 
-5. Fill the Brief's intent, must/should constraints, non-goals, provisional property-based acceptance conditions, task-specific autonomy boundary, and issue reference. Do not prescribe detailed implementation steps.
+5. Briefへ目的，`must`と`should`の制約，非目標，暫定的なプロパティベースの受け入れ条件，作業固有のAutonomy Envelope，Issue参照を記入する．細かな実装手順はまだ固定しない．
 
-## 3. Select Context Deliberately
+## 3．必要なコンテキストだけを選ぶ
 
-Start from the smallest working set:
+最初は，次の判断に必要な最小構成から始める．
 
-1. Pin only always-applicable repository guidance and sources necessary to make the next decision.
-2. If a context-card index exists, select cards by `load_when`, tags, priority, retirement status, and source pointer. Do not load every card or copy card contents into the Brief.
-3. Add file, card, issue, or design-document pointers to the Brief with their must/should strength and the question each source answers.
-4. Treat newly discovered context as a change to the working set. Remove or de-prioritize unused context, preserve source pointers when compressing it, and keep exploration logs outside the main narrative. Roll only conclusions, reasons, and evidence pointers back into the Brief.
+1. 常に適用されるリポジトリガイドと，次の判断に必要なソースだけを固定する．
+2. Context Cardのindexがある場合は，`load_when`，tag，priority，retirement status，source pointerからカードを選ぶ．全カードを読み込まず，Briefへ内容を複製しない．
+3. ファイル，カード，Issue，設計文書への参照をBriefへ追加する．各参照には`must`または`should`の強度と，そのソースが答える問いを添える．
+4. 新しく見つかった情報は，作業中のコンテキスト変更として扱う．使わない情報は外すか優先度を下げ，圧縮時もsource pointerを残す．探索ログは本流から分け，採用した結論，理由，証拠への参照だけをBriefへ戻す．
 
-## 4. Consult On The Conceptual Plan
+## 4．解決方針の承認を受ける
 
-This gate is mandatory before implementation.
+本実装に入る前の必須ゲートである．
 
-1. Compare at least two viable approaches when a meaningful alternative exists. Define the coarse approach, checkpoints, and slow-mode triggers without turning the Brief into a step-by-step implementation script.
-2. Present a Consultation Request Pack containing:
-   - decision requested;
-   - why the decision matters now;
-   - options and tradeoffs;
-   - recommendation;
-   - proposed conceptual plan and acceptance properties.
-3. Obtain explicit user approval. Do not begin implementation before approval.
-4. Immediately write the approved plan, acceptance properties, decision rationale, `last_updated`, and changelog entry into the Brief.
-5. If the approved plan contains at least two genuinely independent implementation tasks, follow [parallel-feature-development](../parallel-feature-development/SKILL.md) after plan approval. Do not reproduce its worktree, delegation, integration, or cleanup workflow here.
+1. 意味のある代案が存在する場合は，実行可能な方針を2つ以上比較する．Briefを詳細な手順書にせず，大まかな進め方，チェックポイント，スローモート・トリガーを定める．
+2. Consultation Request Packとして，今求める判断，今決める理由，選択肢とトレードオフ，推奨案，Conceptual Plan案，受け入れプロパティ案を提示する．
+3. ユーザーの明示的な承認を得る．承認前に本実装を始めない．
+4. 承認済みの計画，受け入れプロパティ，判断理由，`last_updated`，Changelogを直ちにBriefへ反映する．
+5. 承認済み計画に，独立して進められる実装タスクが2件以上ある場合は，[parallel-feature-development](../parallel-feature-development/SKILL.md)へ従う．worktree，分担，統合，後片付けの手順をこのスキル内に複製しない．
 
-## 5. Consult On Test Design
+## 5．テスト設計の承認を受ける
 
-This gate is mandatory before full implementation.
+こちらも本実装前の必須ゲートである．
 
-1. Map every acceptance property or invariant to a focused test method and expected machine-readable evidence. Include relevant failure paths and regression boundaries.
-2. Present the proposed mapping as a Consultation Request Pack, with alternatives and a recommendation where test strategy has meaningful tradeoffs.
-3. Obtain explicit user approval before writing the full implementation. Small read-only investigations and disposable probes are allowed; product changes that pre-empt the test-design decision are not.
-4. Roll the approved mapping and rationale into the Brief before continuing. If the user changes a property or test boundary, update the Brief first.
+1. すべての受け入れプロパティまたは不変量を，焦点を絞った検証方法と，期待する機械可読な証拠へ対応付ける．関係する失敗経路と回帰境界も含める．
+2. テスト戦略に意味のあるトレードオフがある場合は，選択肢と推奨案を添え，対応表をConsultation Request Packとして提示する．
+3. 本実装を書く前に，ユーザーの明示的な承認を得る．読み取り専用の調査と破棄できる小さな検証は進められるが，テスト設計を先回りして固定するプロダクト変更は行わない．
+4. 承認済みの対応表と理由をBriefへ反映してから続行する．ユーザーがプロパティやテスト境界を変えた場合は，先にBriefを更新する．
 
-## 6. Implement And Keep The Brief Fresh
+## 6．承認済みの範囲で実装する
 
-Work autonomously inside the approved plan and autonomy envelope. Run focused checks early, then broaden validation according to risk and repository guidance.
+承認済みの計画とAutonomy Envelopeの内側では，自律的に進める．早い段階で変更箇所に近い検証を行い，リスクとリポジトリガイドに応じて検証範囲を広げる．
 
-Update the Brief immediately when scope, constraints, acceptance properties, context pointers, checkpoints, or approved decisions change. Record the decision and why it changed. Stop for another Consultation Request Pack when a slow-mode trigger fires or work would cross the autonomy boundary.
+作業範囲，制約，受け入れプロパティ，Context Pointer，チェックポイント，承認済みの判断が変わったら，直ちにBriefを更新する．何を変えたかだけでなく，理由も残す．スローモート・トリガーに該当した場合や，Autonomy Envelopeを越える場合は作業を止め，新しいConsultation Request Packを提示する．
 
-When a session, coordinator, or implementation owner changes, update `handoff.md` with only the minimum reproducible state: completed work, current work, next action, effective decisions and reasons, active context pointers with strength and provenance, blockers, and validation state. Keep the Brief and handoff consistent; do not paste chat transcripts or raw exploration logs.
+セッション，調整役，実装担当が替わるときは，`handoff.md`を更新する．残すのは，完了した作業，進行中の作業，次の操作，有効な判断と理由，強度と出所を持つContext Pointer，blocker，検証状態という最小再開状態だけである．BriefとHandoffの内容を一致させ，チャット全文や探索の生ログは貼り付けない．
 
-## 7. Close With Evidence
+## 7．証拠をそろえて終了する
 
-Complete `merge-rationale.md` as the Merge-Readiness Pack (MRPack):
+`merge-rationale.md`をMerge-Readiness Pack（MRPack）として完成させる．
 
-- summarize what changed, what did not, and why;
-- map each acceptance property to its test, evidence pointer, and status;
-- identify important changed areas and compatibility impact;
-- record commands and results, source commit, environment, and generation time;
-- summarize exploration conclusions and provenance without raw logs;
-- record consultations, approvals, deviations, unresolved risks, and any coded non-merge root cause.
+- 変更したこと，変更しなかったこと，その理由を要約する．
+- 各受け入れプロパティを，テスト，証拠への参照，状態へ対応付ける．
+- 重要な変更箇所と互換性への影響を示す．
+- コマンドと結果，対象commit，実行環境，生成日時を記録する．
+- 探索の結論と出所を要約し，生ログは貼り付けない．
+- 相談，承認，計画からの逸脱，未解決リスク，該当するnon-merge root causeを記録する．
 
-Validate the final implementation and mission documents. Keep failed or unavailable checks visible. Update the handoff if any work remains; otherwise mark the Brief and MRPack consistently ready for review.
+最終実装とミッション文書を検証する．失敗した検証や実行できなかった検証も隠さない．作業が残っていればHandoffを更新し，残っていなければBriefとMRPackの状態をレビュー可能な状態へ揃える．
 
-Report the branch, mission document paths, implementation summary, validation evidence, and remaining risks. A local commit does not authorize an outward action. Present the exact proposed action and obtain separate explicit user approval before each push, pull-request creation, or branch/worktree cleanup. Never infer cleanup approval from implementation or merge approval.
+最後に，ブランチ，ミッション文書の場所，実装の要約，検証結果，残るリスクを報告する．ローカルcommitは，外部操作の許可を意味しない．push，PR作成，ブランチまたはworktreeの削除は，対象となる操作を正確に示し，それぞれ実行直前にユーザーの明示的な承認を得る．実装やマージの承認から，後片付けの承認を推測してはならない．

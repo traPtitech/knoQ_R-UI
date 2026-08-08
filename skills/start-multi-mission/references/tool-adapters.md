@@ -1,35 +1,35 @@
-# Tool Adapter Reference
+# 実行環境ごとのツール対応
 
-Keep branch, worktree, Mission Brief, PR, and approval behavior identical across hosts. Product-specific commands affect only how the user opens an interactive session.
+branch，worktree，Mission Brief，PR，承認の扱いは，どの実行環境でも変えない．製品固有のコマンドが変えるのは，ユーザーが対話セッションを開く方法だけである．
 
 ## Codex
 
-- Discover the skill through `.agents/skills/start-multi-mission`.
-- Invoke it explicitly as `$start-multi-mission`, or request separate interactive missions and PRs in natural language.
-- Start a prepared mission with `codex -C <absolute-worktree-path> '<prompt>'`.
-- The generated prompt invokes `$start-mission` and tells the session to resume the existing mission instead of creating another branch.
-- Use Codex CLI commands by default because the manager can generate and verify them deterministically.
-- In a Codex UI that supports local workspaces, open each prepared worktree as a separate workspace, start a separate conversation, and invoke `$start-mission` with the mission ID. The manager does not automate UI workspace creation.
-- Use a separate terminal, tmux window, or Codex UI workspace for each worktree. Do not replace these user-visible conversations with Codex subagents.
+- `.agents/skills/start-multi-mission`からスキルを検出する．
+- `$start-multi-mission`で明示するか，別々の対話ミッションとPRを自然言語で依頼する．
+- 準備済みのミッションは，`codex -C <absolute-worktree-path> '<prompt>'`で開始する．
+- 生成するpromptは`$start-mission`を呼び出し，新しいbranchを作らず既存ミッションを再開するよう指示する．
+- managerが同じ入力から同じコマンドを生成し，内容を検証できるため，標準ではCodex CLIを使う．
+- local workspaceを扱えるCodex UIでは，準備済みworktreeを別々のworkspaceとして開く．それぞれ別の対話を始め，mission IDとともに`$start-mission`を呼び出す．managerはUI workspaceの作成を自動化しない．
+- worktreeごとに，別のterminal，tmux window，Codex UI workspaceを使う．ユーザーから見える対話を，Codex subagentで置き換えない．
 
 ## Claude Code
 
-- Discover the skill through `.claude/skills/start-multi-mission`.
-- Invoke it explicitly as `/start-multi-mission`, or request separate interactive missions and PRs in natural language.
-- Start a prepared mission by changing to its worktree and running `claude --name <mission-id> '<prompt>'`.
-- The generated prompt invokes `/start-mission` and tells the session to resume the existing mission.
-- Do not use Claude Code's `--worktree` option after this skill has prepared worktrees. The manager owns the exact branch names, paths, and mission documents.
+- `.claude/skills/start-multi-mission`からスキルを検出する．
+- `/start-multi-mission`で明示するか，別々の対話ミッションとPRを自然言語で依頼する．
+- 準備済みworktreeへ移動し，`claude --name <mission-id> '<prompt>'`で開始する．
+- 生成するpromptは`/start-mission`を呼び出し，既存ミッションを再開するよう指示する．
+- このスキルでworktreeを準備した後は，Claude Codeの`--worktree` optionを使わない．正確なbranch名，path，ミッション文書はmanagerが管理する．
 
 ## tmux
 
-- `launch --tmux --yes` creates one detached tmux session named `knoq-<batch-id>` and one window per mission.
-- The same external tmux layout is used for Codex and Claude Code so batch behavior remains host-neutral.
-- Attach with the command printed by the manager. Switch windows to converse with each mission independently.
-- Exit the agent process in a window before cleaning up its worktree.
+- `launch --tmux --yes`は，`knoq-<batch-id>`というdetached tmux sessionを1つ作り，ミッションごとにwindowを1つ用意する．
+- CodexとClaude Codeのどちらでも同じ外部tmux構成を使い，batchの動作を実行環境に依存させない．
+- managerが表示したコマンドでattachし，windowを切り替えて各ミッションと個別に対話する．
+- worktreeを削除する前に，該当windowのagent processを終了する．
 
-## Shared Rules
+## 共通規則
 
-- Printing commands does not start sessions and does not require launch approval beyond worktree creation.
-- Starting tmux windows launches multiple billable agent sessions. Present the agent, session name, worktrees, and mission count immediately before requesting approval.
-- Never add permission-bypass flags to generated Codex or Claude commands.
-- Each session obtains its own approval before issue creation, push, or PR creation.
+- コマンドの表示はセッションを起動しないため，worktree作成の承認とは別の起動承認を必要としない．
+- tmux windowの起動は，課金対象になり得るagent sessionを複数開始する．承認を求める直前に，agent，session名，worktree，ミッション数を示す．
+- 生成するCodexまたはClaudeのコマンドへ，権限を迂回するflagを加えない．
+- 各セッションは，Issue作成，push，PR作成の前に，それぞれ承認を得る．

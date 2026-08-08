@@ -1,124 +1,90 @@
-# UI コーディング規約
+# UIコーディング規約
 
-knoQ_R-UI (Vue 3 + TypeScript + UnoCSS のフロントエンド) のコーディング規約をまとめたものです。
-**機械的に検証できる項目はすべて `eslint.config.ts` で強制** しています。このドキュメントは「なぜそのルールなのか」「lint で表現できない設計意図と運用」を残すためのものです。AI エージェントは lint が指摘した違反を回避しようとするのではなく、ここに書かれた意図に沿って書き直してください。
+knoQ_R-UIでは，機械的に判定できる規約を`eslint.config.ts`で強制しています．この文書が扱うのは，各ルールを設けた理由と，Lintだけでは判断できない設計方針です．エラーを避けるために形だけ変えるのではなく，ここに示す意図に沿って修正してください．
 
-## スタック
+## 採用技術
 
-- Vue 3 (Composition API, `<script setup>`) + TypeScript + Vite
-- Pinia (状態管理), Vue Router (ルーティング)
-- UnoCSS (スタイリング、Wind3 + Attributify + Icons プリセット)
-- ESLint + Prettier
-- API クライアントは OpenAPI から `openapi-typescript` で型生成、`openapi-fetch` で呼ぶ
+- Vue 3のComposition APIと`<script setup>`
+- TypeScriptとVite
+- 状態管理にPinia，ルーティングにVue Router
+- スタイリングにUnoCSSのWind3，Attributify，Iconsプリセット
+- 静的検査にESLint，整形にPrettier
+- API型の生成に`openapi-typescript`，通信に`openapi-fetch`
 
-## ディレクトリ構成と責務
+## コードは利用範囲と責務で配置する
 
-- `src/lib/api/` — `schema.d.ts` は OpenAPI から自動生成。**手で編集しない / lint・format 対象外**
-- `src/components/` — アプリ全体で再利用する UI 部品 (汎用)
-- `src/composables/` — `useXxx` 形式の再利用ロジック (副作用・リアクティブ状態を含む)
-- `src/features/<feature>/` — ドメイン単位の機能フォルダ。`components/`, `composables/`, `types.ts`, `mock/` などを内側に持つ
-- `src/pages/` — ルートに 1:1 対応するページ単位コンポーネント
-- `src/layouts/` — ページを包むレイアウト
-- `src/router/` — ルーティング定義
-- `src/lib/` — ドメイン横断のユーティリティ (`time.ts` など)
+| 場所                      | 責務                                                     |
+| ------------------------- | -------------------------------------------------------- |
+| `src/pages/`              | ルートと1対1で対応するページ                             |
+| `src/layouts/`            | ページを包むレイアウト                                   |
+| `src/router/`             | URLとページを対応付けるルーティング定義                  |
+| `src/features/<feature>/` | 特定ドメインに閉じた部品，composable，型，mock           |
+| `src/components/`         | アプリ全体で再利用するUI部品                             |
+| `src/composables/`        | 複数機能から使う，副作用やリアクティブ状態を含むロジック |
+| `src/lib/`                | APIクライアントや時刻処理など，ドメインをまたぐコード    |
+| `src/lib/api/schema.d.ts` | OpenAPIから生成するAPI型．直接編集しない                 |
 
-責務が複数にまたがる場合は、所属を選ぶ前に「呼ぶ側はどこか」「副作用を持つか」「特定 feature に閉じるか横断か」を考えてください。
+所属に迷ったときは，そのコードを呼ぶ側，副作用の有無，特定のfeatureだけで使うかを確認します．複数の画面から使うという理由だけで，ドメイン固有の部品を共通化しないでください．
 
-## パスエイリアス
+## importは`/@`から始める
 
-`vite.config.ts` で `/@` → `src/` のエイリアスを定義しています。**親相対パス (`../*`) は禁止** (`no-restricted-imports`)。すべて `/@/...` で書くこと。
+`vite.config.ts`と`tsconfig.json`は，`/@`を`src/`へ割り当てています．親相対importの`../*`はESLintで禁止しているため，`/@/...`を使います．ファイルを移動しても参照が壊れにくく，参照先もリポジトリ全体から検索しやすくなります．
 
-## 自動チェック
+## 自動検査は編集直後とcommit前に動く
 
-- `.claude/hooks/format.sh` — Edit/Write 直後に Prettier → ESLint `--fix` を該当ファイルに実行
-- `.claude/hooks/typecheck.sh` — タスク完了時に `vue-tsc --noEmit` を実行 (ソースを編集したセッションのみ)
-- `.husky/pre-commit` — コミット時に lint-staged (ESLint+Prettier) と `npm run type-check` を実行
+| タイミング            | 仕組み                       | 実行内容                                               |
+| --------------------- | ---------------------------- | ------------------------------------------------------ |
+| Claude Codeでの編集後 | `.claude/hooks/format.sh`    | 対象ソースへPrettierと`eslint --fix`を実行             |
+| Claude Codeの終了時   | `.claude/hooks/typecheck.sh` | ソースを編集したセッションだけ`vue-tsc --noEmit`を実行 |
+| commit前              | `.husky/pre-commit`          | lint-stagedと`npm run type-check`を実行                |
 
-エラーが出た場合は自動修正で済むものは直り、残ったエラーは AI にフィードバックされて再修正を促します。
+初回の`npm install`では，`prepare`スクリプトがHuskyを有効にします．自動検査が通っても，変更した振る舞いに必要なテストとビルドは別途実行してください．
 
-初回セットアップ時は `npm install` の後、husky の `prepare` スクリプトが `.husky/` を有効化します。
+## ESLintで守る規約
 
----
+### Vueコンポーネント
 
-## lint で強制している規約と意図
+- `<script setup lang="ts">`を使います．Options APIとComposition APIを混在させず，すべてのコンポーネントでTypeScriptの型検査を有効にするためです．
+- `defineProps`と`defineEmits`は型ベースで宣言します．ランタイム宣言とTypeScript型を二重管理しません．
 
-### Vue コンポーネント
-
-- **`<script setup lang="ts">` を必須化** (`vue/component-api-style`, `vue/block-lang`)
-  - Options API と Composition API の混在はレビュー時の認知コストが高い。書き方を一本化することで読み手はパターンマッチに集中できる。`<script>` を JS で書くと型の恩恵を失うため `lang="ts"` も必須。
-- **`defineProps` / `defineEmits` は型ベース宣言のみ** (`vue/define-props-declaration`, `vue/define-emits-declaration`)
-  - ランタイム宣言 (`{ type: String, required: true }`) は TS 型と二重管理になり、片方を更新し忘れた瞬間に乖離する。型ベースなら TS 型が Single Source of Truth になる。
   ```ts
-  // OK
   const props = defineProps<{ userId: string; isActive?: boolean }>()
   const emit = defineEmits<{ (e: 'select', id: string): void }>()
   ```
-- **`<style>` ブロック禁止** (`vue/no-restricted-block`)
-  - スタイルは UnoCSS に集約してデザイントークン (色 / 間隔 / タイポ) を一元管理する。`<style scoped>` はクラス衝突回避の動機で増えがちだが、UnoCSS を使えば衝突しないため不要。スタイル方針が二系統に分裂するのを防ぐ。
-- **SFC ブロック順序: `<script setup>` → `<template>`** (`vue/block-order`)
-  - 「先にロジック、次にテンプレート」の順で読む方が概念フローとして自然。
 
-### TypeScript
+- `<style>`ブロックは追加しません．スタイルをUnoCSSへ集約し，色，間隔，タイポグラフィを一元管理します．
+- SFCのブロックは`<script setup>`，`<template>`の順に置きます．ロジックから表示へ順に読み進められる構成にするためです．
 
-- **`any` 禁止** (`@typescript-eslint/no-explicit-any`)
-  - `any` は型システムを部分的に無効化し、リファクタ時に静かにバグを通す。未知の型を扱いたいときは `unknown` を使い、絞り込みを強制する。
-- **親相対 import 禁止** (`no-restricted-imports`)
-  - `../foo` はファイル移動でリンクが切れる。読み手も深さが直感的に分からない。`/@/` エイリアスは `src` ルートからの絶対参照で安定し grep もしやすい。
+### TypeScriptと命名
 
-### 命名
+- `any`は使いません．未知の値は`unknown`で受け，利用前に型を絞り込みます．
+- Vueコンポーネントの`.vue`ファイルはPascalCase，`.ts`ファイルはcamelCaseで命名します．ファイル名から役割を判別できる状態を保ちます．
+- 推論できるローカル変数には冗長な型注釈を付けません．関数の引数，戻り値，公開APIには，契約が読み取れる型を明示します．
 
-- **`.vue` は PascalCase / `.ts` は camelCase** (`unicorn/filename-case`)
-  - Vue コンポーネント以外で PascalCase ファイルを作ると、ファイル名から「これはコンポーネントではない」が一目で分かる利点を失う。逆も同様。
+### 分岐，コールバック，例外コメント
 
-### コード品質
-
-- **ネストした if 禁止** (`no-restricted-syntax`)
-  - 条件の組み合わせが見えにくく読み手の認知負荷が高い。早期 return / ガード節 / 関数分割で平坦化し、各分岐の責務を明確にする。`else if` チェーンは縦深さが増えないため許可。
-- **コールバックはアロー関数で書く** (`prefer-arrow-callback`)
-  - `function` 式は独自の `this` を持つため、Composition API や非同期処理で `this` を意図せずシャドウする事故が起きやすい。アロー関数は `this` を字句的に継承するためこの種のバグを構造的に防げる。auto-fix 対応。
-- **`eslint-disable` には必ず理由を書く** (`@eslint-community/eslint-comments/require-description`)
-  - 理由なし disable が蓄積するとルール自体への信頼が薄れ、ルール見直しの判断もできなくなる。
+- `if`を入れ子にしません．ガード節，早期return，関数分割で分岐を平らにします．縦方向の深さが増えない`else if`は利用できます．
+- コールバックはアロー関数で書きます．`function`式が独自の`this`を持つことで起きる，意図しない参照を防ぎます．
+- `eslint-disable`には，その例外が必要な理由を書きます．理由のない無効化を残すと，後からルールを見直せません．
 
 ### UnoCSS
 
-- **`@unocss/eslint-config/flat` を適用**
-  - クラス順序など UnoCSS 標準のルールセットを有効化。順序統一で diff のノイズを減らし、共通スタイルの差分を見やすくする。
+`@unocss/eslint-config/flat`を適用しています．クラスの順序は`eslint --fix`が整えるため，手作業で並べ替える必要はありません．順序を統一すると，スタイル変更の差分を追いやすくなります．
 
----
+## レビューで守る設計方針
 
-## lint で表現できない設計方針
+### APIクライアントは直接使う
 
-### API クライアント
+API呼び出しには`src/lib/api/`が公開する`openapi-fetch`クライアントを使います．新しいラッパー層やストアを先に設けると，API変更時に追従する場所が増えます．具体的な必要性が生じるまでは導入しません．
 
-- **`src/lib/api/` から `openapi-fetch` クライアントを直接 import して使う**
-- **ラッパー層やストア経由を新規導入しない**
-  - 早すぎる抽象は将来の API 変更時に「ラッパー側も追従させる」二重作業を生む。必要になった時点で設計し直す方針。
-- スキーマ変更時は `npm run generate` で `src/lib/api/schema.d.ts` を再生成する。生成物は **手で編集しない**。
+スキーマが変わった場合は，`npm run generate`で`src/lib/api/schema.d.ts`を再生成します．生成物は直接編集しません．次の生成時に変更が失われるためです．
 
-### UnoCSS の使い方
+### UnoCSSのtokenとshortcutを優先する
 
-- **uno.config.ts の `theme` / `shortcuts` を優先して使う**
-  - 色 (`text-text-primary`, `bg-surface-primary`, …)、ボタン (`btn-primary`)、カード (`card`)、入力 (`input-base`) などは shortcut として定義済み。同じパターンが 2 回以上現れたら shortcut 化を検討する。
-- **任意値 (`w-[317px]` 等) は最小限**
-  - デザインシステム外の値が紛れ込むサインなので、まず `uno.config.ts` の `theme` で表現できないか確認する。`text-[16px]` のような shortcut 内の任意値は許容 (見出しサイズ等は数値の意味が直接的)。
-- **アイコンは `presetIcons` 経由**
-  - `<span class="i-mdi:account" />` のように iconify セットから直接使う。SVG をコピペで持ち込まない。
-- **`preflights` でグローバルスタイルを当てている**
-  - body 背景や全体テキスト色は `uno.config.ts` の `preflights` で一元管理。コンポーネント側で `body` を触らない。
+色，ボタン，カード，入力欄には，`uno.config.ts`の`theme`と`shortcuts`を使います．同じスタイルが2回以上現れたらshortcut化を検討してください．`w-[317px]`のような任意値は，既存tokenで表せない固定寸法に限ります．
 
-### 型の書き方バランス
+アイコンは`presetIcons`から，たとえば`<span class="i-mdi:account" />`のように使います．SVGを各コンポーネントへコピーしません．全体の背景色と文字色は`preflights`で設定しているため，コンポーネントから`body`を変更しないでください．
 
-- 型は **推論を優先**。冗長な明示は避ける (`const x: number = 1` のような明示は不要)
-- ただし関数の引数・戻り値・公開 API は **明示** して契約を読み手に伝える
-- lint で判定不可な主観領域なのでレビュー時の議論で揃える
+### コメントには理由を残す
 
-### import の書き方
-
-- すべての import は **`/@/...` エイリアス**で書く (lint で強制)
-  - 親相対 (`../foo`) はファイル移動でリンクが切れる / 階層数から元の場所を逆算する必要がある / grep しづらい、と短所しかない。`/@/` は `src` ルートからの絶対参照なので位置感覚が安定する。
-- UnoCSS のクラス順序は `@unocss/order` ルール (auto-fix) が `eslint --fix` で並べ替えるので、手で並べ替える必要はない。
-
-### コメント
-
-- WHAT (何をしているか) ではなく WHY (なぜそうしているか) を書く
-- やむを得ず `eslint-disable` を使う場合は **なぜその例外が必要か** をコメントで残す (lint でも強制)
+コードを読めば分かる処理内容ではなく，その実装を選んだ理由を書きます．制約，例外，避けた選択肢が将来の判断に必要な場合だけコメントを残してください．

@@ -1,28 +1,28 @@
-# Tool Adapter Reference
+# 実行環境ごとのツール対応
 
-The workflow in `SKILL.md` is host-neutral. Use this reference to map skill discovery, invocation, and parallel-worker controls to the active agent product.
+`SKILL.md`のワークフローは，特定の実行環境へ依存しない．スキルの検出，呼び出し，並行workerの操作を，以下の対応に沿って現在の製品へ割り当てる．
 
 ## Codex
 
-- Discover the skill through `.agents/skills/parallel-feature-development`, which is a symlink to the canonical directory under `skills/`.
-- Invoke it explicitly as `$parallel-feature-development`, or request the workflow in natural language.
-- Use Codex subagents as the parallel workers. Keep the main conversation as coordinator, and do not launch nested `codex exec` processes.
-- Use the host's subagent controls to start, steer, wait for, and follow up with workers.
-- Read applicable `AGENTS.md` files before planning or editing.
-- Treat `agents/openai.yaml` as optional Codex UI metadata. It is not part of the shared workflow contract.
+- 正本の`skills/parallel-feature-development`を指す`.agents/skills/parallel-feature-development`からスキルを検出する．
+- `$parallel-feature-development`で明示するか，自然言語でワークフローを依頼する．
+- Codexのsubagentを並行workerとして使う．main conversationが調整役を務め，入れ子の`codex exec` processを起動しない．
+- workerの開始，指示変更，待機，追加依頼には，実行環境が提供するsubagent機能を使う．
+- 計画や編集の前に，適用される`AGENTS.md`を読む．
+- `agents/openai.yaml`は任意のCodex UIメタデータであり，共通ワークフロー契約には含めない．
 
 ## Claude Code
 
-- Discover the skill through `.claude/skills/parallel-feature-development`, which is a symlink to the same canonical directory under `skills/`.
-- Invoke it explicitly as `/parallel-feature-development`, or request the workflow in natural language.
-- Use Claude Code subagents for independent tasks. Use agent teams only when workers need peer-to-peer coordination and the feature is worth the additional coordination cost.
-- Keep the main conversation as coordinator. Do not add `context: fork` to this skill because the coordinator must retain user context and manage multiple workers.
-- Read applicable `CLAUDE.md` and `AGENTS.md` files before planning or editing.
-- When using hooks or scripts from a linked worktree, verify their working directory explicitly instead of assuming they run from that worktree.
+- 同じ正本を指す`.claude/skills/parallel-feature-development`からスキルを検出する．
+- `/parallel-feature-development`で明示するか，自然言語でワークフローを依頼する．
+- 独立タスクにはClaude Codeのsubagentを使う．worker間で直接調整する必要があり，追加の調整コストに見合う場合だけagent teamを使う．
+- main conversationが調整役を務める．調整役はユーザーのコンテキストを保持し，複数workerを管理する必要があるため，このスキルに`context: fork`を追加しない．
+- 計画や編集の前に，適用される`CLAUDE.md`と`AGENTS.md`を読む．
+- リンクされたworktreeでhookやscriptを使う場合は，そのworktreeから実行されると仮定せず，作業ディレクトリを明示的に確認する．
 
-## Shared Rules
+## 共通規則
 
-- Keep the canonical implementation in `skills/parallel-feature-development`; do not edit separate product-specific copies.
-- Do not add broad permission grants or product-specific tool restrictions to the shared `SKILL.md` frontmatter.
-- Use the canonical `skills/parallel-feature-development/scripts/worktree-manager.mjs` path in commands so instructions behave the same in either host.
-- Preserve the approval boundaries, worktree ownership rules, integration review, and cleanup checks regardless of the host product.
+- 正本は`skills/parallel-feature-development`に置き，製品ごとのコピーを編集しない．
+- 広すぎるpermission grantや，製品固有のtool restrictionを，共通`SKILL.md`のfrontmatterへ追加しない．
+- コマンドでは，正本の`skills/parallel-feature-development/scripts/worktree-manager.mjs`を使う．どちらの実行環境でも，同じ指示で動作させるためである．
+- 製品にかかわらず，承認境界，worktreeの所有規則，統合レビュー，後片付けの検査を維持する．

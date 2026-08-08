@@ -2,7 +2,7 @@
 
 テンプレートは [handoff.template.md](../_templates/handoff.template.md) です．共通運用は [Missions README](../README.md) を参照してください．
 
-Handoff は，全履歴ではなく，次の担当が追加質問を最小限にして再開できる **最小再開状態** です．Brief が契約の正本であり，Handoff はその時点の実行状態を補います．
+Handoffは，次の担当が追加質問を最小限にして再開するための記録です．全履歴は要りません．Briefを契約の正本とし，Handoffにはその時点の実行状態だけを残します．
 
 ## いつ更新するか
 
@@ -27,7 +27,7 @@ Handoff は，全履歴ではなく，次の担当が追加質問を最小限に
 
 ## 再開する側
 
-最初に [mission-brief.md のガイド](./how-to-mission-brief.md) に基づく Brief を読み，次に Handoff を読みます．Brief と矛盾する場合は勝手に選ばず，Brief を正として差分を CRPack で上申します．指定されていないコンテキストは，具体的に必要になるまで追加しません．
+最初に[mission-brief.mdのガイド](./how-to-mission-brief.md)に基づくBriefを読み，次にHandoffを読みます．両者が矛盾する場合は，Briefを正本として扱い，矛盾点と判断が必要な内容をCRPackで報告します．指定されていないコンテキストは，具体的に必要になるまで追加しません．
 
 完了に近い場合は [Merge-Readiness Pack のガイド](./how-to-merge-rationale.md) に従い，Handoff の検証状態を証拠へ引き継ぎます．
 

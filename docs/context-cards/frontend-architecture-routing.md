@@ -20,16 +20,16 @@ retirement_status: active
 access_notes: all-roles
 ---
 
-# フロントエンド構成とルーティング
+# ページ，機能，共通部品の境界
 
-## 概要
+## ルートとページは明示的に対応付ける
 
-`src/main.ts` は Vue アプリへ Pinia と Vue Router を登録する．`App.vue` は `router-view` のみを描画し，ページは `src/pages/`，ドメイン機能は `src/features/<feature>/`，共通 UI は `src/components/` に置かれる．ルートは History mode で，イベント，部屋，カレンダー，draft-event，グループ，ユーザー，検索，iCal などのページを公開する．
+`src/main.ts`はVueアプリへPiniaとVue Routerを登録する．`App.vue`は`router-view`だけを描画する．ページは`src/pages/`，ドメイン機能は`src/features/<feature>/`，共通UIは`src/components/`に置く．ルーターはHistory modeを使い，イベント，部屋，カレンダー，draft-event，グループ，ユーザー，検索，iCalなどのページを公開している．
 
-## 不変条件
+## 変更時に守ること
 
-- 新しいルート画面は `src/pages/` のページコンポーネントとして作り，`src/router/index.ts` に明示的に登録する．URL パラメーターはページ側で `useRoute` から読む既存パターンへ合わせる．
-- 特定ドメインに閉じるコンポーネントや composable は `src/features/<feature>/`，横断 UI は `src/components/`，横断リアクティブロジックは `src/composables/` に置く．
-- import は `vite.config.ts` と `tsconfig.json` が定義する `/@` からの絶対エイリアスを使い，親相対 import を新規追加しない．
-- `MainLayout.vue` は存在するが `App.vue` から全ページへ自動適用されていない．ヘッダーや外枠を変更するときは，対象ページが `AppHeader` を直接描画しているかも確認する．
-- API や取得状態へ触れる変更では [[api-data-schema]] を追加でロードする．
+- 新しいルート画面は`src/pages/`のページコンポーネントとして作り，`src/router/index.ts`へ明示的に登録する．URLパラメーターはページ側で`useRoute`から読む既存パターンに合わせる．
+- 特定ドメインに閉じるコンポーネントやcomposableは`src/features/<feature>/`，横断UIは`src/components/`，横断的なリアクティブロジックは`src/composables/`に置く．
+- importには，`vite.config.ts`と`tsconfig.json`が定義する`/@`からの絶対エイリアスを使う．親相対importを新しく追加しない．
+- `MainLayout.vue`は存在するが，`App.vue`から全ページへ自動適用されていない．ヘッダーや外枠を変更するときは，対象ページが`AppHeader`を直接描画しているかも確認する．
+- APIや取得状態へ触れる変更では，[[api-data-schema]]を追加でロードする．

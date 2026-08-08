@@ -26,13 +26,13 @@ retirement_status: active
 access_notes: all-roles
 ---
 
-# room と calendar のドメイン
+# roomとcalendarのデータフロー
 
-## 概要
+## 月表示と週表示ではデータの組み立て方が異なる
 
-room は場所，利用可能時間，確認状態，管理者を持つ OpenAPI 由来のデータである．`CalendarPage.vue` は月表示用に events と rooms を並列取得し，`RoomsCalendarPage.vue` は週範囲を監視して rooms と events を取得し，`roomId` ごとに結合して時間グリッドへ配置する．
+roomは，場所，利用可能時間，確認状態，管理者を持つOpenAPI由来のデータである．`CalendarPage.vue`は月表示用にeventsとroomsを並列取得する．`RoomsCalendarPage.vue`は週範囲を監視し，取得したroomsとeventsを`roomId`ごとに結合して時間グリッドへ配置する．
 
-## 不変条件
+## 変更時に守ること
 
 - room と event の型は生成済み `components['schemas']` から導出する．表示用の `RoomWithEvents` だけが room に `events` を付加するローカル型である．
 - 週表示の期間は `dateBegin` / `dateEnd` の変更を `useWeekRooms` が監視して再取得する．取得した event は `roomId` で room へ結合し，`timeStart` 順へ整列する．取得方法を変えても期間変更時の再取得を維持する．

@@ -26,13 +26,13 @@ retirement_status: active
 access_notes: all-roles
 ---
 
-# 品質管理とツール
+# 変更範囲に合わせて検証を選ぶ
 
-## 概要
+## 標準コマンドと自動検査
 
-主要コマンドは `npm run lint`，`npm run type-check`，`npm run test`，`npm run build`，`npm run format` である．ESLint は TypeScript，Vue，accessibility，UnoCSS，Prettier 連携とプロジェクト固有規約を適用する．pre-commit は lint-staged の後に型検査を実行する．
+主要コマンドは`npm run lint`，`npm run type-check`，`npm run test`，`npm run build`，`npm run format`である．ESLintはTypeScript，Vue，アクセシビリティ，UnoCSS，Prettier連携とプロジェクト固有規約を適用する．pre-commitでは，lint-stagedの後に型検査を実行する．
 
-## 不変条件
+## 変更時に守ること
 
 - 変更範囲に応じて検証を選ぶ．Markdown / YAML のみなら Prettier と構造検査，アプリケーションコードなら ESLint と `vue-tsc --noEmit`，動作へ影響する変更なら関連テストと build を追加する．
 - `npm run build` は型検査の後に Vite build，`npm run test` は Vitest UI と V8 coverage を有効にする．CI 相当の非対話実行が必要な場合は package script の実体を確認して適切な Vitest オプションを選ぶ．

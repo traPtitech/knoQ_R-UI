@@ -1,64 +1,62 @@
-# Isolation Strategy Reference
+# 並行実装の分離方法を選ぶ
 
-Use this reference only when deciding how to isolate parallel implementation agents.
+並行実装を担当するエージェントの分離方法を決めるときだけ，この資料を使う．通常はGit worktreeで十分である．
 
-## Decision Table
+## 比較表
 
-| Method                  | Source isolation                                                       | Runtime isolation                                | Startup cost                   | Ongoing cost                                     | Best fit                                            |
-| ----------------------- | ---------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------ | ------------------------------------------------ | --------------------------------------------------- |
-| Shared checkout         | None                                                                   | None                                             | Lowest                         | Lowest                                           | Read-only exploration with strict scopes            |
-| Git worktrees           | Separate files, `HEAD`, and index; shared Git object database and refs | Host environment is shared                       | Low                            | Local disk for dependencies and builds           | Default for knoQ_R-UI feature work                  |
-| Separate clones         | Separate working files and Git metadata                                | Host environment is shared                       | Medium                         | Duplicate Git objects and dependencies           | Independent credentials or remote operations        |
-| Worktree plus container | Worktree-level source isolation                                        | Container-level process and dependency isolation | Medium to high                 | Images, containers, volumes, and ports           | Conflicting native toolchains or untrusted commands |
-| GitHub Codespaces       | Remote checkout and branch per codespace                               | Dedicated remote VM and development container    | High without prebuilds         | Metered compute and storage                      | Remote collaboration or insufficient local capacity |
-| Managed agent cloud     | Remote checkout per task                                               | Provider-managed task environment                | Medium after environment setup | Product usage and remote-environment constraints | Offloaded tasks and pull-request-oriented handoff   |
+| 方法                | ソースの分離                                             | 実行環境の分離                     | 起動コスト           | 継続コスト                      | 向いている用途                               |
+| ------------------- | -------------------------------------------------------- | ---------------------------------- | -------------------- | ------------------------------- | -------------------------------------------- |
+| checkoutを共有      | なし                                                     | なし                               | 最小                 | 最小                            | 範囲を限定した読み取り専用の調査             |
+| Git worktree        | 作業ファイル，`HEAD`，indexを分離．Git objectとrefは共有 | host環境を共有                     | 低い                 | 依存関係とbuildに使うlocal disk | knoQ_R-UIでの通常の機能開発                  |
+| 個別のclone         | 作業ファイルとGit metadataを分離                         | host環境を共有                     | 中                   | Git objectと依存関係を重複保持  | credentialやremote操作も分ける必要がある作業 |
+| worktreeとcontainer | worktree単位で分離                                       | processと依存関係をcontainerで分離 | 中〜高               | image，container，volume，port  | native toolchainの競合や信頼できないコマンド |
+| GitHub Codespaces   | codespaceごとにremote checkoutとbranchを用意             | 専用remote VMと開発container       | prebuildなしでは高い | 従量制のcomputeとstorage        | remote共同作業やlocal capacity不足           |
+| managed agent cloud | taskごとにremote checkoutを用意                          | providerが管理するtask環境         | 環境構築後は中       | 製品利用料とremote環境の制約    | taskのoffloadとPR中心の引き渡し              |
 
-## Selection Rules
+## 通常はGit worktreeを使う
 
-### Prefer Git Worktrees
+すべてのタスクが既存のNode.js toolchainを使い，機能またはpage単位で所有範囲を分けられるなら，worktreeを選ぶ．短時間で作成でき，Git objectを共有しながら，commitとindexを分離できる．
 
-Use worktrees when all tasks use the repository's existing Node.js toolchain and can be separated by feature or page ownership. They are fast to create and keep commits and indexes independent while sharing Git objects.
+次の制約は残る．
 
-Account for these limits:
+- 1つのbranchを，同時に複数のworktreeでcheckoutできない．
+- refとリポジトリ単位のGit設定は共有される．
+- ignored local file，依存関係，build出力，開発server portはworktreeごとに必要になる．
+- ファイル書き込みが分離されていても，論理的に結合したファイルを並行編集すると統合競合が起きる．
 
-- A branch can be checked out in only one worktree at a time.
-- Worktrees share refs and repository-level Git configuration.
-- Each worktree needs its own ignored local files, dependencies, build output, and development-server port.
-- Parallel edits to logically coupled files can still produce integration conflicts even when filesystem writes are isolated.
+## 必要性がある場合だけcontainerを加える
 
-### Add Containers Deliberately
+互換性のないtool version，native service，より強いprocess分離，よく知らないコマンドの制御実行が必要な場合は，worktreeごとにcontainerを1つ使う．各エージェントのworktreeは，そのエージェント専用のcontainerだけへmountする．
 
-Use one container per worktree when tasks require incompatible tool versions, native services, stronger process isolation, or controlled execution of unfamiliar commands. Mount each agent's own worktree into only its own container.
+リポジトリのproduction用`Dockerfile`を，内容を確認せず開発環境として流用しない．現在のimageはstatic assetをbuildしてCaddyで配信するもので，対話的な開発toolchainを提供しない．
 
-Do not reuse the repository's production `Dockerfile` as a development environment without reviewing it. The current image builds static assets and serves them with Caddy; it does not provide an interactive development toolchain.
+containerを使うと，image build，複数の依存store，port割り当て，macOS上のfilesystem性能，credential転送，後片付けのコストが増える．別のエージェントと同じ書き込み可能なbind mountを使えば，containerがあってもソース競合は防げない．
 
-Container costs include image builds, multiple dependency stores, port allocation, filesystem performance on macOS, credential forwarding, and cleanup. A container with the same writable bind mount as another agent does not prevent source conflicts.
+## 個別cloneはGit環境も分ける場合に限る
 
-### Use Separate Clones Sparingly
+エージェントごとにGit設定，remote，credential，object database，repository maintenance操作を分ける必要がある場合だけ，worktreeの代わりにcloneを使う．cloneはfetchを繰り返す必要があり，disk使用量も増える．branchをlocalで確認して統合する作業も，worktreeより煩雑になる．
 
-Choose clones instead of worktrees only when agents must have separate Git configuration, remotes, credentials, object databases, or repository maintenance operations. Clones require repeated fetches and use more disk, and their branches are less convenient to inspect and integrate locally.
+## remote capacityが必要ならCodespacesを使う
 
-### Use Codespaces For Remote Capacity
+remoteで作業を続ける必要がある場合，hosted environmentを再現したい場合，localのCPUやmemoryが不足する場合は，branchごとにcodespaceを1つ使う．`.devcontainer/devcontainer.json`の追加はリポジトリ全体の開発環境に影響するため，別の承認済み変更として扱う．
 
-Choose one codespace per branch when work must continue remotely, contributors need a reproducible hosted environment, or local CPU and memory are insufficient. Add a `.devcontainer/devcontainer.json` only as a separate approved change because it affects the development environment for the whole repository.
+codespaceを作る前に，repository access，organization policy，spending limit，secret設定，machine size，idle timeout，後片付けの担当を確認する．prebuildは起動時間を短縮するが，storageを消費し，リポジトリ管理権限も必要になる．
 
-Before creating codespaces, confirm repository access, organization policy, spending limits, secret configuration, machine size, idle timeout, and cleanup ownership. Prebuilds reduce startup time but consume storage and require repository administration.
+## taskをoffloadするならmanaged agent cloudを使う
 
-### Use Managed Agent Clouds For Offload
+ユーザーがremote task環境と，diffまたはPRによる引き渡しを求める場合に選ぶ．リポジトリと選択したbase commitをremoteから利用できることを確かめる．localの未commit変更は，commitまたは明示的な転送を行わない限りbaseにできない．
 
-Choose a managed agent cloud when the user wants remote task environments and diff or pull-request handoff. Confirm that the repository and selected base commit are available remotely. Local uncommitted changes are not an appropriate base unless committed or otherwise transferred explicitly.
+cloudのsetup scriptは依存関係をインストールできる．agent phaseでのinternet accessとsecretは，設定済みの環境policyに従う．localのcredentialやserviceがremoteにも存在すると仮定しない．
 
-Cloud setup scripts can install dependencies, while agent-phase internet access and secrets follow the configured environment policy. Do not assume local credentials or services exist remotely.
+## セキュリティと承認の境界
 
-## Security And Approval Boundaries
+次の操作には，ユーザーの明示的な承認が必要である．
 
-Obtain explicit user approval before:
+- 課金対象のcloud環境を作る．
+- 新しいremote serviceへcodeまたはdataをuploadする．
+- credentialまたはsecretをcontainerへ転送する．
+- 広いnetwork accessを有効にする．
+- branchをpushし，PRを作成し，ユーザーのbranchへmergeする．
+- worktreeまたはcontainerを削除する．
 
-- Creating billable cloud environments.
-- Uploading code or data to a new remote service.
-- Forwarding credentials or secrets into containers.
-- Enabling broad network access.
-- Pushing branches, opening pull requests, or merging into a user branch.
-- Removing worktrees or containers.
-
-Never weaken sandboxing merely to avoid an approval request.
+承認依頼を避けるためにsandboxを弱めてはならない．

@@ -1,30 +1,30 @@
 ---
 name: start-multi-mission
-description: Prepare two or more independent development missions as separate Git branches, worktrees, interactive Codex or Claude Code sessions, and pull requests. Use when the user wants to converse with each agent session independently or review and merge each task through its own PR. Do not use when one coordinating agent should combine all work into a single integration branch; use parallel-feature-development for that workflow.
+description: 2件以上の独立した開発ミッションを，別々のGit branch，worktree，CodexまたはClaude Codeの対話セッション，PRとして準備する．ユーザーが各セッションと個別に対話したい場合や，タスクごとにPRをレビューしてmergeしたい場合に使う．1つの調整役がすべての作業をintegration branchへまとめる場合は，parallel-feature-developmentを使う．
 ---
 
 # Start Multiple Missions
 
-Create long-lived mission worktrees that the user owns as separate conversations and pull requests. Do not spawn implementation subagents, create an integration branch, or cherry-pick mission commits into a combined result.
+ミッションごとに，長期間利用できるworktreeを作る．ユーザーは，各ミッションの対話とPRを別々に管理する．複数ミッションの成果を統合したブランチやcommitは作らず，実装subagentも使わない．
 
-Read [references/proposal-template.md](references/proposal-template.md) before requesting creation approval. Read [references/tool-adapters.md](references/tool-adapters.md) before preparing session commands or launching tmux. Read [references/independent-pr-workflow.md](references/independent-pr-workflow.md) when missions may touch related areas or one PR may merge before another.
+作成の承認を求める前に，[作成提案の型](references/proposal-template.md)を読む．セッションコマンドの準備やtmuxの起動前には，[ツール対応表](references/tool-adapters.md)を確認する．ミッションが関連領域を変更する場合や，別のPRより先にmergeされる可能性がある場合は，[独立PRの進め方](references/independent-pr-workflow.md)も読む．
 
-## 1. Define Independent Missions
+## 1．独立したミッションへ分ける
 
-1. Read the applicable repository guidance and `docs/missions/README.md`.
-2. Restate each requested outcome as a separate mission with a short title, lowercase kebab-case slug, scope, non-goals, and provisional acceptance properties.
-3. Build a dependency and conflict map. Include shared components, router files, API schema, configuration, lockfiles, and generated files.
-4. Create separate missions only when each task can be reviewed, merged, reverted, and continued without another mission's unmerged commits.
-5. Move shared prerequisites into an earlier standalone mission or keep tightly coupled work in one mission. Do not hide stacked dependencies behind nominally independent PRs.
-6. Choose and record one PR target branch and one base ref. Ordinarily use the same local target branch for both. The target must already contain `start-multi-mission`, `start-mission`, and the mission templates; land that infrastructure first instead of including it incidentally in every feature PR. Explain any deliberate base difference and do not call dependent or stacked work independent.
-7. Propose the batch ID, mission IDs, titles, branches, worktree paths, ownership boundaries, target branch, and session host.
-8. Obtain explicit user approval before creating branches, worktrees, mission documents, or interactive sessions.
+1. 適用されるリポジトリガイドと`docs/missions/README.md`を読む．
+2. 各成果を，短いタイトル，小文字kebab-caseのslug，作業範囲，非目標，暫定的な受け入れプロパティを持つ個別ミッションへ言い換える．
+3. 依存関係と競合箇所を整理する．共通component，router，API schema，設定，lockfile，生成ファイルを含める．
+4. 別ミッションの未merge commitがなくても，レビュー，merge，revert，作業再開ができる場合だけ，独立したミッションとして扱う．
+5. 共通の前提作業は，先行する独立ミッションへ分ける．密結合した作業は1つのミッションにまとめる．名目上だけ独立したPRの裏に，stacked dependencyを隠さない．
+6. すべてのミッションに共通するtarget branchとbase refを決める．通常は，同じローカルブランチをtargetにする．targetには，`start-multi-mission`，`start-mission`，ミッションtemplateを先に反映しておく．これらの基盤を各feature PRへ混入させない．baseを変える場合は理由を記録し，依存関係のある作業を独立ミッションとして扱わない．
+7. batch ID，mission ID，タイトル，branch，worktree path，所有境界，target branch，session hostを提案する．
+8. branch，worktree，ミッション文書，対話セッションを作る前に，ユーザーの明示的な承認を得る．
 
-Use batch IDs and mission slugs containing only lowercase letters, digits, and hyphens. Keep each at most 48 characters.
+batch IDとmission slugには，小文字の英字，数字，hyphenだけを使い，それぞれ48文字以内にする．
 
-## 2. Create Branches And Worktrees
+## 2．branchとworktreeを作る
 
-After approval, run from the main worktree:
+承認後に，main worktreeから次を実行する．
 
 ```bash
 node skills/start-multi-mission/scripts/multi-mission-manager.mjs create \
@@ -36,22 +36,22 @@ node skills/start-multi-mission/scripts/multi-mission-manager.mjs create \
   --mission 'event-export=Export an event as iCalendar'
 ```
 
-The manager creates one branch and worktree per mission:
+managerは，ミッションごとにbranchとworktreeを1つずつ作る．
 
 ```text
 mission/20260806-event-filter
 .mission-worktrees/20260806-event-improvements/20260806-event-filter
 ```
 
-It runs the existing `start-mission` initializer in each worktree, so each branch receives its own `docs/missions/<mission-id>/` document set. It never creates issues, commits, pushes, PRs, or an integration branch.
+各worktreeでは，既存の`start-mission`初期化スクリプトを実行する．そのため，各branchは個別の`docs/missions/<mission-id>/`文書一式を持つ．Issue，commit，push，PR，integration branchは作成しない．
 
-After creation, seed each Mission Brief with only the approved initial intent, scope boundary, target branch, and context pointers. Leave conceptual-plan and test-design decisions to that mission's interactive session.
+作成後に，各Mission Briefへ，承認済みの初期目的，作業境界，target branch，Context Pointerだけを記入する．Conceptual Planとテスト設計の判断は，各ミッションの対話セッションに委ねる．
 
-Do not copy ignored credentials or share `node_modules`. Each session installs its own dependencies when needed.
+ignored credentialをコピーせず，`node_modules`も共有しない．必要になった時点で，各セッションが個別に依存関係をインストールする．
 
-## 3. Start Independent Sessions
+## 3．独立したセッションを始める
 
-Print session commands by default:
+標準では，セッションを開くコマンドだけを表示する．
 
 ```bash
 node skills/start-multi-mission/scripts/multi-mission-manager.mjs launch \
@@ -59,9 +59,9 @@ node skills/start-multi-mission/scripts/multi-mission-manager.mjs launch \
   --agent codex
 ```
 
-The user opens each command in a separate terminal or editor session. Every session starts in its assigned worktree and resumes the existing mission through `start-mission`. The user can then discuss scope, the conceptual plan, tests, implementation, and PR readiness with that session independently.
+ユーザーは，各コマンドを別々のterminalまたはeditor sessionで開く．すべてのセッションは担当worktreeから始まり，`start-mission`を使って既存ミッションを再開する．ユーザーは，作業範囲，Conceptual Plan，テスト，実装，PR準備を各セッションと個別に相談できる．
 
-When the user explicitly approves automatic local session startup, create one tmux window per mission:
+ユーザーがlocal sessionの自動起動を明示的に承認した場合は，ミッションごとにtmux windowを1つ作る．
 
 ```bash
 node skills/start-multi-mission/scripts/multi-mission-manager.mjs launch \
@@ -71,32 +71,32 @@ node skills/start-multi-mission/scripts/multi-mission-manager.mjs launch \
   --yes
 ```
 
-Do not launch nested agent CLIs without this separate approval. Do not use internal subagents as a substitute for the interactive sessions.
+この承認なしに，入れ子のagent CLIを起動しない．対話セッションの代わりにinternal subagentを使わない．
 
-## 4. Let Each Mission Own Its PR
+## 4．各ミッションが自分のPRを管理する
 
-Each session must:
+各セッションは，次の責任を持つ．
 
-- Work only in its mission worktree and branch.
-- Treat its Mission Brief as the source of truth.
-- Obtain its own conceptual-plan and test-design approvals from the user.
-- Commit only its mission implementation and mission documents.
-- Ask before creating an issue, pushing, or opening its PR.
-- Target the batch manifest's `targetBranch`.
-- Produce its own Merge-Readiness Pack and report its own risks.
+- 担当するmission worktreeとbranchだけで作業する．
+- Mission Briefを正本として扱う．
+- Conceptual Planとテスト設計について，それぞれユーザーの承認を得る．
+- 自分のミッションの実装と文書だけをcommitする．
+- Issue作成，push，PR作成の前に承認を求める．
+- batch manifestの`targetBranch`をPRのtargetにする．
+- 自分のMerge-Readiness Packを作り，残るリスクを報告する．
 
-One mission must not merge, rebase, cherry-pick, or edit another mission branch. The batch coordinator monitors boundaries but does not integrate implementation commits.
+別ミッションのbranchをmerge，rebase，cherry-pick，編集してはならない．batchの調整役は境界を監視するが，実装commitを統合しない．
 
-## 5. Inspect The Batch
+## 5．batch全体の状態を確認する
 
-Inspect local branch and worktree state with:
+次のコマンドで，local branchとworktreeの状態を確認する．
 
 ```bash
 node skills/start-multi-mission/scripts/multi-mission-manager.mjs status \
   --batch 20260806-event-improvements
 ```
 
-After the user permits remote read access and GitHub CLI authentication is available, include PR state with `--github`:
+ユーザーがremote readを許可し，GitHub CLIの認証も利用できる場合は，`--github`でPRの状態を含める．
 
 ```bash
 node skills/start-multi-mission/scripts/multi-mission-manager.mjs status \
@@ -104,13 +104,13 @@ node skills/start-multi-mission/scripts/multi-mission-manager.mjs status \
   --github
 ```
 
-Report every mission separately: branch, worktree, dirty state, commits from the common base, Brief presence, and PR URL/state when requested.
+branch，worktree，dirty state，共通base以降のcommit，Briefの有無，要求された場合はPRのURLと状態を，ミッションごとに報告する．
 
-If one PR merges first, the remaining session decides how to update its branch and revalidates its own acceptance properties. Do not silently rewrite another mission's history.
+1つのPRが先にmergeされた場合は，残るミッションのセッションが，自分のbranchをどう更新するか判断する．更新後は，自分の受け入れプロパティを再検証する．別ミッションの履歴を黙って書き換えない．
 
-## 6. Clean Up Per Mission
+## 6．ミッションごとに後片付けする
 
-Close the interactive session and require a clean worktree first. Confirm that the PR was merged or that the user explicitly abandoned the mission. Then ask for cleanup approval and run:
+最初に対話セッションを終了し，worktreeがcleanであることを確認する．PRがmerge済みか，ユーザーがミッションの放棄を明示していることも確かめる．その後，後片付けの承認を求め，次を実行する．
 
 ```bash
 node skills/start-multi-mission/scripts/multi-mission-manager.mjs cleanup \
@@ -120,4 +120,4 @@ node skills/start-multi-mission/scripts/multi-mission-manager.mjs cleanup \
   --yes
 ```
 
-Omit `--mission` only when the user explicitly approves cleanup of the entire batch. Cleanup preserves mission branches and refuses dirty worktrees. Never infer cleanup approval from PR approval or merge completion.
+batch全体の後片付けをユーザーが明示的に承認した場合だけ，`--mission`を省略できる．cleanupはdirty worktreeを拒否し，mission branchを残す．PRの承認やmerge完了から，後片付けの承認を推測してはならない．

@@ -1,34 +1,34 @@
-# Independent Pull Request Workflow
+# 独立したPRとして進める条件
 
-## Independence Test
+## 独立性は未mergeの実装なしで判定する
 
-A mission is independent only when it can be reviewed, merged, reverted, and resumed from the shared base without requiring another mission's unmerged implementation.
+共通baseから，別ミッションの未merge実装を必要とせず，レビュー，merge，revert，作業再開ができる場合だけ，独立したミッションとみなす．これが独立性の基準である．
 
-Treat these as dependency signals:
+次の状態は，依存関係があることを示す．
 
-- Two tasks need the same new shared component or schema change.
-- One task imports a symbol introduced only by another task.
-- Both tasks must edit a high-conflict registry, router, lockfile, or generated artifact.
-- One task's acceptance properties cannot pass until another task merges.
+- 2つのタスクが，同じ新しい共通componentまたはschema変更を必要とする．
+- 一方のタスクが，もう一方だけで追加されるsymbolをimportする．
+- 両方のタスクが，競合しやすいregistry，router，lockfile，生成物を変更する．
+- 一方がmergeされるまで，もう一方の受け入れプロパティを満たせない．
 
-Create a prerequisite mission first, combine the tasks, or explicitly adopt stacked PRs. Do not call stacked PRs independent.
+この場合は，前提ミッションを先に作るか，タスクを統合するか，stacked PRを明示的に採用する．stacked PRを独立したPRとは呼ばない．
 
-## PR Ownership
+## 各セッションが自分のPRに責任を持つ
 
-Each mission session owns one branch, Mission Brief, test evidence, Merge-Readiness Pack, and PR. It asks the user separately before push and PR creation. The PR targets the batch manifest's `targetBranch` and contains no commits copied from sibling missions.
+各ミッションセッションは，1つのbranch，Mission Brief，テスト証拠，Merge-Readiness Pack，PRを担当する．pushとPR作成の前には，それぞれユーザーの承認を得る．PRのtargetには，batch manifestの`targetBranch`を使う．sibling missionからコピーしたcommitは含めない．
 
-The batch coordinator may inspect status and report conflicts. It must not cherry-pick mission commits into an integration branch or resolve implementation conflicts on behalf of all sessions.
+batchの調整役は，状態を確認して競合を報告できる．mission commitをintegration branchへcherry-pickしたり，すべてのセッションに代わって実装競合を解消したりしない．
 
-## After Another PR Merges
+## 別のPRが先にmergeされた場合
 
-The remaining mission may now be behind its target branch. Its own session must:
+残るミッションは，target branchより古くなる可能性がある．そのミッションのセッションが，次の順に対応する．
 
-1. Inspect the target-branch changes and overlap.
-2. Explain whether merge or rebase is appropriate under repository policy.
-3. Obtain approval before history rewriting or other protected Git operations.
-4. Update its branch, resolve conflicts only in its worktree, and rerun its acceptance evidence.
-5. Update its Mission Brief and Merge-Readiness Pack with the new base and validation provenance.
+1. target branchの変更と，自分の変更との重なりを確認する．
+2. リポジトリ方針に照らして，mergeとrebaseのどちらが適切か説明する．
+3. 履歴の書き換えや保護されたGit操作の前に，承認を得る．
+4. 自分のworktreeだけでbranchを更新して競合を解消し，受け入れ条件の証拠を取り直す．
+5. 新しいbaseと検証の出所を，Mission BriefとMerge-Readiness Packへ反映する．
 
-## Cleanup
+## 後片付け
 
-Close the interactive agent session before removing its worktree. Prefer `cleanup --require-merged` when a GitHub PR exists. Without it, cleanup requires an explicit user statement that the mission is abandoned or otherwise safe to remove. Cleanup keeps the branch so committed work remains recoverable.
+worktreeを削除する前に，対話中のagent sessionを終了する．GitHub PRがある場合は，`cleanup --require-merged`を優先する．このoptionを使わない場合は，ミッションを放棄したか，削除しても安全だというユーザーの明示的な確認が必要になる．cleanup後もbranchは残るため，commit済みの作業は復元できる．

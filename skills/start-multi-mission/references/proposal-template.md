@@ -1,29 +1,29 @@
-# Creation Proposal Template
+# 複数ミッションの作成提案
 
-Use this structure before requesting approval. Fill it with repository evidence rather than treating the examples as fixed values.
+作成の承認を求める前に，次の構成で提案する．提案段階では何も作らない．例を固定値として流用せず，リポジトリで確認した事実を記入する．
 
 ## Batch
 
-- Batch ID and purpose
-- Local target branch and base ref
-- Session host: Codex CLI, Codex UI, or Claude Code
-- Launch mode: printed commands by default; tmux only with separate approval
+- Batch IDと目的．
+- local target branchとbase ref．
+- session host：Codex CLI，Codex UI，Claude Codeのいずれか．
+- 起動方法：標準はコマンド表示．tmuxは別途承認を得た場合だけ使う．
 
 ## Missions
 
-For every mission, state:
+各ミッションについて，次を示す．
 
-- ID, title, branch, and worktree path
-- Outcome and ownership boundary
-- Non-goals
-- Provisional acceptance properties and likely evidence
-- Files or subsystems likely to change
-- Its independently reviewable, mergeable, revertible, and resumable rationale
+- ID，タイトル，branch，worktree path．
+- 成果と所有境界．
+- 非目標．
+- 暫定的な受け入れプロパティと，想定する証拠．
+- 変更する可能性が高いファイルまたはsubsystem．
+- 単独でレビュー，merge，revert，作業再開ができる理由．
 
-## Dependency And Conflict Map
+## 依存関係と競合箇所
 
-Call out shared components, routes, API schemas, configuration, lockfiles, generated files, and dependencies. Resolve shared prerequisites before calling the missions independent.
+共通component，route，API schema，設定，lockfile，生成ファイル，その他の依存関係を示す．共通の前提作業は，ミッションを独立と判断する前に解消する．
 
-## Approval Request
+## 承認依頼
 
-Name the exact branches, worktree root, Mission documents, and session commands that will be prepared. Explicitly say that no issue, commit, push, PR, or interactive session will be created yet. Ask for one clear approval to run `create`; request tmux launch separately later.
+準備するbranch，worktree root，Mission文書，session commandを正確に示す．この時点ではIssue，commit，push，PR，対話セッションを作成しないことも明記する．まず`create`を実行するための承認を1つ求め，tmuxによる起動は後から別に承認を得る．

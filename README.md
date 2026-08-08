@@ -1,16 +1,51 @@
-# Vue 3 + TypeScript + Vite
+# knoQ_R-UI
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+knoQ_R-UIは，イベント，進捗部屋，グループ，カレンダー，日程調整を扱うknoQのフロントエンドです．Vue 3，TypeScript，Vite，UnoCSSで構成しています．
 
-## Recommended IDE Setup
+初めて開発する場合は，まず「ローカルで起動する」まで進めてください．コーディング規約やAIエージェントの運用は，必要になった時点で末尾のリンクを確認してください．
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+## ローカルで起動する
 
-## Type Support For `.vue` Imports in TS
+Node.jsとnpmを用意し，リポジトリのルートで次のコマンドを実行します．対応するNode.jsのversionは，現在リポジトリ内で固定していません．
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+```bash
+npm install
+npm run dev
+```
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+開発サーバーは標準で8080番ポートを使います．Viteが表示したURLをブラウザで開いてください．
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+ここまでで起動するのはUIだけです．データ取得を含む画面を確認する場合は，knoQのバックエンドを別に起動し，`http://localhost:3000/api`へ接続できる状態にしてください．
+
+## 変更を検証する
+
+変更範囲に応じて，次のコマンドを使います．アプリケーションコードを変更したPRでは，Lint，型チェック，ビルドを通し，振る舞いを変えた場合は関連テストも実行してください．文書だけを変更した場合は，Prettierと`git diff --check`で検証します．
+
+| 目的                       | コマンド                                         |
+| -------------------------- | ------------------------------------------------ |
+| 開発サーバーを起動する     | `npm run dev`                                    |
+| Lintを実行する             | `npm run lint`                                   |
+| Lintで直せる問題を修正する | `npm run lint:fix`                               |
+| 型を検査する               | `npm run type-check`                             |
+| プロダクションビルドを作る | `npm run build`                                  |
+| テストを対話実行する       | `npm test`                                       |
+| テストを1回実行する        | `npm exec -- vitest run --coverage.enabled=true` |
+| OpenAPI型を再生成する      | `npm run generate`                               |
+
+`src/lib/api/schema.d.ts`は生成物です．APIスキーマを更新するときは直接編集せず，`npm run generate`を使います．
+
+## コードの置き場所を選ぶ
+
+- `src/pages/`には，ルートと1対1に対応するページを置きます．
+- `src/features/`には，イベントや部屋など，ドメインごとの実装を置きます．
+- `src/components/`には，複数の機能で使うUI部品を置きます．
+- `src/composables/`には，複数の機能で使うリアクティブなロジックを置きます．
+- `src/lib/`には，APIクライアントやドメイン横断の処理を置きます．
+
+詳しい責務とimport，型，UnoCSSの規約は，[コーディング規約](./docs/conventions.md)にまとめています．
+
+## AIエージェントと作業する
+
+このリポジトリには，まとまった開発タスクや並行作業の進め方を定めたAgent Skillがあります．目的ごとの選び方と呼び出し例は，[Agent Skill利用ガイド](./docs/skills/README.md)を参照してください．
+
+まとまった機能追加や調査を始める場合は，[ミッション運用ガイド](./docs/missions/README.md)も確認してください．質問，レビュー，軽微な単発編集にミッションは不要です．

@@ -2,7 +2,7 @@
 
 テンプレートは [merge-rationale.template.md](../_templates/merge-rationale.template.md) です．共通運用は [Missions README](../README.md) を参照してください．
 
-`merge-rationale.md` は，レビュアーが大量の差分を先に読むことなく，マージ可否を判断して必要な箇所だけ深掘りするための **証拠ベースの終了資料** です．作成者がマージを自己承認する文書ではありません．
+`merge-rationale.md`は，レビュアーがマージ可否を判断し，必要な差分だけを詳しく確認するための終了資料です．受け入れ条件と検証結果を対応付けますが，作成者がマージを自己承認する文書ではありません．
 
 ## 作成手順
 
