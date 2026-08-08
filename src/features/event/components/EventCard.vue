@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { KnoqEvent } from '/@/features/event/types'
 import { computed } from 'vue'
-import { compareAsc, format, parseISO } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import IconWithName from '/@/features/user/components/IconWithName.vue'
 import { useUsers } from '/@/features/user/composables/useUsers'
 

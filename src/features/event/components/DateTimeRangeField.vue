@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import CheckboxField from '/@/components/UI/Form/CheckboxField.vue'
-import InputField from '/@/components/UI/Form/InputField.vue'
-
 defineProps<{ label: string }>()
 </script>
 

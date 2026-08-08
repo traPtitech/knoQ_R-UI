@@ -32,7 +32,15 @@ export default typescriptEslint.config(
       }
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          ignoreRestSiblings: true
+        }
+      ],
 
       // ネストした if は条件の組み合わせが見えにくく可読性が下がるため禁止する。
       // 早期 return / ガード節 / 関数分割で平坦化すること。

@@ -21,7 +21,7 @@ const route = useRoute()
 const router = useRouter()
 const eventId: ComputedRef<string> = computed(() => route.params.id as string)
 
-const { event, error, mutate, state } = fetchEvent(eventId.value)
+const { event, mutate, state } = fetchEvent(eventId.value)
 const { me } = useMe()
 const { canUpdate, mySchedule, updateMySchedule } = useMySchedule(me, event)
 

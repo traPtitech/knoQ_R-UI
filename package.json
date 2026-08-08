@@ -41,13 +41,14 @@
     "@iconify-json/material-symbols": "^1.2.40",
     "@iconify-json/mdi": "^1.2.3",
     "@unocss/eslint-config": "^66.5.10",
+    "@unocss/reset": "^66.7.5",
     "@vitejs/plugin-vue": "^6.0.1",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/coverage-v8": "^4.0.10",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-unicorn": "^64.0.0",
     "eslint-plugin-vue": "^10.5.1",
     "eslint-plugin-vuejs-accessibility": "^2.5.0",
-    "eslint-plugin-unicorn": "^64.0.0",
     "husky": "^9.1.7",
     "jiti": "^2.6.1",
     "lint-staged": "^17.0.4",
@@ -59,7 +60,7 @@
     "typescript-eslint": "^8.46.2",
     "unocss": "^66.5.2",
     "vite": "^7.3.2",
-    "vitest": "^3.2.4",
+    "vitest": "^4.0.10",
     "vue-tsc": "^3.1.0"
   }
 }

@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import InputField from './InputField.vue'
-</script>
-
 <template>
   <div grid-cols="[1fr_auto]" grid gap-2 grid-items-center>
     <!-- <InputField /> -->

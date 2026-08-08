@@ -20,7 +20,7 @@ const wrapperStyle = computed(() => attrs.style as StyleValue)
 
 // input receives functional attributes (type, placeholder, etc.)
 const inputAttrs = computed(() => {
-  const { class: c, style: s, ...rest } = attrs
+  const { class: _class, style: _style, ...rest } = attrs
   return rest
 })
 

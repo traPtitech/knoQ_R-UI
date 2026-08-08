@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import EventCard from './EventCard.vue'
-</script>
-
 <template>
   <div>
     <p>参加予定のイベント</p>

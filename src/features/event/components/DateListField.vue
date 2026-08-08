@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import DateTimeRangeField from './DateTimeRangeField.vue'
-import CheckboxField from '/@/components/UI/Form/CheckboxField.vue'
 </script>
 <template>
   <div grid gap-2>

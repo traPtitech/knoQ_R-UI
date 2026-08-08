@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import InputField from '/@/components/UI/Form/InputField.vue'
 import DeletableInputField from '/@/components/UI/Form/DeletableInputField.vue'
-
-const placeList = ref([])
 </script>
 
 <template>

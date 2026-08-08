@@ -9,5 +9,6 @@ const renderedMd = computed(() => marked.parse(props.markdown))
 </script>
 
 <template>
+  <!-- eslint-disable-next-line vue/no-v-html -- Event descriptions are stored as Markdown and rendered as HTML. -->
   <div v-html="renderedMd" />
 </template>
