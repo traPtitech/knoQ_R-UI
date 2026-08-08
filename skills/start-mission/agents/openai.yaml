@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Start Mission'
+  short_description: 'Run a governed development mission from brief to closeout'
+  default_prompt: 'Use $start-mission to start or resume a governed development mission for this request.'
