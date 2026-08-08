@@ -1,0 +1,59 @@
+# knoQ_R-UI Context Card レジストリ．
+# 常時ロードするのは project-overview のみ．他のカードは tags / load_when が作業に一致するときだけ読む．
+
+version: 1
+last_updated: 2026-08-06
+
+tags:
+  overview: 'プロジェクト全体の案内．'
+  frontend: 'Vue フロントエンドの構成．'
+  architecture: 'モジュール境界と責務．'
+  routing: 'Vue Router とページ構成．'
+  api: 'HTTP API クライアントと呼び出し．'
+  data: '取得状態，キャッシュ，ドメインデータ．'
+  schema: 'OpenAPI 生成型と API 契約．'
+  event: '確定済みイベントと参加予定．'
+  draft-event: '日程調整用 draft-event．'
+  room: '進捗部屋と予約データ．'
+  calendar: '月間・週間カレンダー表示．'
+  ui: '共通 UI コンポーネント．'
+  design-system: 'UnoCSS のトークンとスタイル方針．'
+  quality: '静的検査，テスト，ビルド．'
+  tooling: '開発スクリプトと Git hook．'
+
+cards:
+  - id: project-overview
+    file: project-overview.md
+    tags: [overview, frontend, architecture]
+    priority: high
+    load_when: 'すべての作業の着手時に，リポジトリの目的と主要な境界を確認するとき'
+  - id: frontend-architecture-routing
+    file: frontend-architecture-routing.md
+    tags: [frontend, architecture, routing]
+    priority: high
+    load_when: 'ページ，ルート，レイアウト，機能ディレクトリ，アプリ初期化を変更するとき'
+  - id: api-data-schema
+    file: api-data-schema.md
+    tags: [api, data, schema]
+    priority: high
+    load_when: 'API 呼び出し，データ取得状態，OpenAPI スキーマ，生成型を変更するとき'
+  - id: event-draft-event-domain
+    file: event-draft-event-domain.md
+    tags: [event, draft-event, data]
+    priority: high
+    load_when: 'イベント，参加予定，日程調整，draft-event からのイベント作成を変更するとき'
+  - id: room-calendar-domain
+    file: room-calendar-domain.md
+    tags: [room, calendar, data]
+    priority: high
+    load_when: '進捗部屋，月間カレンダー，週間カレンダー，部屋の一括作成を変更するとき'
+  - id: ui-design-system
+    file: ui-design-system.md
+    tags: [ui, design-system, frontend]
+    priority: high
+    load_when: '共通 UI，フォーム，色，余白，アイコン，UnoCSS 設定を変更するとき'
+  - id: quality-tooling
+    file: quality-tooling.md
+    tags: [quality, tooling]
+    priority: medium
+    load_when: 'lint，format，type-check，test，build，Git hook の設定や実行方法を変更するとき'
