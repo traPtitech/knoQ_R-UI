@@ -3,22 +3,13 @@ defineProps<{
   label: string
   id: string
 }>()
+defineOptions({ inheritAttrs: false })
 const model = defineModel<string>()
 </script>
 
 <template>
   <label grid gap-1 :for="id">
-    <p hxs>{{ label }}</p>
-    <textarea
-      :id
-      v-model="model"
-      box-border
-      px-4
-      py-3
-      b
-      b-solid
-      b-border-primary
-      rd-1
-    />
+    <p h5>{{ label }}</p>
+    <textarea :id="id" v-model="model" class="input-base" v-bind="$attrs" />
   </label>
 </template>

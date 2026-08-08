@@ -20,21 +20,25 @@ export default defineConfig({
   ],
   rules: [],
   shortcuts: {
-    hxl: 'text-[33px] fw-500',
-    hl: 'text-[28px] fw-500',
-    hm: 'text-[23px] fw-500',
-    hs: 'text-[19px] fw-500',
-    hxs: 'text-[16px] fw-500',
+    h1: 'text-[33px] fw-500',
+    h2: 'text-[28px] fw-500',
+    h3: 'text-[23px] fw-500',
+    h4: 'text-[19px] fw-500',
+    h5: 'text-[16px] fw-500',
     'btn-m': 'text-[16px] fw-500',
     'cap-m': 'text-[13px] text-text-secondary',
+    'input-base':
+      'box-border px-4 py-3 b b-solid b-border-primary rd-1 w-full bg-surface-primary text-text-primary placeholder:text-text-secondary focus:outline-none focus:b-border-accent-primary transition-colors',
     card: 'rd-xl px-5 py-6 bg-surface-primary b-1 b-solid b-border-secondary',
     'btn-primary':
-      'px-4 py-2 bg-surface-accent-primary rd-2 b b-solid b-border-accent-primary text-white btn-m'
+      'px-4 py-2 bg-surface-accent-primary rd-2 b b-solid b-border-accent-primary text-white btn-m disabled:opacity-50 disabled:cursor-not-allowed'
   },
   theme: {
     colors: {
       surface: {
         accentPrimary: '#0E9888',
+        accentStrong: '#0A7D70',
+        accentSoft: '#E7F4F2',
         primary: '#FFFFFF',
         secondary: '#F1F4F3'
       },
@@ -45,10 +49,37 @@ export default defineConfig({
       },
       text: {
         primary: '#111C18',
-        secondary: '#6A716E'
+        secondary: '#6A716E',
+        tertiary: '#9AA1A7'
       },
       background: {
         background: '#F8F8F8'
+      },
+      status: {
+        error: '#EF4444', // red-500
+        success: '#16A34A', // green-600
+        accepting: '#0E9888',
+        answered: '#6f6fa0',
+        closed: '#8892a0',
+        confirmed: '#3b82f6'
+      },
+      tag: {
+        invited: '#5a8a6a',
+        invitedBg: '#ecf3ee',
+        public: '#2a8a9e',
+        publicBg: '#e6f3f6'
+      },
+      weekday: {
+        sun: '#D2544F',
+        sat: '#3F74C2'
+      },
+      room: {
+        openBg: '#D2EAE5',
+        openBorder: '#C2E4DE',
+        exclusiveBg: '#F8EAD2',
+        exclusiveBorder: '#ECD6A4',
+        exclusiveFg: '#8A5E16',
+        exclusiveTime: '#A07D3E'
       }
     }
   },

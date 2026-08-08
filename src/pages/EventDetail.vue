@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { ComputedRef, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { fetchEvent } from '../features/event/api'
-import { useMySchedule } from '../features/event/composables/useMySchedule'
+import { format } from 'date-fns'
+import { ja } from 'date-fns/locale'
+import { fetchEvent } from '/@/features/event/api'
+import { useMySchedule } from '/@/features/event/composables/useMySchedule'
 import { useMe } from '/@/features/user/composables/useMe'
 import { Schedule } from '/@/features/event/types'
 import AppHeader from '/@/components/AppHeader.vue'
-import AttendingEventList from '../features/event/components/AttendingEventList.vue'
-import IconWithName from '../features/user/components/IconWithName.vue'
-import AttendanceButton from '../features/event/components/AttendanceButton.vue'
-import SchedulePoll from '../features/event/components/SchedulePoll.vue'
-import InvitationLinkButton from '../features/event/components/InvitationLinkButton.vue'
-import DescriptionMd from '../features/event/components/DescriptionMd.vue'
+import IconWithName from '/@/features/user/components/IconWithName.vue'
+import AttendanceButton from '/@/features/event/components/AttendanceButton.vue'
+import SchedulePoll from '/@/features/event/components/SchedulePoll.vue'
+import InvitationLinkButton from '/@/features/event/components/InvitationLinkButton.vue'
+import DescriptionMd from '/@/features/event/components/DescriptionMd.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
+import DataFetchState from '/@/components/UI/DataFetchState.vue'
+import type { SchedulePollEvent } from '/@/features/event/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -31,38 +34,147 @@ const onDelete = async () => {
   //await deleteEvent(eventId.value)
   router.push('/')
 }
+
+const formatDateRange = (start: string, end: string) => {
+  const startDate = new Date(start)
+  const endDate = new Date(end)
+  return `${format(startDate, 'yyyy/MM/dd HH:mm', { locale: ja })} - ${format(endDate, 'HH:mm', { locale: ja })}`
+}
 </script>
 
 <template>
   <AppHeader />
-  <div max-w-3xl my-8 mx-auto grid gap-4>
-    <div v-if="error">failed to fetch</div>
-    <div v-else-if="!event">loading</div>
-    <div v-else>
-      <h2 hl>{{ event.name }}</h2>
-      <div class="flex gap-2 items-center my-4">
-        <p>by</p>
-        <IconWithName :user-id="event.admins[0]" />
-      </div>
-      <div card grid gap-6>
-        <h3 hm>日程調整</h3>
-        <SchedulePoll :event="event" @update:my-schedule="onUpdateMySchedule" />
-        <div class="flex gap-4">
-          <AttendanceButton
-            :schedule="mySchedule"
-            @update:schedule="onUpdateMySchedule"
-          />
-          <InvitationLinkButton :event-id="eventId" />
+  <div class="grid mx-auto max-w-5xl gap-8 px-4 py-8">
+    <DataFetchState :state="state">
+      <div v-if="event" class="grid gap-8">
+        <!-- Header Section -->
+        <div class="grid gap-4">
+          <!-- Tags -->
+          <div v-if="event.tags.length > 0" class="flex flex-wrap gap-2">
+            <span
+              v-for="tag in event.tags"
+              :key="tag.tagId"
+              class="rounded bg-surface-secondary px-2 py-1 text-sm text-text-secondary font-medium"
+            >
+              #{{ tag.name }}
+            </span>
+          </div>
+
+          <!-- Title -->
+          <h1 class="text-3xl text-text-primary font-bold">{{ event.name }}</h1>
+
+          <!-- Meta Info -->
+          <div class="flex flex-wrap gap-x-8 gap-y-3 text-text-primary">
+            <!-- Time -->
+            <div class="flex items-center gap-2">
+              <div class="i-mdi:clock-outline text-xl text-text-secondary" />
+              <span>{{ formatDateRange(event.timeStart, event.timeEnd) }}</span>
+            </div>
+            <!-- Place -->
+            <div class="flex items-center gap-2">
+              <div class="i-mdi:map-marker text-xl text-text-secondary" />
+              <span>{{ event.place }}</span>
+            </div>
+            <!-- Organizer -->
+            <div class="flex items-center gap-2">
+              <div class="i-mdi:account-group text-xl text-text-secondary" />
+              <span>{{ event.groupName }}</span>
+            </div>
+            <!-- Admins/CreatedBy -->
+            <div class="flex items-center gap-2">
+              <div class="i-mdi:account-edit text-xl text-text-secondary" />
+              <span class="mr-1 text-sm text-text-secondary">作成者:</span>
+              <IconWithName :user-id="event.createdBy" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid items-start gap-8 lg:grid-cols-[1fr_320px]">
+          <!-- Left Column: Description & Poll -->
+          <div class="grid min-w-0 gap-8">
+            <!-- Description -->
+            <div
+              class="border border-border-secondary rounded-xl bg-surface-primary p-6 shadow-sm"
+            >
+              <h2
+                class="mb-6 flex items-center gap-2 border-b border-border-secondary pb-4 text-xl font-bold"
+              >
+                <div class="i-mdi:text-box-outline text-2xl" />
+                イベント概要
+              </h2>
+              <DescriptionMd :markdown="event.description" />
+            </div>
+
+            <!-- Schedule Poll -->
+            <div
+              class="border border-border-secondary rounded-xl bg-surface-primary p-6 shadow-sm"
+            >
+              <h2
+                class="mb-6 flex items-center gap-2 border-b border-border-secondary pb-4 text-xl font-bold"
+              >
+                <div class="i-mdi:calendar-check text-2xl" />
+                日程調整
+              </h2>
+              <!--
+                SchedulePoll は将来の日程調整 API を見越したプロトタイプ実装で、
+                現行の event (ResponseEventDetail) とは構造が異なる。バックエンドが
+                追従するまではフィールドが無い前提で渡す (component 側で optional 扱い)。
+              -->
+              <SchedulePoll
+                :event="event as unknown as SchedulePollEvent"
+                @update:my-schedule="onUpdateMySchedule"
+              />
+            </div>
+          </div>
+
+          <!-- Right Column: Actions & Status -->
+          <div class="sticky top-4 grid gap-6">
+            <!-- Participation Status -->
+            <div
+              class="grid gap-4 border border-border-secondary rounded-xl bg-surface-primary p-6 shadow-sm"
+            >
+              <h2 class="flex items-center gap-2 text-lg font-bold">
+                <div class="i-mdi:account-check" />
+                参加登録
+              </h2>
+              <AttendanceButton
+                :schedule="mySchedule"
+                class="w-full justify-center py-2"
+                @update:schedule="onUpdateMySchedule"
+              />
+            </div>
+
+            <!-- Share -->
+            <div
+              class="grid gap-4 border border-border-secondary rounded-xl bg-surface-primary p-6 shadow-sm"
+            >
+              <h2 class="flex items-center gap-2 text-lg font-bold">
+                <div class="i-mdi:share-variant" />
+                共有
+              </h2>
+              <InvitationLinkButton :event-id="eventId" class="w-full" />
+            </div>
+
+            <!-- Admin Actions -->
+            <div
+              v-if="canUpdate"
+              class="grid gap-4 border border-border-secondary rounded-xl bg-surface-primary p-6 shadow-sm"
+            >
+              <h2 class="flex items-center gap-2 text-lg font-bold">
+                <div class="i-mdi:cog" />
+                管理者メニュー
+              </h2>
+              <PrimaryButton
+                class="bg-error hover:bg-error/90 w-full justify-center text-white"
+                @click="onDelete"
+              >
+                イベントを削除
+              </PrimaryButton>
+            </div>
+          </div>
         </div>
       </div>
-      <div card grid gap-6>
-        <h3 hm>イベント概要</h3>
-        <DescriptionMd :markdown="event.description" />
-      </div>
-      <div v-if="canUpdate" card grid gap-6>
-        <h3 hm>イベントの管理</h3>
-        <PrimaryButton @click="onDelete">イベントを削除</PrimaryButton>
-      </div>
-    </div>
+    </DataFetchState>
   </div>
 </template>

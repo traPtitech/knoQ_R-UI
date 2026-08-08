@@ -3,8 +3,8 @@ import InputField from './InputField.vue'
 </script>
 
 <template>
-  <div grid grid-cols="[1fr_auto]" grid-items-center gap-2>
+  <div grid-cols="[1fr_auto]" grid gap-2 grid-items-center>
     <!-- <InputField /> -->
-    <button w-5 h-5 p-2 i-material-symbols:close-rounded />
+    <button i-material-symbols:close-rounded h-5 w-5 p-2 />
   </div>
 </template>

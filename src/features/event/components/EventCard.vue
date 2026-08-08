@@ -3,7 +3,7 @@ import type { KnoqEvent } from '/@/features/event/types'
 import { computed } from 'vue'
 import { compareAsc, format, parseISO } from 'date-fns'
 import IconWithName from '/@/features/user/components/IconWithName.vue'
-import { useUsers } from '../../user/composables/useUsers'
+import { useUsers } from '/@/features/user/composables/useUsers'
 
 const props = defineProps<{
   event: KnoqEvent
@@ -30,7 +30,7 @@ const eventTime = computed(() => {
       <div flex flex-col gap-4>
         <div flex flex-col gap-2>
           <div flex flex-row justify-between>
-            <span font-bold text-lg>{{ event.name }}</span>
+            <span text-lg font-bold>{{ event.name }}</span>
             <span text-sm text-text-secondary>{{
               format(parseISO(event.timeStart), 'yyyy/MM/dd')
             }}</span>
@@ -44,7 +44,7 @@ const eventTime = computed(() => {
             <span>{{ roomName }}</span>
           </div>
         </div>
-        <div flex flex-row gap-2 flex-wrap>
+        <div flex flex-row flex-wrap gap-2>
           <IconWithName
             v-for="user in attendees"
             :key="user.userId"

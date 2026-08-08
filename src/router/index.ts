@@ -1,24 +1,31 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import Home from '../pages/HomePage.vue'
-import EventList from '../pages/EventList.vue'
-import EventDetail from '../pages/EventDetail.vue'
+import Home from '/@/pages/HomePage.vue'
+import EventList from '/@/pages/EventList.vue'
+import EventDetail from '/@/pages/EventDetail.vue'
 import CreateEvent from '/@/pages/CreateEvent.vue'
-import GroupList from '../pages/GroupList.vue'
-import MyPage from '../pages/MyPage.vue'
-import SearchPage from '../pages/SearchPage.vue'
-import ArrangementPage from '../pages/ArrangementPage.vue'
+import GroupList from '/@/pages/GroupList.vue'
+import MyPage from '/@/pages/MyPage.vue'
+import SearchPage from '/@/pages/SearchPage.vue'
+import ArrangementPage from '/@/pages/ArrangementPage.vue'
+import CreateRoom from '/@/pages/CreateRoom.vue'
+import CreateDraftEvent from '/@/pages/CreateDraftEvent.vue'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'Home', component: Home },
   {
+    path: '/events/new',
+    name: 'create_event',
+    component: CreateEvent
+  },
+  {
+    path: '/rooms/new',
+    name: 'create_room',
+    component: CreateRoom
+  },
+  {
     path: '/events',
     name: 'events',
     component: EventList
-  },
-  {
-    path: '/events/new',
-    name: 'create event',
-    component: CreateEvent
   },
   {
     path: '/events/:id',
@@ -42,6 +49,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../pages/CalendarPage.vue')
   },
   {
+    path: '/rooms',
+    name: 'rooms',
+    component: () => import('../pages/RoomsCalendarPage.vue')
+  },
+  {
     path: '/callback',
     name: 'Callback',
     redirect: '/'
@@ -50,6 +62,26 @@ const routes: RouteRecordRaw[] = [
     path: '/arrangement',
     name: 'arrangement',
     component: ArrangementPage
+  },
+  {
+    path: '/draft-events',
+    name: 'draft_events',
+    component: () => import('../pages/DraftEventList.vue')
+  },
+  {
+    path: '/draft-events/new',
+    name: 'create_draft_event',
+    component: CreateDraftEvent
+  },
+  {
+    path: '/draft-events/:id',
+    name: 'DraftEventDetail',
+    component: () => import('../pages/DraftEventDetail.vue')
+  },
+  {
+    path: '/draft-events/:id/manage',
+    name: 'DraftEventManage',
+    component: () => import('../pages/DraftEventManage.vue')
   },
   {
     path: '/search',

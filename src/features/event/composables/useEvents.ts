@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { apiClient } from '/@/lib/api'
-import type { KnoqEvent } from '../types'
+import type { KnoqEvent } from '/@/features/event/types'
 
 export const useEvents = () => {
   const events = ref<KnoqEvent[]>([])

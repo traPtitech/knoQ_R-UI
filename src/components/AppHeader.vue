@@ -23,24 +23,26 @@ const clickLogout = async () => {
 
 <template>
   <div
-    p-4
     flex
     flex-justify-between
     flex-items-center
+    p-4
     b-b="1 solid border-secondary"
   >
     <RouterLink to="/" justify-self-start>
-      <img :src="logo" alt="Logo" w-8 h-8 />
+      <img :src="logo" alt="Logo" h-8 w-8 />
     </RouterLink>
     <div grid grid-flow-col gap-8>
-      <RouterLink hxs to="/arrangement">調整</RouterLink>
-      <RouterLink hxs to="/calendar">カレンダー</RouterLink>
-      <RouterLink hxs to="/ical">iCal</RouterLink>
-      <RouterLink hxs to="/search">探す</RouterLink>
+      <RouterLink h5 to="/draft-events">調整</RouterLink>
+      <RouterLink h5 to="/calendar">カレンダー</RouterLink>
+      <RouterLink h5 to="/rooms">進捗部屋</RouterLink>
+      <RouterLink h5 to="/ical">iCal</RouterLink>
+      <RouterLink h5 to="/events">探す</RouterLink>
     </div>
-    <div v-if="me" grid grid-flow-col grid-items-center gap-4>
+    <div v-if="me" grid grid-flow-col gap-4 grid-items-center>
+      <RouterLink btn-primary to="/rooms/new"> 進捗部屋作成 </RouterLink>
       <RouterLink btn-primary to="/events/new"> イベント作成 </RouterLink>
-      <DropdownMenu>
+      <DropdownMenu align="right">
         <template #trigger>
           <UserIcon :user-id="me.name" />
         </template>
@@ -51,7 +53,7 @@ const clickLogout = async () => {
             >マイページ</RouterLink
           >
           <button
-            class="block w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-surface-secondary"
+            class="block w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-surface-secondary"
             @click="clickLogout"
           >
             ログアウト
