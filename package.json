@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@iconify-json/material-symbols": "^1.2.40",
+    "@unocss/reset": "^66.7.5",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vitest/coverage-v8": "^4.1.9",
     "eslint": "^9.36.0",
