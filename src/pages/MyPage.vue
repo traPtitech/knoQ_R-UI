@@ -20,7 +20,7 @@ const upcomingEvents = computed(() => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   return (
-    myEvents.value?.filter((e: any) => {
+    myEvents.value?.filter((e) => {
       const d = new Date(e.timeStart)
       return d >= today
     }) ?? []
