@@ -2,10 +2,8 @@
 import AppHeader from '/@/components/AppHeader.vue'
 import { useMe } from '/@/features/user/composables/useMe'
 import { useApiFetch } from '/@/composables/useApiFetch'
-import { RouterLink } from 'vue-router'
-import { computed } from 'vue'
 import DataFetchState from '/@/components/UI/DataFetchState.vue'
-import MyEventsView from '/@/features/event/components/MyEventsView.vue'
+import MyEventsList from '/@/features/event/components/MyEventsList.vue'
 
 const { me } = useMe()
 
@@ -16,26 +14,11 @@ const { data: myEvents, state: myEventsState } = useApiFetch(
   }
 )
 
-const upcomingEvents = computed(() => {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  return (
-    myEvents.value?.filter((e) => {
-      const d = new Date(e.timeStart)
-      return d >= today
-    }) ?? []
-  )
-})
-
 const { data: myGroups, state: myGroupsState } = useApiFetch(
   '/users/me/groups',
   {}
 )
 
-const dateString = (date: string) => {
-  const d = new Date(date)
-  return `${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}`
-}
 </script>
 
 <template>
@@ -49,14 +32,8 @@ const dateString = (date: string) => {
     </div>
     <div grid gap-6 card>
       <h3 hm>あなたのイベント</h3>
-      <DataFetchState :state="myEventsState" :is-empty="upcomingEvents?.length === 0">
-        <div v-for="event in upcomingEvents" :key="event.eventId">
-          <MyEventsView
-            :event-date="dateString(event.timeStart)"
-            :event-name="event.name"
-            :event-id="event.eventId"
-          />
-        </div>
+      <DataFetchState :state="myEventsState" :is-empty="myEvents?.length === 0">
+        <MyEventsList :my-events-data="myEvents"/>
       </DataFetchState>
     </div>
     <div grid gap-6 card>
