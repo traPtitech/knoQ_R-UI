@@ -5,7 +5,7 @@ import { useApiFetch } from '/@/composables/useApiFetch'
 import { RouterLink } from 'vue-router'
 import { computed } from 'vue'
 import DataFetchState from '/@/components/UI/DataFetchState.vue'
-import MyEventsView from '/@/components/UI/MyEventsView.vue'
+import MyEventsView from '/@/features/event/components/MyEventsView.vue'
 
 const { me } = useMe()
 
