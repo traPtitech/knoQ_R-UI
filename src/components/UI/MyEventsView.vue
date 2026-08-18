@@ -10,11 +10,11 @@ defineProps<{
 </script>
 
 <template>
-  <div flex items-center gap-4>
-    <span text-text-secondary>
+  <div class="grid grid-cols-[3em_1fr] gap-4">
+    <span class="text-text-secondary">
       {{ eventDate }}
     </span>
-    <RouterLink :to="`/events/${eventId}`" >
+    <RouterLink :to="`/events/${eventId}`">
       {{ eventName }}
     </RouterLink>
   </div>
