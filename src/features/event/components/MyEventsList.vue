@@ -2,6 +2,9 @@
 import { ref, computed } from 'vue'
 import type { KnoqEvent } from '/@/features/event/types.js'
 import MyEvents from './MyEvents.vue'
+import { useMe } from '/@/features/user/composables/useMe.js';
+
+const { me } = useMe()
 
 const { myEventsData } = defineProps<{
   myEventsData: KnoqEvent[] | undefined
@@ -51,6 +54,10 @@ const IndexesOfPagination = (currentPage: number, totalPages: number) => {
       return [currentPage - 1, currentPage, currentPage + 1]
   }
 }
+const isEventAdmin = (admins: string[]) => {
+  if (!me.value) return false
+  return admins.includes(me.value.userId)
+}
 </script>
 
 <template>
@@ -61,6 +68,7 @@ const IndexesOfPagination = (currentPage: number, totalPages: number) => {
       :event-date="dateString(event.timeStart)"
       :event-name="event.name"
       :event-id="event.eventId"
+      :is-event-admin="isEventAdmin(event.admins)"
     />
   </div>
   <div
