@@ -7,7 +7,7 @@ import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import { useMe } from '/@/features/user/composables/useMe'
 import type { components } from '/@/lib/api'
 import { apiClient } from '/@/lib/api'
-import { now } from '/@/lib/time'
+import { now, todayStart } from '/@/lib/time'
 
 type Room = components['schemas']['ResponseRoom']
 type FetchState = 'pending' | 'success' | 'error'
@@ -32,6 +32,8 @@ const canDelete = computed(() => selectedCount.value > 0 && !isDeleting.value)
 const canSubmitCsv = computed(
   () => csvContent.value.trim().length > 0 && !isSubmittingCsv.value
 )
+const canManageRoom = (room: Room) =>
+  Boolean(me.value && room.admins.includes(me.value.userId))
 
 const sortCurrentRooms = (roomList: Room[], referenceTime: string) =>
   roomList
@@ -61,7 +63,7 @@ const fetchRooms = async () => {
 
   try {
     const { data, error } = await apiClient.GET('/rooms', {
-      params: { query: { dateBegin: referenceTime } }
+      params: { query: { dateBegin: todayStart() } }
     })
     if (error || !data) {
       roomsState.value = 'error'
@@ -71,7 +73,9 @@ const fetchRooms = async () => {
     rooms.value = sortCurrentRooms(data, referenceTime)
     selectedRoomIds.value = new Set(
       [...selectedRoomIds.value].filter((roomId) =>
-        rooms.value.some((room) => room.roomId === roomId)
+        rooms.value.some(
+          (room) => room.roomId === roomId && canManageRoom(room)
+        )
       )
     )
     roomsState.value = 'success'
@@ -91,6 +95,9 @@ watch(
 )
 
 const toggleRoom = (roomId: string) => {
+  const room = rooms.value.find((candidate) => candidate.roomId === roomId)
+  if (!room || !canManageRoom(room)) return
+
   const next = new Set(selectedRoomIds.value)
   if (next.has(roomId)) {
     next.delete(roomId)
@@ -113,7 +120,11 @@ const closeDeleteDialog = () => {
 const deleteSelectedRooms = async () => {
   if (!canDelete.value) return
 
-  const roomIds = [...selectedRoomIds.value]
+  const roomIds = [...selectedRoomIds.value].filter((roomId) =>
+    rooms.value.some((room) => room.roomId === roomId && canManageRoom(room))
+  )
+  if (roomIds.length === 0) return
+
   isDeleting.value = true
   deleteMessage.value = ''
   deleteError.value = ''
@@ -318,7 +329,7 @@ const submitCsv = async () => {
                 class="h-5 w-5 shrink-0 accent-surface-accent-primary"
                 :checked="selectedRoomIds.has(room.roomId)"
                 :data-testid="`room-checkbox-${room.roomId}`"
-                :disabled="isDeleting"
+                :disabled="isDeleting || !canManageRoom(room)"
                 :aria-label="`${room.place}を削除対象に選択`"
                 @change="toggleRoom(room.roomId)"
               />
@@ -326,6 +337,13 @@ const submitCsv = async () => {
                 <span class="block text-lg font-medium">{{ room.place }}</span>
                 <span class="mt-1 block text-sm text-text-secondary">
                   {{ formatRoomTime(room) }}
+                </span>
+                <span
+                  v-if="!canManageRoom(room)"
+                  class="mt-1 block text-xs text-status-error"
+                  :data-testid="`room-permission-${room.roomId}`"
+                >
+                  この部屋の管理者ではないため削除できません．
                 </span>
               </span>
             </div>

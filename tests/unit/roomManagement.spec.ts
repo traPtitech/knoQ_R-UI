@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import AppHeader from '/@/components/AppHeader.vue'
 import type { components } from '/@/lib/api'
+import { todayStart } from '/@/lib/time'
 import RoomManagementPage from '/@/pages/RoomManagementPage.vue'
 import { routes } from '/@/router'
 
@@ -53,14 +54,15 @@ const room = (
   roomId: string,
   place: string,
   timeStart: string,
-  timeEnd: string
+  timeEnd: string,
+  admins: string[] = [privilegedUser.userId]
 ): Room => ({
   roomId,
   place,
   timeStart,
   timeEnd,
   verified: true,
-  admins: [],
+  admins,
   createdBy: 'user-1',
   createdAt: '2026-08-01T00:00:00+09:00',
   updatedAt: '2026-08-01T00:00:00+09:00'
@@ -122,8 +124,56 @@ describe('RoomManagementPage', () => {
     expect(rows[1].text()).toContain('S2-202')
     expect(wrapper.text()).not.toContain('S2-199')
     expect(apiMocks.GET).toHaveBeenCalledWith('/rooms', {
-      params: { query: { dateBegin: expect.any(String) } }
+      params: { query: { dateBegin: todayStart() } }
     })
+  })
+
+  it('削除権限のない部屋を一覧に残し，選択とDELETEを許可しない', async () => {
+    apiMocks.GET.mockResolvedValue({
+      data: [
+        room(
+          'manageable-room',
+          'S2-201',
+          '2099-01-01T09:00:00+09:00',
+          '2099-01-01T18:00:00+09:00'
+        ),
+        room(
+          'other-admin-room',
+          'S2-202',
+          '2099-01-02T09:00:00+09:00',
+          '2099-01-02T18:00:00+09:00',
+          ['other-user']
+        )
+      ]
+    })
+
+    const wrapper = mountPage()
+    await flushPromises()
+
+    const unauthorizedCheckbox = wrapper.get<HTMLInputElement>(
+      '[data-testid="room-checkbox-other-admin-room"]'
+    )
+    expect(unauthorizedCheckbox.attributes('disabled')).toBeDefined()
+    expect(
+      wrapper.get('[data-testid="room-permission-other-admin-room"]').text()
+    ).toContain('この部屋の管理者ではないため削除できません')
+
+    await unauthorizedCheckbox.setValue(true)
+    await wrapper
+      .get('[data-testid="room-checkbox-manageable-room"]')
+      .setValue(true)
+    await wrapper.get('[data-testid="open-delete-dialog"]').trigger('click')
+    await wrapper.get('[data-testid="confirm-delete"]').trigger('click')
+    await flushPromises()
+
+    expect(apiMocks.DELETE).toHaveBeenCalledTimes(1)
+    expect(apiMocks.DELETE).toHaveBeenCalledWith('/rooms/{roomID}', {
+      params: { path: { roomID: 'manageable-room' } }
+    })
+    expect(apiMocks.DELETE).not.toHaveBeenCalledWith('/rooms/{roomID}', {
+      params: { path: { roomID: 'other-admin-room' } }
+    })
+    expect(wrapper.text()).toContain('S2-202')
   })
 
   it('取得失敗を空状態と区別して表示する', async () => {
