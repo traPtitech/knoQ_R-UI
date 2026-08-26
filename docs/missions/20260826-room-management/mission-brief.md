@@ -1,12 +1,12 @@
 ---
 mission_id: 20260826-room-management
 branch: mission/20260826-room-management
-status: active # draft | active | blocked | closed
+status: closed # draft | active | blocked | closed
 owner: user
 assignee: Codex
 created: 2026-08-26
 last_updated: 2026-08-26
-brief_version: 7
+brief_version: 9
 github_issue: https://github.com/traPtitech/knoQ_R-UI/issues/211
 issue_status: approved-created # not-applicable | draft | approved-created
 approvals:
@@ -117,8 +117,8 @@ related:
 ## Current State
 
 - **完了**: 初期実装`30db737`に加え，承認済みA案として取得開始を当日0時へ変更し，admins内外のroomを一覧へ残しながら選択可否を制御した．本番ビルドと全13テストは成功した．
-- **進行中**: A案の修正をローカルcommitへ固定し，commit後の最終検証とMerge-Readiness Pack更新を行う．
-- **次の一手**: 実装とBriefをcommitし，同一SHAに対してLint，型検査，本番ビルド，全テストを再実行する．
+- **進行中**: なし．ローカル実装と検証は完了した．
+- **次の一手**: レビュー後，必要であれば明示的な承認を得てpushとPR作成を行う．
 - 詳細は `handoff.md` を参照します．
 
 ## Changelog
@@ -133,3 +133,4 @@ related:
 | 6       | 2026-08-26 | バックエンド照合で判明した期間・削除権限の差異を記録し，activeへ戻した．      | 承認済みスローモート条件に該当し，実環境の削除可否がUIの`privileged`判定と一致しないため． |
 | 7       | 2026-08-26 | 追加CRPackのA案，更新後のP2・P3，対応するテスト境界を承認済みとして記録した． | userが全roomを表示し，adminsに含まれるroomだけを選択可能にするA案を承認したため．          |
 | 8       | 2026-08-26 | A案の取得期間，選択可否，権限表示と対応テストの実装完了を記録した．           | 本番ビルドと全13テストが成功し，追加CRPackの要求を満たしたため．                           |
+| 9       | 2026-08-26 | A案のcommitと同一SHAで最終検証を固定し，ミッションをclosedへ変更した．        | `7b11ba2`でP1からP5と回帰検証がすべてpassしたため．                                        |
