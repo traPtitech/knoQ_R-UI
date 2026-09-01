@@ -27,7 +27,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@iconify-json/material-symbols": "^1.2.40",
-    "@unocss/reset": "^66.7.5",
+    "@unocss/reset": "^66.8.1",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vitest/coverage-v8": "^4.1.9",
     "eslint": "^10.3.0",
