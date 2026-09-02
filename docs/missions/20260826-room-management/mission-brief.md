@@ -1,12 +1,12 @@
 ---
 mission_id: 20260826-room-management
 branch: mission/20260826-room-management
-status: active # draft | active | blocked | closed
+status: closed # draft | active | blocked | closed
 owner: user
 assignee: Codex
 created: 2026-08-26
 last_updated: 2026-09-02
-brief_version: 11
+brief_version: 12
 github_issue: https://github.com/traPtitech/knoQ_R-UI/issues/211
 issue_status: approved-created # not-applicable | draft | approved-created
 approvals:
@@ -116,9 +116,9 @@ related:
 
 ## Current State
 
-- **完了**: 確認済みroomだけを表示し，DELETEを直列実行する方針，更新後のP1・P3，対応するテスト設計について，ユーザーの承認を記録した．
-- **進行中**: 管理画面とテストを変更している．
-- **次の一手**: 焦点テスト，回帰検証，MRPack更新を行う．
+- **完了**: 確認済みroomだけを表示し，DELETEを直列実行する修正を`8c3dd23`へ記録した．更新後のP1からP5と回帰検証はすべて成功した．
+- **進行中**: なし．ローカル実装と検証は完了した．
+- **次の一手**: レビュー後，必要であれば明示的な承認を得てpushとPR作成を行う．
 - 詳細は `handoff.md` を参照します．
 
 ## Changelog
@@ -136,3 +136,4 @@ related:
 | 9       | 2026-08-26 | A案のcommitと同一SHAで最終検証を固定し，ミッションをclosedへ変更した．                                                     | `7b11ba2`でP1からP5と回帰検証がすべてpassしたため．                                        |
 | 10      | 2026-09-02 | P1を確認済みroomだけの表示へ変更し，P3をID単位DELETEの直列実行へ変更した．ミッションを再開し，テスト設計を承認待ちとした． | userが表示対象とDELETE送信方式の変更を明示したため．                                       |
 | 11      | 2026-09-02 | 更新後のP1・P3に対応するテスト設計を承認済みとし，ミッションをactiveへ変更した．                                           | userが提示したテスト設計を明示的に承認したため．                                           |
+| 12      | 2026-09-02 | 確認済みroomへの絞り込みとDELETEの直列化を実装し，最終検証を固定してミッションをclosedへ変更した．                         | `8c3dd23`で更新後のP1からP5と回帰検証がすべてpassしたため．                                |

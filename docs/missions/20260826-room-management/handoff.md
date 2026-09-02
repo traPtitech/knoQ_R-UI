@@ -1,21 +1,21 @@
 ---
 mission_id: 20260826-room-management
-handoff_version: 4
+handoff_version: 5
 from: Codex
 to: Codex
-created_at: 2026-09-02T12:47:13Z
+created_at: 2026-09-02T12:55:57Z
 brief_ref: ./mission-brief.md
-brief_version: 11
-source_commit: 3dc5a5593ace83c3d98c3012401572d4a1769603
+brief_version: 12
+source_commit: 8c3dd2391cf47601420af9c79ed81c2e466c35d8
 ---
 
 # Handoff / Continuity Pack: 進捗部屋管理画面を実装する
 
 ## Current State
 
-- **完了**: Issue #211の従来実装に対し，確認済みroomだけを表示し，DELETEを直列実行する方針，受け入れプロパティ，テスト設計の変更が承認された．
-- **進行中**: `RoomManagementPage.vue`と`roomManagement.spec.ts`を変更している．
-- **次の一手**: 焦点テスト，回帰検証，HandoffとMRPackの更新を行う．
+- **完了**: Issue #211の従来実装に対し，確認済みroomだけを表示し，DELETEを直列実行する修正を実装した．更新後の焦点テストと全回帰検証は成功した．
+- **進行中**: なし．ブランチはローカルにあり，pushとPR作成は未実施である．
+- **次の一手**: `merge-rationale.md`を基に差分をレビューし，必要であればpushとPR作成を別途承認する．
 
 ## 有効な決定と根拠
 
@@ -32,8 +32,8 @@ source_commit: 3dc5a5593ace83c3d98c3012401572d4a1769603
 
 | 強度   | ポインタ                                      | 必要な理由         | 出所 / 最終確認日          |
 | ------ | --------------------------------------------- | ------------------ | -------------------------- |
-| must   | `mission-brief.md`                            | 契約，承認，対象外 | Brief v10 / 2026-09-02     |
-| must   | `merge-rationale.md`                          | 従来の検証証拠     | MRPack v2 / 2026-08-26     |
+| must   | `mission-brief.md`                            | 契約，承認，対象外 | Brief v12 / 2026-09-02     |
+| must   | `merge-rationale.md`                          | 最新の検証証拠     | MRPack v3 / 2026-09-02     |
 | must   | `../../../src/pages/RoomManagementPage.vue`   | 管理画面の主要実装 | source commit / 2026-09-02 |
 | should | `../../context-cards/room-calendar-domain.md` | roomドメインの制約 | Context Card / 2026-09-02  |
 
@@ -47,10 +47,10 @@ source_commit: 3dc5a5593ace83c3d98c3012401572d4a1769603
 
 | コマンド / 確認                                  | 結果    | 実行日時             | 証拠                            |
 | ------------------------------------------------ | ------- | -------------------- | ------------------------------- |
-| `npm run lint`                                   | pass    | 2026-08-26T13:49:57Z | 追加エラー0件．既存警告10件．   |
-| `npm run type-check`                             | pass    | 2026-08-26T13:49:57Z | `vue-tsc --noEmit`終了コード0． |
-| `npm run build`                                  | pass    | 2026-08-26T13:49:57Z | 991 modules transformed．       |
-| `npm exec -- vitest run --coverage.enabled=true` | pass    | 2026-08-26T13:49:57Z | 2 files，13 tests pass．        |
+| `npm run lint`                                   | pass    | 2026-09-02T12:55:57Z | 追加エラー0件．既存警告10件．   |
+| `npm run type-check`                             | pass    | 2026-09-02T12:55:57Z | `vue-tsc --noEmit`終了コード0． |
+| `npm run build`                                  | pass    | 2026-09-02T12:55:57Z | 991 modules transformed．       |
+| `npm exec -- vitest run --coverage.enabled=true` | pass    | 2026-09-02T12:55:57Z | 2 files，13 tests pass．        |
 | ローカルブラウザーでの目視確認                   | not-run | 2026-08-26T13:25:06Z | 操作可能なブラウザーが未接続．  |
 
 ## 探索へのポインタ
@@ -60,5 +60,5 @@ source_commit: 3dc5a5593ace83c3d98c3012401572d4a1769603
 ## 再開手順
 
 1. `mission-brief.md`で更新後のP1・P3と承認状態を確認します．
-2. 確認済みroomへの絞り込みとDELETEの直列化を実装します．
-3. 回帰検証を実行し，HandoffとMRPackを更新します．
+2. `merge-rationale.md`で検証証拠と既知の警告を確認します．
+3. 外部操作が必要であれば，対象を示してユーザーの承認を得ます．
