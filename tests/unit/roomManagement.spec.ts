@@ -91,7 +91,7 @@ describe('RoomManagementPage', () => {
     document.body.innerHTML = ''
   })
 
-  it('進行中と将来の部屋だけを開始時刻順に表示する', async () => {
+  it('確認済みの進行中と将来の部屋だけを開始時刻順に表示する', async () => {
     apiMocks.GET.mockResolvedValue({
       data: [
         room(
@@ -111,7 +111,16 @@ describe('RoomManagementPage', () => {
           'S2-201',
           '2000-01-01T09:00:00+09:00',
           '2099-01-01T18:00:00+09:00'
-        )
+        ),
+        {
+          ...room(
+            'unverified',
+            'S2-198',
+            '2099-01-01T09:00:00+09:00',
+            '2099-01-01T18:00:00+09:00'
+          ),
+          verified: false
+        }
       ]
     })
 
@@ -123,6 +132,7 @@ describe('RoomManagementPage', () => {
     expect(rows[0].text()).toContain('S2-201')
     expect(rows[1].text()).toContain('S2-202')
     expect(wrapper.text()).not.toContain('S2-199')
+    expect(wrapper.text()).not.toContain('S2-198')
     expect(apiMocks.GET).toHaveBeenCalledWith('/rooms', {
       params: { query: { dateBegin: todayStart() } }
     })
@@ -234,58 +244,81 @@ describe('RoomManagementPage', () => {
     expect(wrapper.find('[role="dialog"]').exists()).toBe(false)
   })
 
-  it('部分失敗時は成功分だけを除き，失敗分を選択状態で残す', async () => {
+  it('DELETEを直列実行し，部分失敗後も残りを処理する', async () => {
     apiMocks.GET.mockResolvedValue({
       data: [
         room(
-          'success-room',
+          'failed-first-room',
           'S2-201',
           '2099-01-01T09:00:00+09:00',
           '2099-01-01T18:00:00+09:00'
         ),
         room(
-          'failed-room',
+          'success-second-room',
           'S2-202',
           '2099-01-02T09:00:00+09:00',
           '2099-01-02T18:00:00+09:00'
         )
       ]
     })
-    apiMocks.DELETE.mockImplementation(
-      (_path: string, options: { params: { path: { roomID: string } } }) =>
-        Promise.resolve(
-          options.params.path.roomID === 'failed-room'
-            ? { error: { status: 500 } }
-            : {}
-        )
+    let resolveFirstDelete: (value: {
+      error: { status: number }
+    }) => void = () => undefined
+    let resolveSecondDelete: (value: object) => void = () => undefined
+    apiMocks.DELETE.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveFirstDelete = resolve
+        })
+    ).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveSecondDelete = resolve
+        })
     )
 
     const wrapper = mountPage()
     await flushPromises()
     await wrapper
-      .get('[data-testid="room-checkbox-success-room"]')
+      .get('[data-testid="room-checkbox-failed-first-room"]')
       .setValue(true)
     await wrapper
-      .get('[data-testid="room-checkbox-failed-room"]')
+      .get('[data-testid="room-checkbox-success-second-room"]')
       .setValue(true)
     await wrapper.get('[data-testid="open-delete-dialog"]').trigger('click')
     await wrapper.get('[data-testid="confirm-delete"]').trigger('click')
+
+    expect(apiMocks.DELETE).toHaveBeenCalledTimes(1)
+    expect(apiMocks.DELETE).toHaveBeenLastCalledWith('/rooms/{roomID}', {
+      params: { path: { roomID: 'failed-first-room' } }
+    })
+
+    resolveFirstDelete({ error: { status: 500 } })
+    await flushPromises()
+
+    expect(apiMocks.DELETE).toHaveBeenCalledTimes(2)
+    expect(apiMocks.DELETE).toHaveBeenLastCalledWith('/rooms/{roomID}', {
+      params: { path: { roomID: 'success-second-room' } }
+    })
+
+    resolveSecondDelete({})
     await flushPromises()
 
     expect(apiMocks.DELETE).toHaveBeenCalledTimes(2)
     expect(apiMocks.DELETE).toHaveBeenCalledWith('/rooms/{roomID}', {
-      params: { path: { roomID: 'success-room' } }
+      params: { path: { roomID: 'failed-first-room' } }
     })
     expect(apiMocks.DELETE).toHaveBeenCalledWith('/rooms/{roomID}', {
-      params: { path: { roomID: 'failed-room' } }
+      params: { path: { roomID: 'success-second-room' } }
     })
     const remainingRows = wrapper.findAll('[data-testid="room-row"]')
     expect(remainingRows).toHaveLength(1)
-    expect(remainingRows[0].text()).not.toContain('S2-201')
-    expect(remainingRows[0].text()).toContain('S2-202')
+    expect(remainingRows[0].text()).toContain('S2-201')
+    expect(remainingRows[0].text()).not.toContain('S2-202')
     expect(
-      wrapper.get<HTMLInputElement>('[data-testid="room-checkbox-failed-room"]')
-        .element.checked
+      wrapper.get<HTMLInputElement>(
+        '[data-testid="room-checkbox-failed-first-room"]'
+      ).element.checked
     ).toBe(true)
     expect(wrapper.get('[data-testid="delete-error"]').text()).toContain(
       '1件の削除に失敗しました'

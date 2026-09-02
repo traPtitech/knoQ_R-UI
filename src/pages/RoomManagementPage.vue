@@ -37,7 +37,10 @@ const canManageRoom = (room: Room) =>
 
 const sortCurrentRooms = (roomList: Room[], referenceTime: string) =>
   roomList
-    .filter((room) => new Date(room.timeEnd) >= new Date(referenceTime))
+    .filter(
+      (room) =>
+        room.verified && new Date(room.timeEnd) >= new Date(referenceTime)
+    )
     .sort((left, right) => {
       const startDifference =
         new Date(left.timeStart).getTime() - new Date(right.timeStart).getTime()
@@ -129,18 +132,17 @@ const deleteSelectedRooms = async () => {
   deleteMessage.value = ''
   deleteError.value = ''
 
-  const results = await Promise.all(
-    roomIds.map(async (roomId) => {
-      try {
-        const { error } = await apiClient.DELETE('/rooms/{roomID}', {
-          params: { path: { roomID: roomId } }
-        })
-        return { roomId, failed: Boolean(error) }
-      } catch {
-        return { roomId, failed: true }
-      }
-    })
-  )
+  const results: { roomId: string; failed: boolean }[] = []
+  for (const roomId of roomIds) {
+    try {
+      const { error } = await apiClient.DELETE('/rooms/{roomID}', {
+        params: { path: { roomID: roomId } }
+      })
+      results.push({ roomId, failed: Boolean(error) })
+    } catch {
+      results.push({ roomId, failed: true })
+    }
+  }
 
   const failedRoomIds = new Set(
     results.filter((result) => result.failed).map((result) => result.roomId)
