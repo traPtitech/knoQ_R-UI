@@ -234,8 +234,8 @@ const submitCsv = async () => {
           <div
             class="overflow-x-auto whitespace-pre border border-border-secondary rounded bg-surface-secondary p-4 text-sm font-mono"
           >
-            Subject,Location,Start date,End date,Start time,End time<br />進捗部屋,S2-201
-            (S224),2026/09/01,2026/09/01,12:25,18:55
+            Subject,Start date,End date,Start time,End time,Location<br />進捗部屋,2026/09/05,2026/09/05,12:25,18:55,S2-201
+            (S224)
           </div>
         </div>
 
@@ -260,7 +260,7 @@ const submitCsv = async () => {
             :disabled="!canSubmitCsv"
             @click="submitCsv"
           >
-            {{ isSubmittingCsv ? '登録中…' : 'CSVを登録' }}
+            {{ isSubmittingCsv ? '登録中…' : '進捗部屋を登録' }}
           </PrimaryButton>
         </div>
       </section>
