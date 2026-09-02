@@ -7,13 +7,11 @@ import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
 import SelectMenu from '/@/components/UI/SelectMenu.vue'
 import UserIcon from '/@/components/UI/UserIcon.vue'
-import AlertBox from '/@/components/UI/AlertBox.vue'
 import { apiClient } from '/@/lib/api'
 import { fetchEvent } from '/@/features/event/api'
 import { useGroups } from '/@/features/group/composables/useGroups'
 import { useUsers } from '/@/features/user/composables/useUsers'
 import { useMe } from '/@/features/user/composables/useMe'
-import { useDraftEvents } from '/@/features/draft-event/composables/useDraftEvents'
 import { usePendingEventCreationStore } from '/@/features/draft-event/stores/pendingEventCreation'
 import type { components } from '/@/lib/api/schema'
 
@@ -25,13 +23,10 @@ const eventId: ComputedRef<string> = computed(() => route.params.id as string)
 const { groups, getGroups, groupSelectItems } = useGroups()
 const { users, getUserSelectItems } = useUsers()
 const { me } = useMe()
-const { currentDraftEvent, getDraftEvent, confirmDraftEvent } = useDraftEvents()
 const pendingEventCreationStore = usePendingEventCreationStore()
 
-const pendingDraftEventId = ref<string | null>(null)
 const pendingTimeStart = ref<string | null>(null)
 const pendingTimeEnd = ref<string | null>(null)
-const fromDraftEventName = ref<string>('')
 
 const rooms = ref<Room[]>([])
 const isLoading = ref(true)
@@ -71,28 +66,9 @@ watch(event, (loadedEvent) => {
 
 setTimeout(()=>(console.log(form)),5000)
 
-const prefillFromDraft = async () => {
-  if (!pendingDraftEventId.value) return
-  await getDraftEvent(pendingDraftEventId.value)
-  const draft = currentDraftEvent.value
-  if (!draft) return
-  fromDraftEventName.value = draft.name
-  form.value.name = draft.name
-  form.value.description = draft.description ?? ''
-  form.value.open = draft.open
-  form.value.admins = [...draft.admins]
-  if (pendingTimeStart.value) {
-    form.value.timeStart = pendingTimeStart.value
-  }
-  if (pendingTimeEnd.value) {
-    form.value.timeEnd = pendingTimeEnd.value
-  }
-}
-
 onMounted(async () => {
   const pending = pendingEventCreationStore.pending
   if (pending) {
-    pendingDraftEventId.value = pending.draftEventId
     pendingTimeStart.value = pending.timeStart
     pendingTimeEnd.value = pending.timeEnd
     pendingEventCreationStore.clear()
@@ -104,7 +80,6 @@ onMounted(async () => {
     if (res.data) {
       rooms.value = res.data
     }
-    await prefillFromDraft()
   } catch (e) {
     console.error(e)
     statusMessage.value = 'データの読み込みに失敗しました'
@@ -221,47 +196,45 @@ const onSubmit = async () => {
     tags: []
   }
 
-//   let res
-//   if (form.value.roomId) {
-//     // Stock Event
-//     res = await apiClient.POST('/events', {
-//       body: {
-//         ...commonBody,
-//         roomId: form.value.roomId
-//       }
-//     })
-//   } else {
-//     // Instant Event
-//     res = await apiClient.POST('/events', {
-//       body: {
-//         ...commonBody,
-//         place: form.value.place
-//       }
-//     })
-//   }
-
-//   if (res.error) {
-//     statusMessage.value = 'エラーが発生しました'
-//     isError.value = true
-//     console.error(res.error)
-//     return
-//   }
-//   if (!res.data) return
-
-//   await tryConfirmFromDraft()
-//   statusMessage.value = '更新しました'
-//   router.push(`/events/${res.data.eventId}`)
-}
-
-const tryConfirmFromDraft = async () => {
-  if (!pendingDraftEventId.value) return
-  try {
-    const timeStart = `${form.value.timeStart}:00+09:00`
-    const timeEnd = `${form.value.timeEnd}:00+09:00`
-    await confirmDraftEvent(pendingDraftEventId.value, timeStart, timeEnd)
-  } catch (e) {
-    console.error(e)
+  let res
+  if (form.value.roomId) {
+    // Stock Event
+    res = await apiClient.PUT('/events/{eventID}', {
+      params: {
+        path: {
+          eventID: eventId.value
+        }
+      },
+      body: {
+        ...commonBody,
+        roomId: form.value.roomId
+      }
+    })
+  } else {
+    // Instant Event
+    res = await apiClient.PUT('/events/{eventID}', {
+      params: {
+        path: {
+          eventID: eventId.value
+        }
+      },
+      body: {
+        ...commonBody,
+        place: form.value.place
+      }
+    })
   }
+
+  if (res.error) {
+    statusMessage.value = 'エラーが発生しました'
+    isError.value = true
+    console.error(res.error)
+    return
+  }
+  if (!res.data) return
+
+  statusMessage.value = '更新しました'
+  router.push(`/events/${res.data.eventId}`)
 }
 </script>
 
@@ -275,13 +248,6 @@ const tryConfirmFromDraft = async () => {
   </div>
   <div v-else class="grid mx-auto my-8 max-w-3xl gap-8 p-4">
     <h2 h2>イベントを編集する</h2>
-
-    <AlertBox v-if="pendingDraftEventId && fromDraftEventName" variant="info">
-      <p>
-        日程調整「<span class="font-bold">{{ fromDraftEventName }}</span
-        >」から作成中です。作成すると自動的に確定済みになります。
-      </p>
-    </AlertBox>
 
     <div grid gap-6 card>
       <h3 h3>基本情報</h3>
