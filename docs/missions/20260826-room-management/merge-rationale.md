@@ -1,9 +1,9 @@
 ---
 mission_id: 20260826-room-management
-pack_version: 3
+pack_version: 4
 generated_by: Codex
-generated_at: 2026-09-02T12:55:57Z
-source_commit: 8c3dd2391cf47601420af9c79ed81c2e466c35d8
+generated_at: 2026-09-02T14:51:50Z
+source_commit: b2ac80f04e7c69e130247f1c8488f205f8d1b1b3
 reviewer: user
 decision: pending # pending | approved | changes-requested | rejected
 non_merge_root_cause: null # property-gap | evidence-missing | tool-gap | scope-drift | other | null
@@ -35,7 +35,7 @@ related:
 
 - **主要な変更**: `CreateRoom.vue`を`RoomManagementPage.vue`へ統合し，CSV登録に加えてGET一覧とID単位DELETEを実装した．取得開始は当日0時とし，終了済みと未確認のroomを画面側で除く．現在ユーザーがroomの`admins`に含まれる場合だけ削除対象へ選択でき，DELETEは1件ずつ直列実行する．ルーターとヘッダーを管理画面へ接続し，Vue Test Utilsとjsdomをテスト依存へ追加した．
 - **影響範囲**: 特権ユーザーの進捗部屋管理，`/rooms/new`の遷移先，ヘッダー導線．API契約と`/rooms`カレンダーは変更していない．
-- **差分**: source commit `8c3dd2391cf47601420af9c79ed81c2e466c35d8`．初期実装は`30db737`，API権限に合わせた修正は`7b11ba2`，確認済みroomへの限定と直列削除は`8c3dd23`．
+- **差分**: source commit `b2ac80f04e7c69e130247f1c8488f205f8d1b1b3`．初期実装は`30db737`，API権限に合わせた修正は`7b11ba2`，確認済みroomへの限定と直列削除は`8c3dd23`，CSV例の文言修正は`b2ac80f`．
 
 ## Evidence and Provenance
 
@@ -46,9 +46,9 @@ related:
 | build      | pass | `npm run build`                                  | 終了コード0．991 modules transformed．                              |
 | tests      | pass | `npm exec -- vitest run --coverage.enabled=true` | 2 files，13 tests pass．管理画面はstatements 90.64%，lines 94.35%． |
 
-- **対象 commit**: `8c3dd2391cf47601420af9c79ed81c2e466c35d8`
+- **対象 commit**: `b2ac80f04e7c69e130247f1c8488f205f8d1b1b3`
 - **実行環境**: Node `v20.17.0` / npm `10.8.2` / Darwin `24.5.0 arm64`
-- **生成日時**: `2026-09-02T12:55:57Z`
+- **生成日時**: `2026-09-02T14:51:50Z`
 - **not-run の理由**: 実ブラウザーでの目視確認は，操作可能なブラウザーが接続されていなかったため未実施．自動UIテストと本番ビルドで代替範囲を検証した．
 
 ## 判断と探索の要約
@@ -68,7 +68,7 @@ related:
 - **更新テスト設計承認**: user / 2026-09-02T12:51:44Z / Brief v11
 - **CRPack と結果**: 第1 CRPackで画面統合とP1からP5，第2 CRPackでVue Test Utilsとjsdom，追加CRPackでadminsに基づくA案が承認された．その後，確認済みroomへの限定とDELETEの直列化，対応する更新テスト設計が承認された．
 - **Brief からの逸脱**: なし．API照合でスローモート条件に該当したため作業を止め，追加承認後にBriefを更新して再開した．
-- **外部操作**: push，PR作成，Issue更新，デプロイは未実施．テスト依存の取得と公開バックエンドの読み取りだけを行った．
+- **外部操作**: userがタイトルと本文を承認した後，base `feat/pages`，head `mission/20260826-room-management`でPR #248を作成した．URLは`https://github.com/traPtitech/knoQ_R-UI/pull/248`．追加push，Issueコメント，デプロイは実施していない．
 
 ## 未解決事項とリスク
 
