@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount, ComputedRef, computed, watch } from 'vue'
+import { ref, onMounted, ComputedRef, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '/@/components/AppHeader.vue'
 import InputField from '/@/components/UI/Form/InputField.vue'
@@ -12,7 +12,6 @@ import { fetchEvent } from '/@/features/event/api'
 import { useGroups } from '/@/features/group/composables/useGroups'
 import { useUsers } from '/@/features/user/composables/useUsers'
 import { useMe } from '/@/features/user/composables/useMe'
-import { usePendingEventCreationStore } from '/@/features/draft-event/stores/pendingEventCreation'
 import type { components } from '/@/lib/api/schema'
 
 type Room = components['schemas']['ResponseRoom']
@@ -23,10 +22,6 @@ const eventId: ComputedRef<string> = computed(() => route.params.id as string)
 const { groups, getGroups, groupSelectItems } = useGroups()
 const { users, getUserSelectItems } = useUsers()
 const { me } = useMe()
-const pendingEventCreationStore = usePendingEventCreationStore()
-
-const pendingTimeStart = ref<string | null>(null)
-const pendingTimeEnd = ref<string | null>(null)
 
 const rooms = ref<Room[]>([])
 const isLoading = ref(true)
@@ -35,7 +30,6 @@ const isError = ref(false)
 const errors = ref<Record<string, string>>({})
 
 const { event } = fetchEvent(eventId.value)
-console.log(event)
 
 const form = ref({
   name: '',
@@ -51,32 +45,42 @@ const form = ref({
 })
 
 watch(event, (loadedEvent) => {
-    if (!loadedEvent) return
-    if (loadedEvent.name != null){ form.value.name = loadedEvent.name}
-    if (loadedEvent.description != null){ form.value.description = loadedEvent.description}
-    if (loadedEvent.group?.groupId != null){ form.value.groupId = loadedEvent.group.groupId}
-    if (loadedEvent.place != null){ form.value.place = loadedEvent.place}
-    if (loadedEvent.room?.roomId != null){ form.value.roomId = loadedEvent.room.roomId}
-    if (loadedEvent.timeStart != null){ form.value.timeStart = loadedEvent.timeStart.slice(0, 16)}
-    if (loadedEvent.timeEnd != null){ form.value.timeEnd = loadedEvent.timeEnd.slice(0, 16)}
-    if (loadedEvent.sharedRoom != null){ form.value.sharedRoom = loadedEvent.sharedRoom}
-    if (loadedEvent.open != null){ form.value.open = loadedEvent.open}
-    if (loadedEvent.admins != null){ form.value.admins = loadedEvent.admins}
+  if (!loadedEvent) return
+  if (loadedEvent.name != null) {
+    form.value.name = loadedEvent.name
+  }
+  if (loadedEvent.description != null) {
+    form.value.description = loadedEvent.description
+  }
+  if (loadedEvent.group?.groupId != null) {
+    form.value.groupId = loadedEvent.group.groupId
+  }
+  if (loadedEvent.place != null) {
+    form.value.place = loadedEvent.place
+  }
+  if (loadedEvent.room?.roomId != null) {
+    form.value.roomId = loadedEvent.room.roomId
+  }
+  if (loadedEvent.timeStart != null) {
+    form.value.timeStart = loadedEvent.timeStart.slice(0, 16)
+  }
+  if (loadedEvent.timeEnd != null) {
+    form.value.timeEnd = loadedEvent.timeEnd.slice(0, 16)
+  }
+  if (loadedEvent.sharedRoom != null) {
+    form.value.sharedRoom = loadedEvent.sharedRoom
+  }
+  if (loadedEvent.open != null) {
+    form.value.open = loadedEvent.open
+  }
+  if (loadedEvent.admins != null) {
+    form.value.admins = loadedEvent.admins
+  }
 })
 
-setTimeout(()=>(console.log(form)),5000)
-
 onMounted(async () => {
-  const pending = pendingEventCreationStore.pending
-  if (pending) {
-    pendingTimeStart.value = pending.timeStart
-    pendingTimeEnd.value = pending.timeEnd
-    pendingEventCreationStore.clear()
-  }
-
   try {
-    await Promise.all([getGroups(), apiClient.GET('/rooms')])
-    const res = await apiClient.GET('/rooms')
+    const [, res] = await Promise.all([getGroups(), apiClient.GET('/rooms')])
     if (res.data) {
       rooms.value = res.data
     }
@@ -87,10 +91,6 @@ onMounted(async () => {
   } finally {
     isLoading.value = false
   }
-})
-
-onBeforeUnmount(() => {
-  pendingEventCreationStore.clear()
 })
 
 const roomItems = computed(() =>
@@ -283,11 +283,24 @@ const onSubmit = async () => {
 
       <div class="flex items-center gap-4">
         <label for="event-open" class="flex cursor-pointer items-center gap-2">
-          <input id="event-open" v-model="form.open" type="checkbox" class="h-4 w-4" />
+          <input
+            id="event-open"
+            v-model="form.open"
+            type="checkbox"
+            class="h-4 w-4"
+          />
           <span class="text-sm">誰でも参加可能にする</span>
         </label>
-        <label for="event-shared-room" class="flex cursor-pointer items-center gap-2">
-          <input id="event-shared-room" v-model="form.sharedRoom" type="checkbox" class="h-4 w-4" />
+        <label
+          for="event-shared-room"
+          class="flex cursor-pointer items-center gap-2"
+        >
+          <input
+            id="event-shared-room"
+            v-model="form.sharedRoom"
+            type="checkbox"
+            class="h-4 w-4"
+          />
           <span class="text-sm">部屋を共有可能にする</span>
         </label>
       </div>
