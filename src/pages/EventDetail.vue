@@ -7,7 +7,6 @@ import { fetchEvent } from '/@/features/event/api'
 import { useMySchedule } from '/@/features/event/composables/useMySchedule'
 import { useMe } from '/@/features/user/composables/useMe'
 import { Schedule } from '/@/features/event/types'
-import AppHeader from '/@/components/AppHeader.vue'
 import IconWithName from '/@/features/user/components/IconWithName.vue'
 import AttendanceButton from '/@/features/event/components/AttendanceButton.vue'
 import SchedulePoll from '/@/features/event/components/SchedulePoll.vue'
@@ -43,7 +42,6 @@ const formatDateRange = (start: string, end: string) => {
 </script>
 
 <template>
-  <AppHeader />
   <div class="grid mx-auto max-w-5xl gap-8 px-4 py-8">
     <DataFetchState :state="state">
       <div v-if="event" class="grid gap-8">

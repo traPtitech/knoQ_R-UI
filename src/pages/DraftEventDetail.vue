@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
-import AppHeader from '/@/components/AppHeader.vue'
 import UserIcon from '/@/components/UI/UserIcon.vue'
 import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
@@ -129,7 +128,6 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <AppHeader />
   <div class="mx-auto my-8 max-w-4xl p-4">
     <div v-if="isLoading" class="text-center text-text-secondary">
       読み込み中...

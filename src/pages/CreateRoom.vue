@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import AppHeader from '/@/components/AppHeader.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
 import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import { apiClient } from '/@/lib/api'
@@ -33,7 +32,6 @@ const submit = async () => {
 </script>
 
 <template>
-  <AppHeader />
   <div class="grid mx-auto max-w-3xl gap-8 p-4">
     <h1 hl>進捗部屋作成</h1>
 

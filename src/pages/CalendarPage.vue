@@ -13,7 +13,6 @@ import {
   endOfWeek,
   isSameMonth
 } from 'date-fns'
-import AppHeader from '/@/components/AppHeader.vue'
 import EventCard from '/@/features/event/components/EventCard.vue'
 import RoomList from '/@/features/room/components/RoomList.vue'
 import { apiClient } from '/@/lib/api'
@@ -106,7 +105,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <AppHeader />
   <div class="grid mx-auto my-8 max-w-3xl gap-8 p-4">
     <div class="mb-4 flex items-center justify-between">
       <button

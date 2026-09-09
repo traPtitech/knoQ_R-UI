@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { compareAsc, compareDesc, parseISO } from 'date-fns'
-import AppHeader from '/@/components/AppHeader.vue'
 import DraftEventCard from '/@/features/draft-event/components/DraftEventCard.vue'
 import DraftEventFilterDropdown from '/@/features/draft-event/components/DraftEventFilterDropdown.vue'
 import DraftEventSortDropdown from '/@/features/draft-event/components/DraftEventSortDropdown.vue'
@@ -114,7 +113,6 @@ watch(
 </script>
 
 <template>
-  <AppHeader />
   <div grid mx-auto my-8 max-w-3xl gap-4 p-4>
     <div flex items-center justify-between>
       <h1 h1>日程調整</h1>
