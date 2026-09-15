@@ -5,17 +5,19 @@ priority: high
 load_when: 'ページ，ルート，レイアウト，機能ディレクトリ，アプリ初期化を変更するとき'
 source_pointer:
   - path: src/main.ts
-    last_checked: 2026-08-06
+    last_checked: 2026-09-15
   - path: src/App.vue
-    last_checked: 2026-08-06
+    last_checked: 2026-09-15
   - path: src/router/index.ts
-    last_checked: 2026-08-06
+    last_checked: 2026-09-15
   - path: src/layouts/MainLayout.vue
-    last_checked: 2026-08-06
+    last_checked: 2026-09-15
   - path: docs/conventions.md
-    last_checked: 2026-08-06
+    last_checked: 2026-09-15
   - path: vite.config.ts
-    last_checked: 2026-08-06
+    last_checked: 2026-09-15
+  - path: src/mountApp.ts
+    last_checked: 2026-09-15
 retirement_status: active
 access_notes: all-roles
 ---
@@ -24,7 +26,7 @@ access_notes: all-roles
 
 ## ルートとページは明示的に対応付ける
 
-`src/main.ts`はVueアプリへPiniaとVue Routerを登録する．`App.vue`は`router-view`だけを描画する．ページは`src/pages/`，ドメイン機能は`src/features/<feature>/`，共通UIは`src/components/`に置く．ルーターはHistory modeを使い，イベント，部屋，カレンダー，draft-event，グループ，ユーザー，検索，iCalなどのページを公開している．
+`src/main.ts`は，開発モックを明示的に有効化した場合にMSWの準備を待ち，その後で`src/mountApp.ts`をimportする．`mountApp.ts`がVueアプリへPiniaとVue Routerを登録する．`App.vue`は`router-view`だけを描画する．ページは`src/pages/`，ドメイン機能は`src/features/<feature>/`，共通UIは`src/components/`に置く．ルーターはHistory modeを使い，イベント，部屋，カレンダー，draft-event，グループ，ユーザー，検索，iCalなどのページを公開している．
 
 ## 変更時に守ること
 

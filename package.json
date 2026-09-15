@@ -14,7 +14,8 @@
     "analyze": "vite build --mode analyze",
     "test": "vitest --ui --coverage.enabled=true",
     "generate": "openapi-typescript https://raw.githubusercontent.com/traPtitech/knoQ/master/docs/swagger.yaml -o src/lib/api/schema.d.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev:mock": "vite --mode mock"
   },
   "lint-staged": {
     "*.{ts,vue,js,mjs,cjs}": [
@@ -72,5 +73,10 @@
     "@redocly/openapi-core": {
       "js-yaml": "4.3.1"
     }
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

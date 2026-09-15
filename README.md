@@ -15,7 +15,9 @@ npm run dev
 
 開発サーバーは標準で8080番ポートを使います．Viteが表示したURLをブラウザで開いてください．
 
-ここまでで起動するのはUIだけです．データ取得を含む画面を確認する場合は，knoQのバックエンドを別に起動し，`http://localhost:3000/api`へ接続できる状態にしてください．
+`npm run dev`は通常APIを使います．knoQのバックエンドを別に起動し，`http://localhost:3000/api`へ接続できる状態にしてください．
+
+バックエンドなしで日程調整を確認する場合は，`npm run dev:mock`で起動して`/draft-events`を開きます．MSWとFakerによるモックの対象範囲，シナリオ，再現・リセット方法は[モック開発ガイド](./docs/development/mocks.md)を参照してください．Node.js 24で検証しています．
 
 ## 変更を検証する
 
@@ -41,6 +43,7 @@ npm run dev
 - `src/components/`には，複数の機能で使うUI部品を置きます．
 - `src/composables/`には，複数の機能で使うリアクティブなロジックを置きます．
 - `src/lib/`には，APIクライアントやドメイン横断の処理を置きます．
+- `src/mocks/`には，開発・テスト用の起動とシナリオを置きます．ドメイン別の生成・応答は`src/features/<feature>/mocks/`に置きます．
 
 詳しい責務とimport，型，UnoCSSの規約は，[コーディング規約](./docs/conventions.md)にまとめています．
 

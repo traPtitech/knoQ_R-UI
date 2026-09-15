@@ -1,12 +1,13 @@
 ---
 mission_id: 20260915-msw-faker-mocks
 branch: mission/20260915-msw-faker-mocks
+integration_branch: agent/20260915-105926/integration
 status: active # draft | active | blocked | closed
 owner: user
 assignee: Codex
 created: 2026-09-15
 last_updated: 2026-09-15
-brief_version: 3
+brief_version: 4
 github_issue: null
 issue_status: not-applicable # not-applicable | draft | approved-created
 approvals:
@@ -20,7 +21,7 @@ related:
 
 # Mission Brief: MSWとFakerでモックAPIとデータを構造化する
 
-日程調整と関連APIをMSWへ移し，Fakerによるデータ生成と画面確認用のシナリオを分けるA案，およびP1からP6は承認済みである．T-A，暫定HTTP契約，2担当の分担も承認済みであり，共有基盤から実装を進める．
+日程調整と関連APIをMSWへ移し，Fakerによるデータ生成と画面確認用のシナリオを分けるA案，およびP1からP6は承認済みである．T-A，暫定HTTP契約，2担当の分担も承認済みである．実装を統合し，自動検証と文書の仕上げを進めている．実ブラウザでの動作確認は，2026-09-15のuserの指示によりuserが担当する．
 
 ## Intent
 
@@ -130,7 +131,7 @@ Fakerには乱数シードと基準日時を渡す．シードだけでは相対
 | must   | `AGENTS.md`，`CLAUDE.md`，`docs/conventions.md`                                                                                                                       | 配置，型，検証規約                                          | 2026-09-15 |
 | must   | `docs/missions/README.md`，`skills/start-mission/SKILL.md`                                                                                                            | 承認と再開手順                                              | 2026-09-15 |
 | must   | `docs/context-cards/project-overview.md`，`api-data-schema.md`，`event-draft-event-domain.md`                                                                         | 通常APIとdraft-eventの境界                                  | 2026-09-15 |
-| must   | `src/features/draft-event/mock.ts`，同featureの`types.ts`と`composables/`                                                                                             | 移行するデータ，状態，操作                                  | 2026-09-15 |
+| must   | `src/features/draft-event/api.ts`，同featureの`mocks/`，`types.ts`と`composables/`                                                                                    | 移行するデータ，状態，操作                                  | 2026-09-15 |
 | must   | `src/pages/CreateDraftEvent.vue`，`DraftEventList.vue`，`DraftEventDetail.vue`，`DraftEventManage.vue`，`CreateEvent.vue`                                             | 候補ID，回答状態，確定からイベント作成への接続              | 2026-09-15 |
 | must   | `src/lib/api/index.ts`，`schema.d.ts`，`src/composables/useApiFetch.ts`                                                                                               | URL，生成型，SWRVの扱い                                     | 2026-09-15 |
 | must   | `src/features/user/composables/`，`src/features/group/composables/useGroups.ts`，`src/features/event/api.ts`，`src/components/UI/UserIcon.vue`                        | 関連APIとアイコンの通信                                     | 2026-09-15 |
@@ -139,22 +140,23 @@ Fakerには乱数シードと基準日時を渡す．シードだけでは相対
 | must   | `tests/unit/roomManagement.spec.ts`                                                                                                                                   | 保持する既存のAPIモックテスト                               | 2026-09-15 |
 | should | [MSW Browser](https://mswjs.io/docs/integrations/browser/)，[MSW Node](https://mswjs.io/docs/integrations/node/)，[Faker Usage](https://fakerjs.dev/guide/usage.html) | 導入時の公式手順                                            | 2026-09-15 |
 
-- **確認済み**: MSW 2.15.0とFaker 10.6.0を一時環境へ取得し，現在のTypeScript解決設定での型検査，NodeでのHTTP応答，日本語データの再生成が成功した．プロジェクトへの導入と全体検証は未実施．
+- **確認済み**: MSW 2.15.0とFaker 10.6.0を一時環境へ取得し，現在のTypeScript解決設定での型検査，NodeでのHTTP応答，日本語データの再生成が成功した．プロジェクトへの導入は完了し，統合後のHTTP・画面テスト84件が成功した．最終証拠はMRPackへ記録する．
 - **承認済みの設計**: 暫定HTTP契約，4シナリオ，テストの対応表，worktree分担は[第2 CRPack](./test-design.md)を参照する．
 - **既知の注意点**: `useApiFetch`は応答の`.data`だけを返しており，HTTPエラーをSWRVのerrorへ伝えない．この共通処理の改修は自動的に範囲へ含めず，必要になった場合は影響を示して相談する．
 - **カード補正**: `quality-tooling`にはsmoke testしかないと記載されていたが，部屋管理テストも存在する．今回の文書変更で実装に合わせる．
 
 ## Current State
 
-- **完了**: 既存実装と公式資料の確認，ミッションブランチと文書3件の初期化，方針・プロパティ案の作成．
-- **進行中**: 共有基盤の実装．両ゲートと分担は承認済み．
-- **次の一手**: 依存と共有型を導入・検証し，共通commitから分離worktreeを作成する．
+- **完了**: 両承認ゲート，依存と共有基盤，2担当の実装・レビュー・統合，HTTP・画面テスト84件．
+- **進行中**: 統合版の型検査，lint，本番build，文書整備と証拠の記録．
+- **次の一手**: 自動検証を完了し，integration branchを引き渡す．実ブラウザの動作確認はuserが行う．
 - 詳細は `handoff.md` を参照します．
 
 ## Changelog
 
-| version | date       | 変更内容                                                                                | 理由 / 承認                                                      |
-| ------- | ---------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| 1       | 2026-09-15 | 初版．導入範囲，代案，P1からP6，テスト候補を記録した．                                  | MSWとFakerを導入するミッションの開始依頼による．具体案は未承認． |
-| 2       | 2026-09-15 | A案とP1からP6の承認を記録し，互換性を確認した．第2 CRPackにテスト設計と分担を記録した． | userの「はい，承認します．」による．テスト設計は引き続き未承認． |
-| 3       | 2026-09-15 | T-A，暫定HTTP契約，2担当の分担を承認済みとし，activeへ変更した．                        | userの「はい，承認します」による．                               |
+| version | date       | 変更内容                                                                                | 理由 / 承認                                                                                                    |
+| ------- | ---------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 1       | 2026-09-15 | 初版．導入範囲，代案，P1からP6，テスト候補を記録した．                                  | MSWとFakerを導入するミッションの開始依頼による．具体案は未承認．                                               |
+| 2       | 2026-09-15 | A案とP1からP6の承認を記録し，互換性を確認した．第2 CRPackにテスト設計と分担を記録した． | userの「はい，承認します．」による．テスト設計は引き続き未承認．                                               |
+| 3       | 2026-09-15 | T-A，暫定HTTP契約，2担当の分担を承認済みとし，activeへ変更した．                        | userの「はい，承認します」による．                                                                             |
+| 4       | 2026-09-15 | 実ブラウザ確認をuser担当へ変更した．自動検証とbundle検査はCodexが継続する．             | userの「実際のブラウザでの動作確認は俺がやるから，それ以外やればいいよ」による．記録日時2026-09-15T11:20:16Z． |

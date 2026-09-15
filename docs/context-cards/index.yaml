@@ -2,7 +2,7 @@
 # 常時ロードするのは project-overview のみ．他のカードは tags / load_when が作業に一致するときだけ読む．
 
 version: 1
-last_updated: 2026-08-06
+last_updated: 2026-09-15
 
 tags:
   overview: 'プロジェクト全体の案内．'
