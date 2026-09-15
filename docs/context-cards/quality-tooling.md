@@ -22,6 +22,8 @@ source_pointer:
     last_checked: 2026-08-06
   - path: tests/unit/sample.spec.ts
     last_checked: 2026-08-06
+  - path: tests/unit/roomManagement.spec.ts
+    last_checked: 2026-09-15
 retirement_status: active
 access_notes: all-roles
 ---
@@ -38,5 +40,5 @@ access_notes: all-roles
 - `npm run build` は型検査の後に Vite build，`npm run test` は Vitest UI と V8 coverage を有効にする．CI 相当の非対話実行が必要な場合は package script の実体を確認して適切な Vitest オプションを選ぶ．
 - `src/lib/api/schema.d.ts` と `src/env.d.ts` は ESLint の対象外である．生成物の除外を理由に手書きコードの検証を弱めない．
 - `.claude/hooks/format.sh` は編集された source file に Prettier と ESLint fix を実行し，`.claude/hooks/typecheck.sh` は source file を触ったセッションの終了時だけ型検査する．手動検証が不要になるわけではない．
-- 現在の unit test は `tests/unit/sample.spec.ts` の smoke test 1 件だけである．既存テストの存在を過大評価せず，変更した振る舞いに対応するテストを追加する．
+- unit testには，`tests/unit/sample.spec.ts`のsmoke testと，`tests/unit/roomManagement.spec.ts`の部屋管理テストがある．部屋管理テストはAPIクライアントと現在ユーザーを`vi.mock`で差し替える．変更した振る舞いに対応する検証を選び，既存テストの範囲を過大評価しない．
 - `src/lib/api/schema.d.ts` の再生成手順は [[api-data-schema]] を参照する．
