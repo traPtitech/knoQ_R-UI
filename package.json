@@ -15,11 +15,11 @@
     "generate": "openapi-typescript https://raw.githubusercontent.com/traPtitech/knoQ/master/docs/swagger.yaml -o src/lib/api/schema.d.ts"
   },
   "dependencies": {
-    "date-fns": "^4.1.0",
+    "date-fns": "^4.4.0",
     "marked": "^16.3.0",
     "openapi-fetch": "^0.14.0",
     "pinia": "^3.0.3",
-    "swrv": "^1.1.0",
+    "swrv": "^1.2.0",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3",
     "zod": "^4.4.1"
@@ -27,7 +27,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@iconify-json/material-symbols": "^1.2.40",
-    "@unocss/reset": "^66.7.5",
+    "@unocss/reset": "^66.8.1",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vitest/coverage-v8": "^4.1.9",
     "eslint": "^10.3.0",
@@ -36,14 +36,19 @@
     "eslint-plugin-vuejs-accessibility": "^2.5.0",
     "jiti": "^2.6.1",
     "openapi-typescript": "^7.13.0",
-    "openapi-typescript-helpers": "^0.0.15",
+    "openapi-typescript-helpers": "^0.1.0",
     "prettier": "^3.6.2",
     "rollup-plugin-visualizer": "^6.0.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",
     "unocss": "^66.5.2",
     "vite": "^8.1.0",
-    "vitest": "^4.1.9",
+    "vitest": "^4.1.11",
     "vue-tsc": "^3.1.0"
+  },
+  "overrides": {
+    "@redocly/openapi-core": {
+      "js-yaml": "4.3.2"
+    }
   }
 }
