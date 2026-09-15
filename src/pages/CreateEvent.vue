@@ -22,7 +22,12 @@ const router = useRouter()
 const { groups, getGroups, groupSelectItems } = useGroups()
 const { users, getUserSelectItems } = useUsers()
 const { me } = useMe()
-const { currentDraftEvent, getDraftEvent, confirmDraftEvent } = useDraftEvents()
+const {
+  currentDraftEvent,
+  getDraftEvent,
+  confirmDraftEvent,
+  error: draftError
+} = useDraftEvents()
 const pendingEventCreationStore = usePendingEventCreationStore()
 
 const pendingDraftEventId = ref<string | null>(null)
@@ -32,6 +37,8 @@ const fromDraftEventName = ref<string>('')
 
 const rooms = ref<Room[]>([])
 const isLoading = ref(true)
+const isSubmitting = ref(false)
+const createdEventId = ref<string | null>(null)
 const statusMessage = ref('')
 const isError = ref(false)
 const errors = ref<Record<string, string>>({})
@@ -53,7 +60,7 @@ const prefillFromDraft = async () => {
   if (!pendingDraftEventId.value) return
   await getDraftEvent(pendingDraftEventId.value)
   const draft = currentDraftEvent.value
-  if (!draft) return
+  if (!draft) throw new Error('日程調整の取得に失敗しました')
   fromDraftEventName.value = draft.name
   form.value.name = draft.name
   form.value.description = draft.description ?? ''
@@ -77,8 +84,7 @@ onMounted(async () => {
   }
 
   try {
-    await Promise.all([getGroups(), apiClient.GET('/rooms')])
-    const res = await apiClient.GET('/rooms')
+    const [, res] = await Promise.all([getGroups(), apiClient.GET('/rooms')])
     if (res.data) {
       rooms.value = res.data
     }
@@ -174,6 +180,7 @@ const validate = () => {
 }
 
 const onSubmit = async () => {
+  if (isSubmitting.value || createdEventId.value) return
   if (!validate()) {
     statusMessage.value = '入力内容を確認してください'
     isError.value = true
@@ -199,47 +206,35 @@ const onSubmit = async () => {
     tags: []
   }
 
-  let res
-  if (form.value.roomId) {
-    // Stock Event
-    res = await apiClient.POST('/events', {
-      body: {
-        ...commonBody,
-        roomId: form.value.roomId
-      }
-    })
-  } else {
-    // Instant Event
-    res = await apiClient.POST('/events', {
-      body: {
-        ...commonBody,
-        place: form.value.place
-      }
-    })
-  }
+  isSubmitting.value = true
+  try {
+    const body = form.value.roomId
+      ? { ...commonBody, roomId: form.value.roomId }
+      : { ...commonBody, place: form.value.place }
+    const res = await apiClient.POST('/events', { body })
+    if (!res.response.ok || !res.data)
+      throw new Error('イベントの作成に失敗しました')
 
-  if (res.error) {
-    statusMessage.value = 'エラーが発生しました'
+    createdEventId.value = res.data.eventId
+    await tryConfirmFromDraft()
+    statusMessage.value = '作成しました'
+    router.push(`/events/${res.data.eventId}`)
+  } catch (e) {
+    statusMessage.value = createdEventId.value
+      ? 'イベントは作成しましたが，日程調整の確定に失敗しました．日程調整は未確定のままです．'
+      : 'イベントの作成に失敗しました'
     isError.value = true
-    console.error(res.error)
-    return
+    console.error(e)
+  } finally {
+    isSubmitting.value = false
   }
-  if (!res.data) return
-
-  await tryConfirmFromDraft()
-  statusMessage.value = '作成しました'
-  router.push(`/events/${res.data.eventId}`)
 }
 
 const tryConfirmFromDraft = async () => {
   if (!pendingDraftEventId.value) return
-  try {
-    const timeStart = `${form.value.timeStart}:00+09:00`
-    const timeEnd = `${form.value.timeEnd}:00+09:00`
-    await confirmDraftEvent(pendingDraftEventId.value, timeStart, timeEnd)
-  } catch (e) {
-    console.error(e)
-  }
+  const timeStart = `${form.value.timeStart}:00+09:00`
+  const timeEnd = `${form.value.timeEnd}:00+09:00`
+  await confirmDraftEvent(pendingDraftEventId.value, timeStart, timeEnd)
 }
 </script>
 
@@ -295,11 +290,24 @@ const tryConfirmFromDraft = async () => {
 
       <div class="flex items-center gap-4">
         <label for="event-open" class="flex cursor-pointer items-center gap-2">
-          <input id="event-open" v-model="form.open" type="checkbox" class="h-4 w-4" />
+          <input
+            id="event-open"
+            v-model="form.open"
+            type="checkbox"
+            class="h-4 w-4"
+          />
           <span class="text-sm">誰でも参加可能にする</span>
         </label>
-        <label for="event-shared-room" class="flex cursor-pointer items-center gap-2">
-          <input id="event-shared-room" v-model="form.sharedRoom" type="checkbox" class="h-4 w-4" />
+        <label
+          for="event-shared-room"
+          class="flex cursor-pointer items-center gap-2"
+        >
+          <input
+            id="event-shared-room"
+            v-model="form.sharedRoom"
+            type="checkbox"
+            class="h-4 w-4"
+          />
           <span class="text-sm">部屋を共有可能にする</span>
         </label>
       </div>
@@ -402,9 +410,20 @@ const tryConfirmFromDraft = async () => {
     </div>
 
     <div class="flex items-center gap-4">
-      <PrimaryButton @click="onSubmit">イベントを作成</PrimaryButton>
+      <PrimaryButton
+        :disabled="isSubmitting || !!createdEventId || !me || !!draftError"
+        @click="onSubmit"
+        >イベントを作成</PrimaryButton
+      >
+      <RouterLink
+        v-if="createdEventId && isError"
+        :to="`/events/${createdEventId}`"
+        class="text-surface-accent-primary underline"
+        >作成したイベントを開く</RouterLink
+      >
       <span
         v-if="statusMessage"
+        role="status"
         :class="isError ? 'text-red-500' : 'text-green-600'"
         class="text-sm font-bold"
       >

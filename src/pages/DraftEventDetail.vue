@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import AppHeader from '/@/components/AppHeader.vue'
 import UserIcon from '/@/components/UI/UserIcon.vue'
@@ -14,36 +14,62 @@ import { useUsers } from '/@/features/user/composables/useUsers'
 import { useMe } from '/@/features/user/composables/useMe'
 
 const route = useRoute()
-const { currentDraftEvent, getDraftEvent, isLoading } = useDraftEvents()
-const { myAvailability, getMyAvailability, saveAvailability, isSaving } =
-  useAvailability()
-const { schedulingResults, getSchedulingResults } = useSchedulingResults()
+const {
+  currentDraftEvent,
+  getDraftEvent,
+  isLoading: draftLoading,
+  error: draftError
+} = useDraftEvents()
+const {
+  myAvailability,
+  getMyAvailability,
+  saveAvailability,
+  isSaving,
+  isLoading: answersLoading,
+  error: answersError
+} = useAvailability()
+const {
+  schedulingResults,
+  getSchedulingResults,
+  isLoading: resultsLoading,
+  error: resultsError
+} = useSchedulingResults()
 const { getUsersByIds } = useUsers()
-const { me } = useMe()
-
+const { me, isValidating: meLoading } = useMe()
+const isLoading = computed(
+  () =>
+    draftLoading.value ||
+    answersLoading.value ||
+    resultsLoading.value ||
+    (!me.value && meLoading.value)
+)
 const draftEventId = route.params.id as string
 
 const selectedSlotIds = ref<string[]>([])
 const comment = ref('')
+const availabilityReady = ref(false)
 const statusMessage = ref('')
 const isError = ref(false)
 
-const refreshAll = async () => {
-  const tasks: Promise<unknown>[] = [
+onMounted(async () => {
+  await Promise.all([
     getDraftEvent(draftEventId),
     getSchedulingResults(draftEventId)
-  ]
-  if (me.value?.userId) {
-    tasks.push(getMyAvailability(draftEventId, me.value.userId))
-  }
-  await Promise.all(tasks)
-  if (myAvailability.value) {
-    selectedSlotIds.value = [...myAvailability.value.slotIds]
-    comment.value = myAvailability.value.comment ?? ''
-  }
-}
+  ])
+})
 
-onMounted(refreshAll)
+watch(
+  () => me.value?.userId,
+  async (userId) => {
+    availabilityReady.value = false
+    if (!userId) return
+    await getMyAvailability(draftEventId, userId)
+    selectedSlotIds.value = [...(myAvailability.value?.slotIds ?? [])]
+    comment.value = myAvailability.value?.comment ?? ''
+    availabilityReady.value = !answersError.value
+  },
+  { immediate: true }
+)
 
 const displayStatus = computed(() => {
   if (!currentDraftEvent.value) return 'unanswered' as const
@@ -52,7 +78,11 @@ const displayStatus = computed(() => {
   return myAvailability.value ? ('answered' as const) : ('unanswered' as const)
 })
 
-const isOpen = computed(() => currentDraftEvent.value?.status === 'open')
+const isOpen = computed(
+  () =>
+    currentDraftEvent.value?.status === 'open' &&
+    Date.parse(currentDraftEvent.value.deadline) > Date.now()
+)
 
 const isAdmin = computed(() => {
   if (!currentDraftEvent.value || !me.value?.userId) return false
@@ -61,7 +91,7 @@ const isAdmin = computed(() => {
 
 const canVote = computed(() => {
   if (!currentDraftEvent.value || !me.value?.userId) return false
-  if (!isOpen.value) return false
+  if (!isOpen.value || !availabilityReady.value) return false
   return (
     currentDraftEvent.value.open ||
     currentDraftEvent.value.invitees.includes(me.value.userId) ||
@@ -71,7 +101,7 @@ const canVote = computed(() => {
 
 const hasChanges = computed(() => {
   if (!myAvailability.value) {
-    return selectedSlotIds.value.length > 0 || comment.value !== ''
+    return true
   }
   const prevSlotIds = myAvailability.value.slotIds
   const prevComment = myAvailability.value.comment ?? ''
@@ -107,7 +137,7 @@ const formatRespondedAt = (dateStr: string) =>
   })
 
 const onSubmit = async () => {
-  if (!me.value?.userId) return
+  if (!me.value?.userId || isSaving.value) return
 
   statusMessage.value = '保存中...'
   isError.value = false
@@ -133,6 +163,13 @@ const onSubmit = async () => {
   <div class="mx-auto my-8 max-w-4xl p-4">
     <div v-if="isLoading" class="text-center text-text-secondary">
       読み込み中...
+    </div>
+    <div
+      v-else-if="draftError"
+      role="alert"
+      class="text-center text-status-error"
+    >
+      {{ draftError }}
     </div>
     <div v-else-if="!currentDraftEvent" class="text-center text-text-secondary">
       日程調整が見つかりません
@@ -180,13 +217,22 @@ const onSubmit = async () => {
       <div grid gap-4 card>
         <h3 h3>参加可能な時間</h3>
 
-        <div v-if="!canVote" class="text-sm text-text-secondary">
+        <p v-if="answersError" role="alert" class="text-sm text-status-error">
+          {{ answersError }}
+        </p>
+        <p v-if="resultsError" role="alert" class="text-sm text-status-error">
+          {{ resultsError }}
+        </p>
+        <div
+          v-if="!canVote && !answersError"
+          class="text-sm text-text-secondary"
+        >
           <template v-if="!isOpen">
             締切を過ぎたため、回答できません。
           </template>
           <template v-else> この日程調整に回答する権限がありません。 </template>
         </div>
-        <p v-else class="text-sm text-text-secondary">
+        <p v-else-if="canVote" class="text-sm text-text-secondary">
           クリック or
           ドラッグで選択してください。セル内のアイコンは他の回答者です。
         </p>
@@ -196,7 +242,7 @@ const onSubmit = async () => {
           :slots="currentDraftEvent.candidateSlots"
           :results="schedulingResults?.results ?? []"
           :get-user-name="getUserName"
-          :disabled="!canVote"
+          :disabled="!canVote || isSaving"
         />
 
         <template v-if="canVote">
