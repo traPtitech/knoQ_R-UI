@@ -7,7 +7,6 @@ import {
   startOfWeek,
   subWeeks
 } from 'date-fns'
-import AppHeader from '/@/components/AppHeader.vue'
 import WeekNavigator from '/@/features/room/components/WeekNavigator.vue'
 import WeekCalendar from '/@/features/room/components/WeekCalendar.vue'
 import RoomDetailPopover from '/@/features/room/components/RoomDetailPopover.vue'
@@ -55,7 +54,6 @@ const goToday = () => {
 </script>
 
 <template>
-  <AppHeader />
   <div class="mx-auto max-w-[1200px] px-4 pb-12 pt-6">
     <header class="mb-4 flex items-center justify-between gap-3">
       <h1 h1>進捗部屋</h1>

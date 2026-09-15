@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import AppHeader from '/@/components/AppHeader.vue'
 import UserIcon from '/@/components/UI/UserIcon.vue'
 import InputField from '/@/components/UI/Form/InputField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
@@ -154,7 +153,6 @@ const confirmedRangeLabel = computed(() => {
 </script>
 
 <template>
-  <AppHeader />
   <div class="mx-auto my-8 max-w-4xl p-4">
     <div v-if="isLoading" class="text-center text-text-secondary">
       読み込み中...
