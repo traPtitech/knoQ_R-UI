@@ -18,11 +18,6 @@ jobs:
       - name: Set PR_NUMBER env
         run: echo "PR_NUMBER=${{ github.event.number }}" >> $GITHUB_ENV
 
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          persist-credentials: false
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
       - name: Set up Docker Buildx
@@ -40,11 +35,13 @@ jobs:
           username: traptitech
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 隔離された環境でビルドを行い、write perm付きトークンをユーザーのコードに与えないよう注意すること
+      # PRのコードはrunnerへcheckoutせず，BuildKitのGit contextから取得する．
       - name: Build
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
-          context: .
+          context: ${{ github.server_url }}/${{ github.repository }}.git#${{ github.event.pull_request.head.sha }}
+          # 公開リポジトリの取得に認証は不要なため，ビルドへトークンを渡さない．
+          github-token: ''
           platforms: linux/amd64,linux/arm64
           push: true
           # NOTE: once https://github.com/argoproj/argo-cd/pull/13199 is released we can use short sha
