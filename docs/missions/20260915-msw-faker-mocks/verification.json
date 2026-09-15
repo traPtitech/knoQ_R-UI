@@ -1,0 +1,48 @@
+{
+  "missionId": "20260915-msw-faker-mocks",
+  "sourceCommit": "39b4b74b6dc56f72ce3331bcdb7cd6d9bf014575",
+  "generatedAt": "2026-09-15T11:28:54Z",
+  "environment": {
+    "os": "macOS",
+    "node": "v24.12.0",
+    "npm": "11.6.2"
+  },
+  "checks": {
+    "install": {
+      "command": "npm ci --offline --no-audit --no-fund",
+      "exitCode": 0
+    },
+    "lint": {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "errors": 0,
+      "existingWarnings": 10
+    },
+    "typeCheck": {
+      "command": "npm run type-check",
+      "exitCode": 0
+    },
+    "tests": {
+      "command": "npm exec -- vitest run --coverage.enabled=true --coverage.reportsDirectory=coverage/msw-mission/coverage --coverage.reporter=text --coverage.reporter=json-summary --coverage.reporter=html --reporter=default --reporter=json --outputFile.json=coverage/msw-mission/vitest.json",
+      "exitCode": 0,
+      "files": 10,
+      "passed": 84,
+      "failed": 0
+    },
+    "build": {
+      "command": "VITE_ENABLE_MOCKS=true npm run build -- --sourcemap",
+      "exitCode": 0
+    },
+    "bundle": {
+      "sourceMaps": 13,
+      "modules": 150,
+      "forbiddenModules": [],
+      "copiedPublicWorker": true
+    }
+  },
+  "manualBrowser": {
+    "status": "pending-user",
+    "instructionRecordedAt": "2026-09-15T11:20:16Z"
+  },
+  "evidenceDirectory": "coverage/msw-mission"
+}

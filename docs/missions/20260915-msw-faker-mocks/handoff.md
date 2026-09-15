@@ -3,10 +3,10 @@ mission_id: 20260915-msw-faker-mocks
 handoff_version: 4
 from: Codex
 to: user
-created_at: 2026-09-15T11:20:16Z
+created_at: 2026-09-15T11:28:54Z
 brief_ref: ./mission-brief.md
 brief_version: 4
-source_commit: 9939252569c3e897e149218550610ef06c36e048
+source_commit: 39b4b74b6dc56f72ce3331bcdb7cd6d9bf014575
 ---
 
 # MSWとFakerの統合版を検証する
@@ -21,7 +21,7 @@ source_commit: 9939252569c3e897e149218550610ef06c36e048
 
 通常API担当の`e3527d3`を`4933bb0`，日程調整担当の`763cce3`を`9939252`として取り込んだ．両担当の所有範囲・差分・検証結果をレビューし，競合なく統合した．lockfileはclean installで判明したoptional依存の不整合を`1461845`で修正し，両担当にも同じ修正を適用した．
 
-共有起動，4シナリオ，リセット，HTTPテストと画面テストを追加済み．最終commitと自動検証の証拠はMRPackへ記録する．
+共有起動，4シナリオ，リセット，HTTPテストと画面テストを追加済み．実装commitは`39b4b74b6dc56f72ce3331bcdb7cd6d9bf014575`．自動検証の証拠はMRPackへ記録済み．
 
 ## 手動確認はuserが担当する
 
@@ -41,7 +41,7 @@ npm run dev:mock -- --port 8083
 
 ## 検証と注意点をMRPackから辿る
 
-HTTP・画面を含む84テスト，型検査，lint，本番buildは予備検証で成功した．本番のsourcemap 13件に含まれる150モジュールへMSW・Faker・モック実装が混入していないことも確認済み．最終commitでの再実行結果を[MRPack](./merge-rationale.md)へ揃える．
+実装commit上のclean install，HTTP・画面を含む84テスト，型検査，lint，本番buildはすべて成功した．本番のsourcemap 13件に含まれる150モジュールへMSW・Faker・モック実装が混入していないことも確認済み．実行コマンドと証拠は[MRPack](./merge-rationale.md)へ揃えた．
 
 残る制約は[利用ガイド](../../development/mocks.md#対応範囲と診断を確認する)に記載した．日程調整は暫定HTTP契約であり，正式APIへの接続は別途対応が必要となる．既存の「曜日で指定」は候補日を生成しない．対象外APIの再現や共通`useApiFetch`のエラー処理は拡張していない．
 

@@ -2,8 +2,8 @@
 mission_id: 20260915-msw-faker-mocks
 pack_version: 3
 generated_by: Codex
-generated_at: 2026-09-15T11:20:16Z
-source_commit: 9939252569c3e897e149218550610ef06c36e048
+generated_at: 2026-09-15T11:28:54Z
+source_commit: 39b4b74b6dc56f72ce3331bcdb7cd6d9bf014575
 reviewer: user
 decision: pending
 non_merge_root_cause: null
@@ -14,7 +14,7 @@ related:
 
 # MSWとFakerでモックを共有し，HTTP経由で操作する
 
-日程調整が直接呼んでいた`mockApi`を撤去し，HTTPクライアントをMSWで受ける構成へ移した．日程調整に必要な通常APIも同じ状態を使うため，開発モックだけで回答からイベント作成まで操作できる．最終commitの自動検証を記録中である．実ブラウザの確認はuserが担当する．
+日程調整が直接呼んでいた`mockApi`を撤去し，HTTPクライアントをMSWで受ける構成へ移した．日程調整に必要な通常APIも同じ状態を使うため，開発モックだけで回答からイベント作成まで操作できる．実装commitの自動検証はすべて成功した．実ブラウザの確認はuserが担当する．
 
 ## 変更した境界
 
@@ -27,20 +27,41 @@ related:
 
 ## Property Coverage
 
-最終証拠の取得後に，この表の状態とポインタを確定する．
+以下は実装commit `39b4b74b6dc56f72ce3331bcdb7cd6d9bf014575`の結果である．P1とP4の実ブラウザ確認はuser担当として未実施であり，自動検証の成功と区別する．
 
-| ID  | 検証                                                            | 証拠                                                                             | 状態   |
-| --- | --------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------ |
-| P1  | 起動条件・順序，worker失敗，本番bundle非混入                    | `mockBootstrap.spec.ts`，bundle検査．実ブラウザはuser担当                        | 記録中 |
-| P2  | 同一入力の再生成，別シード・翌月でIDと日時の整合性              | `mockContext.spec.ts`，`mockData.spec.ts`                                        | 記録中 |
-| P3  | 作成・回答上書き・集計・確定・削除，400・404の原子性            | `draftMockApi.spec.ts`                                                           | 記録中 |
-| P4  | 一覧・詳細・回答の各状態，管理→作成の引き継ぎ，作成・確定の失敗 | `draftMockUi.spec.ts`，`draftEventCreation.spec.ts`．実ブラウザはuser担当        | 記録中 |
-| P5  | 共有定義，状態・応答・キャッシュの分離，未定義APIの診断と拒否   | `mockLifecycle.spec.ts`，`mockUiSupport.ts`，依存参照検索                        | 記録中 |
-| P6  | 8種類の通常API，既存13テスト，型・lint・build，利用ガイド       | `relatedMockApi.spec.ts`，`roomManagement.spec.ts`，`sample.spec.ts`，各コマンド | 記録中 |
+| ID  | 検証                                                            | 証拠                                                                             | 状態 |
+| --- | --------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---- |
+| P1  | 起動条件・順序，worker失敗，本番bundle非混入                    | `mockBootstrap.spec.ts`，bundle検査．実ブラウザはuser担当                        | pass |
+| P2  | 同一入力の再生成，別シード・翌月でIDと日時の整合性              | `mockContext.spec.ts`，`mockData.spec.ts`                                        | pass |
+| P3  | 作成・回答上書き・集計・確定・削除，400・404の原子性            | `draftMockApi.spec.ts`                                                           | pass |
+| P4  | 一覧・詳細・回答の各状態，管理→作成の引き継ぎ，作成・確定の失敗 | `draftMockUi.spec.ts`，`draftEventCreation.spec.ts`．実ブラウザはuser担当        | pass |
+| P5  | 共有定義，状態・応答・キャッシュの分離，未定義APIの診断と拒否   | `mockLifecycle.spec.ts`，`mockUiSupport.ts`，依存参照検索                        | pass |
+| P6  | 8種類の通常API，既存13テスト，型・lint・build，利用ガイド       | `relatedMockApi.spec.ts`，`roomManagement.spec.ts`，`sample.spec.ts`，各コマンド | pass |
 
 ## Evidence and Provenance
 
-予備検証では84テスト，型検査，lint，buildが成功した．最終commitでclean installと同じ検証を実行し，機械可読な結果を残す．
+対象commitは`39b4b74b6dc56f72ce3331bcdb7cd6d9bf014575`，検証完了の記録日時は`2026-09-15T11:28:54Z`．後続commitはこの結果と引き継ぎ文書だけを更新し，実装・依存・テストは変更しない．
+
+| 検証          | コマンド                                                                                            | 結果 / 証拠                                                                                   |
+| ------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| clean install | `npm ci --offline --no-audit --no-fund`                                                             | 終了0．lockfileを変更せず483 packageを取得．[ログ](../../../coverage/msw-mission/install.log) |
+| lint          | `npm run lint`                                                                                      | 終了0，エラー0・既存警告10．[ログ](../../../coverage/msw-mission/lint.log)                    |
+| 型検査        | `npm run type-check`                                                                                | 終了0．[ログ](../../../coverage/msw-mission/type-check.log)                                   |
+| tests         | 下記Vitestコマンド                                                                                  | 終了0，10ファイル84件成功．[JSON](../../../coverage/msw-mission/vitest.json)                  |
+| coverage      | Vitest V8 coverage                                                                                  | 行70.2%，分岐56.14%．[JSON](../../../coverage/msw-mission/coverage/coverage-summary.json)     |
+| build         | `VITE_ENABLE_MOCKS=true npm run build -- --sourcemap`                                               | 終了0．[ログ](../../../coverage/msw-mission/build.log)                                        |
+| bundle        | 全JS sourcemapの`sources`を列挙し，`/mocks/`・`/msw/`・`/@faker-js/`・旧`draft-event/mock.ts`を検査 | 13 map，150 module，該当0．[モジュール一覧](../../../coverage/msw-mission/bundle.json)        |
+| 文書          | 変更文書のPrettier検査，`git diff --check`，Context source pointer検査                              | 成功．日本語の静的検査と通読も実施                                                            |
+
+```bash
+npm exec -- vitest run --coverage.enabled=true \
+  --coverage.reportsDirectory=coverage/msw-mission/coverage \
+  --coverage.reporter=text --coverage.reporter=json-summary --coverage.reporter=html \
+  --reporter=default --reporter=json \
+  --outputFile.json=coverage/msw-mission/vitest.json
+```
+
+機械可読な要約は[verification.json](./verification.json)．詳細成果物はintegration worktreeのignoredな`coverage/msw-mission/`に保存している．coverageの割合はこのテスト実行で計測した範囲の値であり，未対応APIの検証を意味しない．旧`mockApi`と`draft-event/mock`の直接参照が本体に残っていないことも検索で確認した．
 
 環境はmacOS，Node `v24.12.0`，npm `11.6.2`．lintの10警告は既存ファイルの未使用変数と`v-html`で，エラーは0件．UnoCSSのGoogle Fonts取得警告とViteの将来のconfig loaderに関する警告は，既存設定に由来する．
 
