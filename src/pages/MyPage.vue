@@ -2,8 +2,8 @@
 import AppHeader from '/@/components/AppHeader.vue'
 import { useMe } from '/@/features/user/composables/useMe'
 import { useApiFetch } from '/@/composables/useApiFetch'
-import { RouterLink } from 'vue-router'
 import DataFetchState from '/@/components/UI/DataFetchState.vue'
+import MyEventsList from '/@/features/event/components/MyEventsList.vue'
 
 const { me } = useMe()
 
@@ -18,6 +18,7 @@ const { data: myGroups, state: myGroupsState } = useApiFetch(
   '/users/me/groups',
   {}
 )
+
 </script>
 
 <template>
@@ -32,11 +33,7 @@ const { data: myGroups, state: myGroupsState } = useApiFetch(
     <div grid gap-6 card>
       <h3 hm>あなたのイベント</h3>
       <DataFetchState :state="myEventsState" :is-empty="myEvents?.length === 0">
-        <div v-for="event in myEvents" :key="event.eventId">
-          <RouterLink :to="`/events/${event.eventId}`">
-            {{ event.name }}
-          </RouterLink>
-        </div>
+        <MyEventsList :my-events-data="myEvents"/>
       </DataFetchState>
     </div>
     <div grid gap-6 card>
