@@ -1,0 +1,39 @@
+{
+  "mission_id": "20260909-event-search",
+  "implementation_commit": "bebfdc4384bcca08b4e1b7c67a9f0fb1d1596912",
+  "generated_at": "2026-09-16T21:21:32.168181+09:00",
+  "environment": {
+    "os": "macOS",
+    "node": "v24.18.0",
+    "npm": "11.16.0",
+    "timezone": "Asia/Tokyo"
+  },
+  "checks": [
+    {
+      "command": "npm run build",
+      "result": "pass",
+      "includes": "vue-tsc --noEmit and vite build"
+    },
+    {
+      "command": "npx vitest run",
+      "result": "pass",
+      "files": 5,
+      "tests": 56
+    },
+    {
+      "command": "npx eslint <changed TypeScript and Vue files>",
+      "result": "pass",
+      "scope": "All 15 changed TypeScript/Vue implementation and test files against origin/feat/pages"
+    },
+    {
+      "command": "git diff --check origin/feat/pages",
+      "result": "pass"
+    }
+  ],
+  "notes": [
+    "Initial full test run could not load upstream roomManagement tests because jsdom was missing. npm install --ignore-scripts --package-lock=false installed current declared dependencies; package.json and package-lock.json are unchanged.",
+    "Validation used Vite 8.3.0 and Vitest 4.1.11 in the local environment; this was not a clean npm ci validation.",
+    "Vite reports an existing configLoader warning about __dirname.",
+    "Visual browser checks were not repeated during commit reorganization."
+  ]
+}
