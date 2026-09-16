@@ -39,7 +39,7 @@ const handleSelect = (item: Item) => {
       <div
         class="input-base w-auto flex items-center justify-between gap-2 px-3 py-2 text-sm transition-colors hover:bg-surface-secondary"
       >
-        <span>{{ label }}</span>
+        <span class="min-w-0 break-words">{{ label }}</span>
         <span i-mdi:chevron-down text-text-secondary />
       </div>
     </template>
@@ -48,6 +48,8 @@ const handleSelect = (item: Item) => {
         v-model="searchQuery"
         class="w-full rounded border-none bg-surface-secondary px-2 py-1 text-sm focus:outline-none"
         placeholder="検索..."
+        aria-label="候補を検索"
+        @keydown.enter.prevent
         @click.stop
       />
     </div>
@@ -61,6 +63,7 @@ const handleSelect = (item: Item) => {
       <button
         v-for="item in filteredItems"
         :key="item.id"
+        type="button"
         class="block w-full px-4 py-2 text-left text-sm text-text-primary transition-colors hover:bg-surface-secondary"
         @click.stop="handleSelect(item)"
       >
