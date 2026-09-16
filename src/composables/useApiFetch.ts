@@ -11,7 +11,12 @@ export const useApiFetch = <P extends PathsWithMethod<paths, 'get'>>(
 ) => {
   const swrv = useSWRV(
     [path, JSON.stringify(init)],
-    async () => (await apiClient.GET(path, init)).data,
+    async () => {
+      const { data, response } = await apiClient.GET(path, init)
+      if (!response.ok)
+        throw new Error(`取得に失敗しました (${response.status})`)
+      return data
+    },
     config
   )
   const { state } = useSwrvState(swrv.data, swrv.error, swrv.isValidating)
