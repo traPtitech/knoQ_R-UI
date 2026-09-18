@@ -7,7 +7,8 @@ owner: user
 assignee: Codex
 created: 2026-09-15
 last_updated: 2026-09-18
-brief_version: 6
+brief_version: 7
+github_pr: https://github.com/traPtitech/knoQ_R-UI/pull/254
 github_issue: null
 issue_status: not-applicable # not-applicable | draft | approved-created
 approvals:
@@ -152,6 +153,9 @@ Fakerには乱数シードと基準日時を渡す．シードだけでは相対
 
 ## Current State
 
+- **PR作成済み**: [#254](https://github.com/traPtitech/knoQ_R-UI/pull/254)．`mission/20260915-msw-faker-mocks`から`feat/pages`へ提出した．
+- **CI修正**: npm 10のCIで判明したlockfileの不足2件を補った．既存依存のversionは維持し，修正後のnpm 10.8.2による`npm ci --dry-run`が成功した．最新のCI結果はPRのChecksを参照する．
+
 - **完了**: 両承認ゲート，依存と共有基盤，2担当の実装・レビュー・統合，HTTP・画面テスト84件．
 - **自動検証完了**: clean install，84テスト，型検査，lint，本番build，bundle非混入，利用ガイドとContext Cardの整備．
 - **今回の完了**: 統合版`0a1ee9a`をmissionブランチへfast-forwardで取り込んだ．利用ガイドをルートの`MOCKS.md`へ移し，関連リンクを更新した．
@@ -169,3 +173,4 @@ Fakerには乱数シードと基準日時を渡す．シードだけでは相対
 | 4       | 2026-09-15 | 実ブラウザ確認をuser担当へ変更した．自動検証とbundle検査はCodexが継続する．             | userの「実際のブラウザでの動作確認は俺がやるから，それ以外やればいいよ」による．記録日時2026-09-15T11:20:16Z． |
 | 5       | 2026-09-18 | 統合版をmissionブランチへ取り込み，起動と利用ガイドをリポジトリルートへそろえた．       | userの「普通にリポジトリルートから行けるようにして，合わせて，ドキュメントもリポジトリルートにおいて」による． |
 | 6       | 2026-09-18 | 現在のmissionブランチをpushし，`feat/pages`向けのPRを作成する．                         | userの「よし，pushしてPR作って」による．                                                                       |
+| 7       | 2026-09-18 | PR #254を作成し，CIで判明したlockfileの不足を修正した．                                 | push・PR作成の依頼に基づく．既存の依存versionとAPIの対応範囲は維持した．                                       |

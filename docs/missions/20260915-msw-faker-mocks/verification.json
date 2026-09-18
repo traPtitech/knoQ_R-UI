@@ -118,5 +118,28 @@
     },
     "manualBrowser": "pending-user",
     "evidenceDirectory": "coverage/msw-root-20260918"
+  },
+  "publication": {
+    "url": "https://github.com/traPtitech/knoQ_R-UI/pull/254",
+    "number": 254,
+    "baseBranch": "feat/pages",
+    "headBranch": "mission/20260915-msw-faker-mocks",
+    "initialHeadCommit": "7ce8e2ec408319cf1b9b70e3954839a6ebb6cd55"
+  },
+  "ciLockfileFix": {
+    "recordedAt": "2026-09-18T06:18:35Z",
+    "failedRun": "https://github.com/traPtitech/knoQ_R-UI/actions/runs/35313900461",
+    "addedPackages": {
+      "@emnapi/core": "1.11.3",
+      "@emnapi/runtime": "1.11.3"
+    },
+    "existingPackageVersionsChanged": false,
+    "npmVersion": "10.8.2",
+    "localCheck": {
+      "command": "npm ci --dry-run --ignore-scripts --offline --no-audit --no-fund",
+      "exitCode": 0,
+      "log": "coverage/msw-root-20260918/npm10-ci.log"
+    },
+    "ciResults": "https://github.com/traPtitech/knoQ_R-UI/pull/254/checks"
   }
 }

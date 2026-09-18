@@ -1,11 +1,11 @@
 ---
 mission_id: 20260915-msw-faker-mocks
-handoff_version: 6
+handoff_version: 7
 from: Codex
 to: user
-created_at: 2026-09-18T06:10:19Z
+created_at: 2026-09-18T06:18:35Z
 brief_ref: ./mission-brief.md
-brief_version: 6
+brief_version: 7
 source_commit: 0a1ee9acdcf093d722ef8f23fbb09053fbc1421d
 ---
 
@@ -21,7 +21,7 @@ source_commit: 0a1ee9acdcf093d722ef8f23fbb09053fbc1421d
 
 通常API担当の`e3527d3`を`4933bb0`，日程調整担当の`763cce3`を`9939252`として取り込んだ．両担当の所有範囲・差分・検証結果をレビューし，競合なく統合した．lockfileはclean installで判明したoptional依存の不整合を`1461845`で修正し，両担当にも同じ修正を適用した．
 
-共有起動，4シナリオ，リセット，HTTPテストと画面テストを追加済み．利用ガイドはリポジトリルートの`MOCKS.md`へ移し，READMEと関連文書のリンクを更新した．取り込み後の追加変更は文書だけであり，アプリ・依存・テストへの変更はない．
+共有起動，4シナリオ，リセット，HTTPテストと画面テストを追加済み．利用ガイドはリポジトリルートの`MOCKS.md`へ移し，READMEと関連文書のリンクを更新した．ルート配置の変更後，PRのCIで判明したlockfileの不足2件も補った．アプリとテストのコード，既存パッケージのversionは変えていない．
 
 ## 手動確認はuserが担当する
 
@@ -48,10 +48,10 @@ Viteが表示したURLの`/draft-events`を開き，[モック開発ガイド](.
 
 | 強度   | ポインタ                                            | 確認すること                       | 出所 / 最終確認日       |
 | ------ | --------------------------------------------------- | ---------------------------------- | ----------------------- |
-| must   | `mission-brief.md`と`test-design.md`                | 承認範囲とuser担当のブラウザ確認   | Brief v6 / 2026-09-18   |
+| must   | `mission-brief.md`と`test-design.md`                | 承認範囲とuser担当のブラウザ確認   | Brief v7 / 2026-09-18   |
 | must   | `src/mocks/environment.ts`，`browser.ts`，`node.ts` | 共有定義，起動，未定義APIの遮断    | 統合実装 / 2026-09-15   |
 | must   | `src/features/draft-event/api.ts`と`mocks/`         | 暫定契約と状態更新                 | 統合実装 / 2026-09-15   |
 | must   | `merge-rationale.md`                                | 最終検証の対象commitと証拠         | MRPack / 2026-09-15     |
 | should | `MOCKS.md`                                          | ルートでの起動・リセット・追加手順 | 利用ガイド / 2026-09-18 |
 
-missionブランチへの取り込みは実施済み．2026-09-18の「よし，pushしてPR作って」に基づき，現在のブランチをpushし，`feat/pages`向けのPRを作成する．担当worktreeとbranchは残している．
+2026-09-18の「よし，pushしてPR作って」に基づき，現在のブランチをpushして[PR #254](https://github.com/traPtitech/knoQ_R-UI/pull/254)を作成した．baseは`feat/pages`．実ブラウザの操作確認とレビューはuserが担当し，CIの最新結果はPRのChecksを参照する．担当worktreeとbranchは残している．

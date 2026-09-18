@@ -1,8 +1,8 @@
 ---
 mission_id: 20260915-msw-faker-mocks
-pack_version: 5
+pack_version: 6
 generated_by: Codex
-generated_at: 2026-09-18T06:10:19Z
+generated_at: 2026-09-18T06:18:35Z
 source_commit: 0a1ee9acdcf093d722ef8f23fbb09053fbc1421d
 reviewer: user
 decision: pending
@@ -90,7 +90,7 @@ npm exec -- vitest run --coverage.enabled=true \
 ## Reviewer Decision
 
 - **decision**: pending．userによるブラウザ確認とレビューを待つ．
-- **Git操作**: 2026-09-18の依頼に基づき，`mission/20260915-msw-faker-mocks`へ統合版をfast-forwardで取り込んだ．push，PR，worktree削除は未実施．
+- **Git操作**: 2026-09-18の依頼に基づき，`mission/20260915-msw-faker-mocks`へ統合版をfast-forwardで取り込んだ．同日の追加依頼に基づいてpushし，[PR #254](https://github.com/traPtitech/knoQ_R-UI/pull/254)を作成した．worktree削除は未実施．
 
 ## リポジトリルートで起動と自動検証を確認した
 
@@ -109,3 +109,9 @@ npm exec -- vitest run --coverage.enabled=true \
 記録日時は`2026-09-18T05:48:15Z`．機械可読な要約と実行コマンドは[verification.json](./verification.json)の`rootVerification`にある．Nodeとnpmは統合時と同じversionを使用した．
 
 検証時の環境制約として，Huskyによる`.git/config`の再設定はsandboxで拒否されたが，既存の`core.hooksPath`が`.husky/_`であることを確認した．開発サーバーの起動とローカル接続には実行権限を追加して確認した．型検査・buildは成功し，既存のVite設定警告とGoogle Fontsの取得警告が残る．実ブラウザの操作確認は引き続きuserが担当する．
+
+## PR提出後にlockfileの不足を補った
+
+[PR #254](https://github.com/traPtitech/knoQ_R-UI/pull/254)の初回CIは，npm 10.8.2の`npm ci`で`@emnapi/core`と`@emnapi/runtime`の不足を検出して失敗した．[失敗ログ](https://github.com/traPtitech/knoQ_R-UI/actions/runs/35313900461/job/105501357422)に記録されている．ローカルのnpm 11.6.2では検出されなかった不整合である．
+
+一時ディレクトリでnpm 10.8.2が生成した情報から，両パッケージの1.11.3のエントリだけをlockfileの`packages`と`dependencies`へ追加した．差分は48行の追加であり，既存パッケージのversionと`package.json`は変更していない．修正後にnpm 10.8.2で`npm ci --dry-run --ignore-scripts --offline --no-audit --no-fund`を実行し，終了0を確認した．[ローカルログ](../../../coverage/msw-root-20260918/npm10-ci.log)と`verification.json`の`ciLockfileFix`を参照する．実際のLinux環境でのインストール・lint・buildの最新結果は[PRのChecks](https://github.com/traPtitech/knoQ_R-UI/pull/254/checks)から確認する．
