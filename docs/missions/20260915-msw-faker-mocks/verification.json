@@ -141,5 +141,42 @@
       "log": "coverage/msw-root-20260918/npm10-ci.log"
     },
     "ciResults": "https://github.com/traPtitech/knoQ_R-UI/pull/254/checks"
+  },
+  "dateCoverage": {
+    "generatedAt": "2026-09-18T08:57:57Z",
+    "baseCommit": "67c13cc324c2ef9c2537f68c8903d9d87cd516e0",
+    "sourceSha256": {
+      "src/features/event/mocks/factories.ts": "358e829e24609d495621bd960deae53039b9768eef7d654a2fbf26899a7a5066",
+      "src/features/room/mocks/factories.ts": "deab0f1b3c6e616b09d4e80766457ace2756c35b1680694d05544c3e00cf72bf",
+      "tests/unit/mockData.spec.ts": "97d161c074efec5638e89b37d3e0aabe6d8edc1408c2fa03e8a44dc1b998cd54",
+      "tests/unit/relatedMockApi.spec.ts": "b3961e15cd7412470ed30d57a8af4ecc2b4ee60ab7aa4cad732b406395f46654"
+    },
+    "before": {
+      "command": "npm exec -- vitest run tests/unit/mockData.spec.ts tests/unit/relatedMockApi.spec.ts",
+      "failedTests": 8,
+      "log": "coverage/msw-dates-20260918/before.log"
+    },
+    "checks": {
+      "tests": {
+        "command": "npm exec -- vitest run --coverage.enabled=true --coverage.reportsDirectory=coverage/msw-dates-20260918/coverage --coverage.reporter=text --coverage.reporter=json-summary --reporter=default --reporter=json --outputFile.json=coverage/msw-dates-20260918/vitest.json",
+        "files": 10,
+        "passed": 90,
+        "failed": 0,
+        "exitCode": 0
+      },
+      "lint": {
+        "command": "npm run lint",
+        "exitCode": 0,
+        "errors": 0,
+        "existingWarnings": 10
+      },
+      "build": {
+        "command": "npm run build",
+        "includesTypeCheck": true,
+        "exitCode": 0
+      }
+    },
+    "evidenceDirectory": "coverage/msw-dates-20260918",
+    "manualBrowser": "pending-user"
   }
 }

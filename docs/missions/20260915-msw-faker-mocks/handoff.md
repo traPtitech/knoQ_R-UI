@@ -1,15 +1,19 @@
 ---
 mission_id: 20260915-msw-faker-mocks
-handoff_version: 7
+handoff_version: 8
 from: Codex
 to: user
-created_at: 2026-09-18T06:18:35Z
+created_at: 2026-09-18T08:57:57Z
 brief_ref: ./mission-brief.md
-brief_version: 7
-source_commit: 0a1ee9acdcf093d722ef8f23fbb09053fbc1421d
+brief_version: 8
+source_commit: 67c13cc324c2ef9c2537f68c8903d9d87cd516e0
 ---
 
 # リポジトリルートでモックを起動して確認する
+
+## 初期データに過去と未来を必ず含める
+
+最新の追加指示に合わせて，通常イベントへ2日前の開催済みデータを加え，部屋を2日前と翌日から3日後に配置した．日程調整の候補・締切も含め，シードや基準日時が変わっても過去・未来がそろうことを検証した．修正後は90テスト，lint，型検査を含むbuildが成功している．通常起動ではページ読込時の現在時刻，`VITE_MOCK_NOW`指定時はその日時を基準とする．詳細は`MOCKS.md`とMRPack末尾を参照する．
 
 ## 統合版をmissionブランチへ取り込んだ
 
@@ -17,11 +21,11 @@ source_commit: 0a1ee9acdcf093d722ef8f23fbb09053fbc1421d
 
 - branch: `mission/20260915-msw-faker-mocks`
 - worktree: メインのリポジトリルート．
-- userの2026-09-18の依頼に基づき，統合版`0a1ee9a`までfast-forwardで取り込んだ．追加の変更は利用ガイドのルート移動と参照・作業記録の更新であり，アプリのコードは統合版と同じである．
+- userの2026-09-18の依頼に基づき，統合版`0a1ee9a`までfast-forwardで取り込んだ．ルート配置時の変更は利用ガイドの移動と参照・作業記録の更新だった．最新の日付データの変更は上の節を参照する．
 
 通常API担当の`e3527d3`を`4933bb0`，日程調整担当の`763cce3`を`9939252`として取り込んだ．両担当の所有範囲・差分・検証結果をレビューし，競合なく統合した．lockfileはclean installで判明したoptional依存の不整合を`1461845`で修正し，両担当にも同じ修正を適用した．
 
-共有起動，4シナリオ，リセット，HTTPテストと画面テストを追加済み．利用ガイドはリポジトリルートの`MOCKS.md`へ移し，READMEと関連文書のリンクを更新した．ルート配置の変更後，PRのCIで判明したlockfileの不足2件も補った．アプリとテストのコード，既存パッケージのversionは変えていない．
+共有起動，4シナリオ，リセット，HTTPテストと画面テストを追加済み．利用ガイドはリポジトリルートの`MOCKS.md`へ移し，READMEと関連文書のリンクを更新した．ルート配置の変更後，PRのCIで判明したlockfileの不足2件も補った．このCI修正ではアプリとテストのコード，既存パッケージのversionは変えていない．
 
 ## 手動確認はuserが担当する
 
@@ -48,7 +52,7 @@ Viteが表示したURLの`/draft-events`を開き，[モック開発ガイド](.
 
 | 強度   | ポインタ                                            | 確認すること                       | 出所 / 最終確認日       |
 | ------ | --------------------------------------------------- | ---------------------------------- | ----------------------- |
-| must   | `mission-brief.md`と`test-design.md`                | 承認範囲とuser担当のブラウザ確認   | Brief v7 / 2026-09-18   |
+| must   | `mission-brief.md`と`test-design.md`                | 承認範囲とuser担当のブラウザ確認   | Brief v8 / 2026-09-18   |
 | must   | `src/mocks/environment.ts`，`browser.ts`，`node.ts` | 共有定義，起動，未定義APIの遮断    | 統合実装 / 2026-09-15   |
 | must   | `src/features/draft-event/api.ts`と`mocks/`         | 暫定契約と状態更新                 | 統合実装 / 2026-09-15   |
 | must   | `merge-rationale.md`                                | 最終検証の対象commitと証拠         | MRPack / 2026-09-15     |

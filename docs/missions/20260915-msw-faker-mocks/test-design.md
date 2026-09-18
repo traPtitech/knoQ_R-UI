@@ -101,3 +101,7 @@ worktreeはリポジトリ内の`.agent-worktrees/<run-id>/{draft-api,related-ap
 - `npm exec -- vitest run --coverage.enabled=true --reporter=default --reporter=json --outputFile.json=<証拠ディレクトリ>/vitest.json`
 - `npm run build`
 - 対象文書のPrettier検査と`git diff --check`
+
+## 過去と未来の初期データを必ず用意する
+
+2026-09-18の追加指示をP2へ反映した．`mockData.spec.ts`では複数のシード，月末・年末・うるう年・時差のある基準日時に対し，通常イベント，部屋，日程調整候補に終了済みと開始前の両方があり，締切にも過去・未来があることを検査する．基準日時を省略した場合は現在時刻を使用し，再読込時に生成し直すことも時刻を固定して確認する．`error`・`slow`でも同じデータ条件を保ち，`empty`の空データは従来のテストで確認する．過去の期間を指定したHTTP要求でイベントと部屋が取得できることは`relatedMockApi.spec.ts`で検証する．

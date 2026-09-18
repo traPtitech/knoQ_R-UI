@@ -21,8 +21,8 @@ export const createMockRoom = (
 })
 
 export const seedRooms = (context: MockContext): void => {
-  context.state.rooms = Array.from({ length: 4 }, (_, index) => {
-    const date = mockDate(context, 24 * (index + 1)).slice(0, 10)
+  context.state.rooms = [1, 2, 3, -2].map((dayOffset) => {
+    const date = mockDate(context, 24 * dayOffset).slice(0, 10)
     return createMockRoom(context, {
       timeStart: `${date}T10:00:00+09:00`,
       timeEnd: `${date}T20:00:00+09:00`

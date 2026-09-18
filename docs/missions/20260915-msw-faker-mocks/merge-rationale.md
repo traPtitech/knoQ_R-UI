@@ -1,9 +1,9 @@
 ---
 mission_id: 20260915-msw-faker-mocks
-pack_version: 6
+pack_version: 7
 generated_by: Codex
-generated_at: 2026-09-18T06:18:35Z
-source_commit: 0a1ee9acdcf093d722ef8f23fbb09053fbc1421d
+generated_at: 2026-09-18T08:57:57Z
+source_commit: 67c13cc324c2ef9c2537f68c8903d9d87cd516e0
 reviewer: user
 decision: pending
 non_merge_root_cause: null
@@ -115,3 +115,11 @@ npm exec -- vitest run --coverage.enabled=true \
 [PR #254](https://github.com/traPtitech/knoQ_R-UI/pull/254)の初回CIは，npm 10.8.2の`npm ci`で`@emnapi/core`と`@emnapi/runtime`の不足を検出して失敗した．[失敗ログ](https://github.com/traPtitech/knoQ_R-UI/actions/runs/35313900461/job/105501357422)に記録されている．ローカルのnpm 11.6.2では検出されなかった不整合である．
 
 一時ディレクトリでnpm 10.8.2が生成した情報から，両パッケージの1.11.3のエントリだけをlockfileの`packages`と`dependencies`へ追加した．差分は48行の追加であり，既存パッケージのversionと`package.json`は変更していない．修正後にnpm 10.8.2で`npm ci --dry-run --ignore-scripts --offline --no-audit --no-fund`を実行し，終了0を確認した．[ローカルログ](../../../coverage/msw-root-20260918/npm10-ci.log)と`verification.json`の`ciLockfileFix`を参照する．実際のLinux環境でのインストール・lint・buildの最新結果は[PRのChecks](https://github.com/traPtitech/knoQ_R-UI/pull/254/checks)から確認する．
+
+## 初期データの過去・未来をシードによらず保証する
+
+通常イベントと部屋が未来だけだったため，2日前の部屋と開催済みイベントを用意した．通常イベントは2日前・翌日・翌々日，部屋は2日前・翌日から3日後となる．日程調整には従来から過去・未来の候補と締切がある．生成時の基準日時を省略すると現在時刻を使い，API要求のたびには再抽選しない．固定日時による再現，期間絞り込み，空シナリオの扱いは維持した．
+
+変更前は追加・強化した検査の8件が失敗し，過去データの不足を検出した．変更後は10ファイル90件すべて成功した．月末・年末・うるう年・時差，現在時刻の進行，`error`・`slow`，過去期間のHTTP取得を含む．[テストJSON](../../../coverage/msw-dates-20260918/vitest.json)，[lintログ](../../../coverage/msw-dates-20260918/lint.log)，[型検査・buildログ](../../../coverage/msw-dates-20260918/build.log)を参照する．lintはエラー0・既存警告10，型検査とbuildは終了0である．
+
+検証対象は`67c13cc324c2ef9c2537f68c8903d9d87cd516e0`へ今回の差分を適用した作業ツリーである．実装・テスト4ファイルのSHA-256と結果を`verification.json`の`dateCoverage`へ記録した．実ブラウザの操作確認は引き続きuserが担当する．

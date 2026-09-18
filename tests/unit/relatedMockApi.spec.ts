@@ -118,9 +118,10 @@ describe('related mock APIs over HTTP', () => {
   it('returns summaries that agree with the event detail and sort chronologically', async () => {
     context.state.events.reverse()
     const list = await client.GET('/events')
-    expect(list.data).toHaveLength(2)
-    expect(Date.parse(list.data![0].timeStart)).toBeLessThan(
-      Date.parse(list.data![1].timeStart)
+    expect(list.data).toHaveLength(context.state.events.length)
+    const startTimes = list.data!.map((event) => Date.parse(event.timeStart))
+    expect(startTimes).toEqual(
+      startTimes.toSorted((left, right) => left - right)
     )
     for (const summary of list.data!) {
       const result = await client.GET('/events/{eventID}', {
@@ -163,6 +164,27 @@ describe('related mock APIs over HTTP', () => {
       params: { query: { dateBegin: '2026-10-01T00:00:00Z' } }
     })
     expect(empty.data).toEqual([])
+  })
+
+  it('returns past events and rooms when the calendar range ends at the reference time', async () => {
+    const query = { dateEnd: context.options.now }
+    const [rooms, events] = await Promise.all([
+      client.GET('/rooms', { params: { query } }),
+      client.GET('/events', { params: { query } })
+    ])
+    for (const result of [rooms, events]) {
+      expect(result.response.status).toBe(200)
+      expect(result.data!.length).toBeGreaterThan(0)
+      expect(
+        result.data!.every(
+          (item) => Date.parse(item.timeEnd) < Date.parse(context.options.now)
+        )
+      ).toBe(true)
+    }
+    const roomIds = rooms.data!.map((room) => room.roomId)
+    expect(events.data!.every((event) => roomIds.includes(event.roomId))).toBe(
+      true
+    )
   })
 
   it('creates an event in an existing room and reflects it in list and detail', async () => {

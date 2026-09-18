@@ -58,6 +58,10 @@ export const seedEvents = (context: MockContext): void => {
       name: 'はじめての開発で困ったことを持ち寄って一緒に考える勉強会',
       room: context.state.rooms[1],
       group: context.state.groups[1]
+    }),
+    createMockEvent(context, {
+      name: '開催済みの開発成果共有会',
+      room: context.state.rooms[3]
     })
   ]
 }

@@ -28,6 +28,10 @@ source_pointer:
     last_checked: 2026-09-15
   - path: src/features/draft-event/mocks/handlers.ts
     last_checked: 2026-09-15
+  - path: src/features/event/mocks/factories.ts
+    last_checked: 2026-09-18
+  - path: tests/unit/mockData.spec.ts
+    last_checked: 2026-09-18
 retirement_status: active
 access_notes: all-roles
 ---
@@ -46,3 +50,4 @@ eventは，確定した日時を持つ通常APIのドメインである．型は
 - draft-eventの一覧，詳細，作成，削除，確定，回答，集計は`draftApiClient`を使う．暫定契約は`api.ts`，モックの生成・HTTP処理は`mocks/`に分ける．正式API対応時は3つのcomposableと型をまとめて見直し，二重契約を残さない．
 - draft-event の確定から event 作成へ移る際は，Pinia の `pendingEventCreation` が draft ID と開始・終了時刻を一時保持する．`CreateEvent.vue` は値を読み取って消去し，eventの作成成功後にdraftを確定する．作成失敗時は未確定のままとし，確定だけが失敗した場合は作成済みイベントへのリンクを示して再送信を防ぐ．この橋渡しを変更するときは遷移，prefill，失敗時の状態を一緒に確認する．
 - API 契約へ踏み込む場合は [[api-data-schema]] もロードする．
+- 空シナリオを除くモックの初期データには，基準日時より過去と未来の通常イベント，日程調整候補・締切を必ず含める．基準日時を省略するとページ読込時の現在時刻を使う．日付の配置を乱数任せにせず，`mockData.spec.ts`で月末・年末・うるう年を含む条件を検証する．

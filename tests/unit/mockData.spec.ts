@@ -1,8 +1,27 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { createMockEnvironment } from '/@/mocks/environment'
 import { readMockOptions } from '/@/mocks/options'
+import type { MockContext } from '/@/mocks/types'
 
 const fixed = { seed: 42, now: '2026-09-15T00:00:00Z' }
+
+const expectPastAndFuture = ({ state, options }: MockContext): void => {
+  const now = Date.parse(options.now)
+  for (const ranges of [
+    state.events,
+    state.rooms,
+    state.draftEvents.flatMap((draft) => draft.candidateSlots)
+  ]) {
+    expect(ranges.some((range) => Date.parse(range.timeEnd) < now)).toBe(true)
+    expect(ranges.some((range) => Date.parse(range.timeStart) > now)).toBe(true)
+  }
+  expect(
+    state.draftEvents.some((draft) => Date.parse(draft.deadline) < now)
+  ).toBe(true)
+  expect(
+    state.draftEvents.some((draft) => Date.parse(draft.deadline) > now)
+  ).toBe(true)
+}
 
 describe('mock scenarios and data', () => {
   it('recreates initial data and changes the generated data for a different seed', () => {
@@ -18,10 +37,17 @@ describe('mock scenarios and data', () => {
     expect(first.context.state).toEqual(second.context.state)
   })
 
-  it.each([fixed, { seed: 2026, now: '2026-10-31T23:45:00+09:00' }])(
-    'keeps identifiers and time ranges consistent for %j',
+  it.each([
+    fixed,
+    { seed: 2026, now: '2026-10-31T23:59:59+09:00' },
+    { seed: 0, now: '2027-01-01T00:00:00+09:00' },
+    { seed: 8, now: '2028-03-01T00:00:00-10:00' }
+  ])(
+    'keeps references, time ranges and past/future coverage consistent for %j',
     (options) => {
-      const { state } = createMockEnvironment(options).context
+      const { context } = createMockEnvironment(options)
+      const { state } = context
+      expectPastAndFuture(context)
       const userIds = state.users.map((user) => user.userId)
       const groupIds = state.groups.map((group) => group.groupId)
       const roomIds = state.rooms.map((room) => room.roomId)
@@ -82,6 +108,27 @@ describe('mock scenarios and data', () => {
       expect(new Set(state.draftEvents.map((event) => event.status))).toEqual(
         new Set(['open', 'closed', 'confirmed'])
       )
+    }
+  )
+
+  it('anchors both past and future data to the current time on each page load', () => {
+    vi.useFakeTimers()
+    try {
+      for (const now of ['2026-12-31T23:59:59+09:00', '2035-01-01T00:00:00Z']) {
+        vi.setSystemTime(new Date(now))
+        const { context } = createMockEnvironment()
+        expect(context.options.now).toBe(new Date(now).toISOString())
+        expectPastAndFuture(context)
+      }
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it.each(['error', 'slow'] as const)(
+    'preserves past and future data in %s',
+    (scenario) => {
+      expectPastAndFuture(createMockEnvironment({ ...fixed, scenario }).context)
     }
   )
 
