@@ -1,0 +1,182 @@
+{
+  "missionId": "20260915-msw-faker-mocks",
+  "sourceCommit": "39b4b74b6dc56f72ce3331bcdb7cd6d9bf014575",
+  "generatedAt": "2026-09-15T11:28:54Z",
+  "environment": {
+    "os": "macOS",
+    "node": "v24.12.0",
+    "npm": "11.6.2"
+  },
+  "checks": {
+    "install": {
+      "command": "npm ci --offline --no-audit --no-fund",
+      "exitCode": 0
+    },
+    "lint": {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "errors": 0,
+      "existingWarnings": 10
+    },
+    "typeCheck": {
+      "command": "npm run type-check",
+      "exitCode": 0
+    },
+    "tests": {
+      "command": "npm exec -- vitest run --coverage.enabled=true --coverage.reportsDirectory=coverage/msw-mission/coverage --coverage.reporter=text --coverage.reporter=json-summary --coverage.reporter=html --reporter=default --reporter=json --outputFile.json=coverage/msw-mission/vitest.json",
+      "exitCode": 0,
+      "files": 10,
+      "passed": 84,
+      "failed": 0
+    },
+    "build": {
+      "command": "VITE_ENABLE_MOCKS=true npm run build -- --sourcemap",
+      "exitCode": 0
+    },
+    "bundle": {
+      "sourceMaps": 13,
+      "modules": 150,
+      "forbiddenModules": [],
+      "copiedPublicWorker": true
+    }
+  },
+  "manualBrowser": {
+    "status": "pending-user",
+    "instructionRecordedAt": "2026-09-15T11:20:16Z"
+  },
+  "evidenceDirectory": "coverage/msw-mission",
+  "rootVerification": {
+    "sourceCommit": "0a1ee9acdcf093d722ef8f23fbb09053fbc1421d",
+    "worktreeChanges": "Documentation relocation and links only; application, dependencies, and tests match sourceCommit.",
+    "generatedAt": "2026-09-18T05:48:15.379Z",
+    "cwd": "/Users/iidayuuta/traP/knoQ_R-UI",
+    "environment": {
+      "os": "macOS",
+      "node": "v24.12.0",
+      "npm": "11.6.2"
+    },
+    "checks": {
+      "install": {
+        "command": "npm ci --offline --no-audit --no-fund",
+        "exitCode": 0,
+        "packages": 481,
+        "note": "Sandbox blocked Husky from rewriting .git/config; existing core.hooksPath is already .husky/_."
+      },
+      "lint": {
+        "command": "npm run lint",
+        "exitCode": 0,
+        "errors": 0,
+        "existingWarnings": 10
+      },
+      "tests": {
+        "command": "npm exec -- vitest run --coverage.enabled=true --coverage.reportsDirectory=coverage/msw-root-20260918/coverage --coverage.reporter=text --coverage.reporter=json-summary --reporter=default --reporter=json --outputFile.json=coverage/msw-root-20260918/vitest.json",
+        "exitCode": 0,
+        "files": 10,
+        "passed": 84,
+        "failed": 0
+      },
+      "build": {
+        "command": "VITE_ENABLE_MOCKS=true npm run build -- --sourcemap",
+        "exitCode": 0,
+        "includesTypeCheck": true,
+        "note": "Existing Vite config warning and Google Fonts fetch warning under restricted network."
+      },
+      "bundle": {
+        "sourceMaps": 13,
+        "modules": 150,
+        "forbiddenModules": [],
+        "copiedPublicWorker": true
+      },
+      "devServer": {
+        "cwd": "/Users/iidayuuta/traP/knoQ_R-UI",
+        "command": "npm run dev:mock -- --host 127.0.0.1 --port 8084 --strictPort",
+        "checks": [
+          {
+            "path": "/draft-events",
+            "status": 200,
+            "marker": "id=\"app\""
+          },
+          {
+            "path": "/src/main.ts",
+            "status": 200,
+            "marker": "\"VITE_ENABLE_MOCKS\": \"true\""
+          },
+          {
+            "path": "/mockServiceWorker.js",
+            "status": 200,
+            "marker": "Mock Service Worker"
+          }
+        ]
+      },
+      "documentation": {
+        "prettier": "pass",
+        "gitDiffCheck": "pass",
+        "localLinksChecked": 30,
+        "oldGuideReferences": 0,
+        "naturalJapanese": "Lint and manual review completed. Sentence punctuation was normalized only in memory for supplemental lint. Two rhythm findings in existing README/conventions and one nominal-ending finding in the test design were retained because the existing instructional wording remains clear."
+      }
+    },
+    "manualBrowser": "pending-user",
+    "evidenceDirectory": "coverage/msw-root-20260918"
+  },
+  "publication": {
+    "url": "https://github.com/traPtitech/knoQ_R-UI/pull/254",
+    "number": 254,
+    "baseBranch": "feat/pages",
+    "headBranch": "mission/20260915-msw-faker-mocks",
+    "initialHeadCommit": "7ce8e2ec408319cf1b9b70e3954839a6ebb6cd55"
+  },
+  "ciLockfileFix": {
+    "recordedAt": "2026-09-18T06:18:35Z",
+    "failedRun": "https://github.com/traPtitech/knoQ_R-UI/actions/runs/35313900461",
+    "addedPackages": {
+      "@emnapi/core": "1.11.3",
+      "@emnapi/runtime": "1.11.3"
+    },
+    "existingPackageVersionsChanged": false,
+    "npmVersion": "10.8.2",
+    "localCheck": {
+      "command": "npm ci --dry-run --ignore-scripts --offline --no-audit --no-fund",
+      "exitCode": 0,
+      "log": "coverage/msw-root-20260918/npm10-ci.log"
+    },
+    "ciResults": "https://github.com/traPtitech/knoQ_R-UI/pull/254/checks"
+  },
+  "dateCoverage": {
+    "generatedAt": "2026-09-18T08:57:57Z",
+    "baseCommit": "67c13cc324c2ef9c2537f68c8903d9d87cd516e0",
+    "sourceSha256": {
+      "src/features/event/mocks/factories.ts": "358e829e24609d495621bd960deae53039b9768eef7d654a2fbf26899a7a5066",
+      "src/features/room/mocks/factories.ts": "deab0f1b3c6e616b09d4e80766457ace2756c35b1680694d05544c3e00cf72bf",
+      "tests/unit/mockData.spec.ts": "97d161c074efec5638e89b37d3e0aabe6d8edc1408c2fa03e8a44dc1b998cd54",
+      "tests/unit/relatedMockApi.spec.ts": "b3961e15cd7412470ed30d57a8af4ecc2b4ee60ab7aa4cad732b406395f46654"
+    },
+    "before": {
+      "command": "npm exec -- vitest run tests/unit/mockData.spec.ts tests/unit/relatedMockApi.spec.ts",
+      "failedTests": 8,
+      "log": "coverage/msw-dates-20260918/before.log"
+    },
+    "checks": {
+      "tests": {
+        "command": "npm exec -- vitest run --coverage.enabled=true --coverage.reportsDirectory=coverage/msw-dates-20260918/coverage --coverage.reporter=text --coverage.reporter=json-summary --reporter=default --reporter=json --outputFile.json=coverage/msw-dates-20260918/vitest.json",
+        "files": 10,
+        "passed": 90,
+        "failed": 0,
+        "exitCode": 0
+      },
+      "lint": {
+        "command": "npm run lint",
+        "exitCode": 0,
+        "errors": 0,
+        "existingWarnings": 10
+      },
+      "build": {
+        "command": "npm run build",
+        "includesTypeCheck": true,
+        "exitCode": 0
+      }
+    },
+    "evidenceDirectory": "coverage/msw-dates-20260918",
+    "manualBrowser": "pending-user"
+  }
+}

@@ -11,9 +11,24 @@ import { useAvailability } from '/@/features/draft-event/composables/useAvailabi
 import { useMe } from '/@/features/user/composables/useMe'
 import type { ResponseDraftEvent } from '/@/features/draft-event/types'
 
-const { draftEvents, isLoading, error, getDraftEvents } = useDraftEvents()
-const { allAvailabilities, getMyAllAvailabilities } = useAvailability()
-const { me } = useMe()
+const {
+  draftEvents,
+  isLoading: draftLoading,
+  error: draftError,
+  getDraftEvents
+} = useDraftEvents()
+const {
+  allAvailabilities,
+  getMyAllAvailabilities,
+  isLoading: answersLoading,
+  error: answersError
+} = useAvailability()
+const { me, isValidating: meLoading } = useMe()
+const isLoading = computed(
+  () =>
+    draftLoading.value || answersLoading.value || (!me.value && meLoading.value)
+)
+const error = computed(() => draftError.value || answersError.value)
 
 const typeFilter = ref<string[]>([])
 const statusFilter = ref<string[]>([])
@@ -50,7 +65,9 @@ const visibleEvents = computed(() => {
   const userId = me.value?.userId
   return draftEvents.value.filter((e) => {
     // 権限チェック: ログイン時は公開or招待or管理者、未ログイン時は公開のみ
-    const canView = e.open || (userId && (e.invitees.includes(userId) || e.admins.includes(userId)))
+    const canView =
+      e.open ||
+      (userId && (e.invitees.includes(userId) || e.admins.includes(userId)))
     if (!canView) return false
 
     const status = getDisplayStatus(e)
@@ -89,7 +106,9 @@ const filteredEvents = computed(() => {
       const d =
         (statusOrder[getDisplayStatus(a)] ?? 9) -
         (statusOrder[getDisplayStatus(b)] ?? 9)
-      return d !== 0 ? d : compareAsc(parseISO(a.deadline), parseISO(b.deadline))
+      return d !== 0
+        ? d
+        : compareAsc(parseISO(a.deadline), parseISO(b.deadline))
     }
     if (activeSort.value === 'deadline-desc') {
       return compareDesc(parseISO(a.deadline), parseISO(b.deadline))
@@ -129,23 +148,39 @@ watch(
       <DraftEventSortDropdown v-model="activeSort" />
     </div>
 
-    <div v-if="isLoading" grid animate-pulse gap-2>
+    <div
+      v-if="isLoading"
+      aria-label="読み込み中"
+      role="status"
+      grid
+      animate-pulse
+      gap-2
+    >
       <div h-16 rounded-lg bg-surface-secondary />
       <div h-16 rounded-lg bg-surface-secondary />
       <div h-16 rounded-lg bg-surface-secondary />
     </div>
 
-    <div v-else-if="error" py-8 text-center text-sm text-text-secondary>
+    <div
+      v-else-if="error"
+      role="alert"
+      py-8
+      text-center
+      text-sm
+      text-text-secondary
+    >
       {{ error }}
     </div>
 
     <div
       v-else-if="filteredEvents.length === 0"
-      py-8 text-center text-sm text-text-secondary
+      py-8
+      text-center
+      text-sm
+      text-text-secondary
     >
       該当するイベントがありません
     </div>
-
 
     <div v-else grid gap-1.5>
       <DraftEventCard

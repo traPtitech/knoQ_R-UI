@@ -22,6 +22,7 @@ knoQ_R-UIでは，機械的に判定できる規約を`eslint.config.ts`で強�
 | `src/components/`         | アプリ全体で再利用するUI部品                             |
 | `src/composables/`        | 複数機能から使う，副作用やリアクティブ状態を含むロジック |
 | `src/lib/`                | APIクライアントや時刻処理など，ドメインをまたぐコード    |
+| `src/mocks/`              | 開発・テスト専用の起動，シナリオ，モック状態の再生成     |
 | `src/lib/api/schema.d.ts` | OpenAPIから生成するAPI型．直接編集しない                 |
 
 所属に迷ったときは，そのコードを呼ぶ側，副作用の有無，特定のfeatureだけで使うかを確認します．複数の画面から使うという理由だけで，ドメイン固有の部品を共通化しないでください．
@@ -78,6 +79,12 @@ knoQ_R-UIでは，機械的に判定できる規約を`eslint.config.ts`で強�
 API呼び出しには`src/lib/api/`が公開する`openapi-fetch`クライアントを使います．新しいラッパー層やストアを先に設けると，API変更時に追従する場所が増えます．具体的な必要性が生じるまでは導入しません．
 
 スキーマが変わった場合は，`npm run generate`で`src/lib/api/schema.d.ts`を再生成します．生成物は直接編集しません．次の生成時に変更が失われるためです．
+
+### モックはHTTPの境界で差し替える
+
+モックのデータ生成とハンドラーは`src/features/<feature>/mocks/`へ置き，ブラウザとVitestで共有します．画面やcomposableから固定データを直接importしません．起動とシナリオの組み立ては`src/mocks/`に置きます．
+
+生成スキーマにないdraft-eventだけは，feature内の`api.ts`に暫定契約を持つ`openapi-fetch`クライアントを定義しています．正式API対応時に見直す境界です．追加と検証の手順は[モック開発ガイド](../MOCKS.md)を参照してください．
 
 ### UnoCSSのtokenとshortcutを優先する
 
