@@ -28,6 +28,8 @@ source_pointer:
     last_checked: 2026-09-15
   - path: tests/unit/mockUiSupport.ts
     last_checked: 2026-09-15
+  - path: MOCKS.md
+    last_checked: 2026-09-18
 retirement_status: active
 access_notes: all-roles
 ---
@@ -45,5 +47,5 @@ access_notes: all-roles
 - `src/lib/api/schema.d.ts`，`src/env.d.ts`，MSW生成workerはESLintの対象外である．coverageと分離worktreeも走査から除く．生成物の除外を理由に手書きコードの検証を弱めない．
 - `.claude/hooks/format.sh` は編集された source file に Prettier と ESLint fix を実行し，`.claude/hooks/typecheck.sh` は source file を触ったセッションの終了時だけ型検査する．手動検証が不要になるわけではない．
 - unit testには，`tests/unit/sample.spec.ts`のsmoke testと，`tests/unit/roomManagement.spec.ts`の部屋管理テストがある．部屋管理テストはAPIクライアントと現在ユーザーを`vi.mock`で差し替える．変更した振る舞いに対応する検証を選び，既存テストの範囲を過大評価しない．
-- モックの自動検証は`mockContext`，`mockData`，`mockLifecycle`，`mockBootstrap`，`draftMockApi`，`relatedMockApi`，`draftMockUi`，`draftEventCreation`の各specが担う．HTTP・画面テストはMSWを通し，`mockUiSupport.ts`が画面キャッシュと時刻を分離する．起動手順は[モック開発ガイド](../development/mocks.md)を参照する．
+- モックの自動検証は`mockContext`，`mockData`，`mockLifecycle`，`mockBootstrap`，`draftMockApi`，`relatedMockApi`，`draftMockUi`，`draftEventCreation`の各specが担う．HTTP・画面テストはMSWを通し，`mockUiSupport.ts`が画面キャッシュと時刻を分離する．リポジトリルートからの起動手順は[モック開発ガイド](../../MOCKS.md)を参照する．
 - `src/lib/api/schema.d.ts` の再生成手順は [[api-data-schema]] を参照する．

@@ -84,7 +84,7 @@ API呼び出しには`src/lib/api/`が公開する`openapi-fetch`クライアン
 
 モックのデータ生成とハンドラーは`src/features/<feature>/mocks/`へ置き，ブラウザとVitestで共有します．画面やcomposableから固定データを直接importしません．起動とシナリオの組み立ては`src/mocks/`に置きます．
 
-生成スキーマにないdraft-eventだけは，feature内の`api.ts`に暫定契約を持つ`openapi-fetch`クライアントを定義しています．正式API対応時に見直す境界です．追加と検証の手順は[モック開発ガイド](./development/mocks.md)を参照してください．
+生成スキーマにないdraft-eventだけは，feature内の`api.ts`に暫定契約を持つ`openapi-fetch`クライアントを定義しています．正式API対応時に見直す境界です．追加と検証の手順は[モック開発ガイド](../MOCKS.md)を参照してください．
 
 ### UnoCSSのtokenとshortcutを優先する
 

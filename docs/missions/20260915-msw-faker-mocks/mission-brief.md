@@ -6,8 +6,8 @@ status: active # draft | active | blocked | closed
 owner: user
 assignee: Codex
 created: 2026-09-15
-last_updated: 2026-09-15
-brief_version: 4
+last_updated: 2026-09-18
+brief_version: 6
 github_issue: null
 issue_status: not-applicable # not-applicable | draft | approved-created
 approvals:
@@ -23,6 +23,10 @@ related:
 
 日程調整と関連APIをMSWへ移し，Fakerによるデータ生成と画面確認用のシナリオを分けるA案，およびP1からP6は承認済みである．T-A，暫定HTTP契約，2担当の分担も承認済みである．実装と文書を統合し，自動検証はすべて成功した．実ブラウザでの動作確認は，2026-09-15のuserの指示によりuserが担当する．
 
+2026-09-18のuserの依頼により，統合版を現在のmissionブランチへ取り込み，リポジトリルートから起動できるようにする．利用ガイドはルートの`MOCKS.md`へ移す．APIの対応範囲と承認済みのテスト設計は維持し，取り込み後のルートで起動・配信確認と既存の自動検証を行う．
+
+2026-09-18の「よし，pushしてPR作って」に基づき，文書変更をcommitし，`origin/mission/20260915-msw-faker-mocks`へpushして`feat/pages`向けのPRを作成する．実ブラウザ確認をuserが担当する分担は継続する．
+
 ## Intent
 
 - **動機**: `src/features/draft-event/mock.ts`の795行に，固定データ，メモリ上の状態，疑似通信，集計が同居している．3つのcomposableが`mockApi`を直接呼び，ユーザーやグループは通常APIから取得するため，日程調整をバックエンドなしで一通り操作できない．
@@ -32,7 +36,7 @@ related:
   - draft-eventの一覧，詳細，作成，削除，確定，回答取得・保存，集計のHTTP化と既存`mockApi`の撤去．
   - 上記の操作に必要な通常APIのモック．対象は`GET /users`，`GET /users/me`，`GET /groups`，`GET /groups/{groupID}`，`GET /rooms`，`GET /events`，`GET /events/{eventID}`，`POST /events`とする．ユーザーアイコンもモック時にはローカルで表示できるようにする．
   - データ生成関数，関連IDを管理するメモリ上の状態，名前付きシナリオ，初期状態へのリセット．
-  - 対応テスト，`docs/development/`の利用ガイド，READMEの入口，変更に関係する規約とContext Card．
+  - 対応テスト，ルートの`MOCKS.md`，READMEの入口，変更に関係する規約とContext Card．利用ガイドのルート配置は2026-09-18のuserの明示的な指定による．
 - **非目標**: 全OpenAPIエンドポイントの再現，認証サーバーの再現，部屋のCSV登録・削除やiCalなどの日程調整に関係しない操作，バックエンド実装，UI全体の改修，Storybook導入，データ永続化，既存テストの一括MSW移行．共有デモの公開と本番でのモック利用も対象外とする．
 - **制約**:
   - must: 通常APIは既存の`apiClient`とOpenAPI生成型を使い，`src/lib/api/schema.d.ts`を手編集しない．モック状態をアプリの新しいストアとして公開しない．
@@ -107,6 +111,7 @@ Fakerには乱数シードと基準日時を渡す．シードだけでは相対
 - 承認前の読み取り調査，ミッション文書の整備，破棄可能な検証．
 - 両ゲートの承認後の，範囲内のファイル分割，命名，生成データの内容，内部状態管理，ローカル編集・検証．
 - モックを増やすための最小限の文書・Context Card更新．
+- 2026-09-18の依頼に基づく，統合版のmissionブランチへの取り込みと，利用ガイドのルート配置．
 
 ### must_consult
 
@@ -149,7 +154,9 @@ Fakerには乱数シードと基準日時を渡す．シードだけでは相対
 
 - **完了**: 両承認ゲート，依存と共有基盤，2担当の実装・レビュー・統合，HTTP・画面テスト84件．
 - **自動検証完了**: clean install，84テスト，型検査，lint，本番build，bundle非混入，利用ガイドとContext Cardの整備．
-- **次の一手**: userがintegration branchで実ブラウザの動作確認とレビューを行う．実装SHAと証拠はMRPackを参照する．
+- **今回の完了**: 統合版`0a1ee9a`をmissionブランチへfast-forwardで取り込んだ．利用ガイドをルートの`MOCKS.md`へ移し，関連リンクを更新した．
+- **今回の検証**: リポジトリルートで依存を再取得し，84テスト，lint，型検査を含むbuildが成功した．開発サーバーの起動，画面とworkerの配信，モック有効設定，本番bundleへの非混入も確認した．
+- **次の一手**: userがリポジトリルートで`npm run dev:mock`を実行し，実ブラウザの動作確認とレビューを行う．実装SHAと証拠はMRPackを参照する．
 - 詳細は `handoff.md` を参照します．
 
 ## Changelog
@@ -160,3 +167,5 @@ Fakerには乱数シードと基準日時を渡す．シードだけでは相対
 | 2       | 2026-09-15 | A案とP1からP6の承認を記録し，互換性を確認した．第2 CRPackにテスト設計と分担を記録した． | userの「はい，承認します．」による．テスト設計は引き続き未承認．                                               |
 | 3       | 2026-09-15 | T-A，暫定HTTP契約，2担当の分担を承認済みとし，activeへ変更した．                        | userの「はい，承認します」による．                                                                             |
 | 4       | 2026-09-15 | 実ブラウザ確認をuser担当へ変更した．自動検証とbundle検査はCodexが継続する．             | userの「実際のブラウザでの動作確認は俺がやるから，それ以外やればいいよ」による．記録日時2026-09-15T11:20:16Z． |
+| 5       | 2026-09-18 | 統合版をmissionブランチへ取り込み，起動と利用ガイドをリポジトリルートへそろえた．       | userの「普通にリポジトリルートから行けるようにして，合わせて，ドキュメントもリポジトリルートにおいて」による． |
+| 6       | 2026-09-18 | 現在のmissionブランチをpushし，`feat/pages`向けのPRを作成する．                         | userの「よし，pushしてPR作って」による．                                                                       |

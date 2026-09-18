@@ -17,7 +17,13 @@ npm run dev
 
 `npm run dev`は通常APIを使います．knoQのバックエンドを別に起動し，`http://localhost:3000/api`へ接続できる状態にしてください．
 
-バックエンドなしで日程調整を確認する場合は，`npm run dev:mock`で起動して`/draft-events`を開きます．MSWとFakerによるモックの対象範囲，シナリオ，再現・リセット方法は[モック開発ガイド](./docs/development/mocks.md)を参照してください．Node.js 24で検証しています．
+バックエンドなしで日程調整を確認する場合は，リポジトリルートで次のコマンドを実行し，`/draft-events`を開きます．
+
+```bash
+npm run dev:mock
+```
+
+MSWとFakerによるモックの対象範囲，シナリオ，再現・リセット方法は，ルートの[モック開発ガイド](./MOCKS.md)を参照してください．Node.js 24で検証しています．
 
 ## 変更を検証する
 
@@ -26,6 +32,7 @@ npm run dev
 | 目的                       | コマンド                                         |
 | -------------------------- | ------------------------------------------------ |
 | 開発サーバーを起動する     | `npm run dev`                                    |
+| モックで起動する           | `npm run dev:mock`                               |
 | Lintを実行する             | `npm run lint`                                   |
 | Lintで直せる問題を修正する | `npm run lint:fix`                               |
 | 型を検査する               | `npm run type-check`                             |

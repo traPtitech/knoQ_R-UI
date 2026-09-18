@@ -44,5 +44,79 @@
     "status": "pending-user",
     "instructionRecordedAt": "2026-09-15T11:20:16Z"
   },
-  "evidenceDirectory": "coverage/msw-mission"
+  "evidenceDirectory": "coverage/msw-mission",
+  "rootVerification": {
+    "sourceCommit": "0a1ee9acdcf093d722ef8f23fbb09053fbc1421d",
+    "worktreeChanges": "Documentation relocation and links only; application, dependencies, and tests match sourceCommit.",
+    "generatedAt": "2026-09-18T05:48:15.379Z",
+    "cwd": "/Users/iidayuuta/traP/knoQ_R-UI",
+    "environment": {
+      "os": "macOS",
+      "node": "v24.12.0",
+      "npm": "11.6.2"
+    },
+    "checks": {
+      "install": {
+        "command": "npm ci --offline --no-audit --no-fund",
+        "exitCode": 0,
+        "packages": 481,
+        "note": "Sandbox blocked Husky from rewriting .git/config; existing core.hooksPath is already .husky/_."
+      },
+      "lint": {
+        "command": "npm run lint",
+        "exitCode": 0,
+        "errors": 0,
+        "existingWarnings": 10
+      },
+      "tests": {
+        "command": "npm exec -- vitest run --coverage.enabled=true --coverage.reportsDirectory=coverage/msw-root-20260918/coverage --coverage.reporter=text --coverage.reporter=json-summary --reporter=default --reporter=json --outputFile.json=coverage/msw-root-20260918/vitest.json",
+        "exitCode": 0,
+        "files": 10,
+        "passed": 84,
+        "failed": 0
+      },
+      "build": {
+        "command": "VITE_ENABLE_MOCKS=true npm run build -- --sourcemap",
+        "exitCode": 0,
+        "includesTypeCheck": true,
+        "note": "Existing Vite config warning and Google Fonts fetch warning under restricted network."
+      },
+      "bundle": {
+        "sourceMaps": 13,
+        "modules": 150,
+        "forbiddenModules": [],
+        "copiedPublicWorker": true
+      },
+      "devServer": {
+        "cwd": "/Users/iidayuuta/traP/knoQ_R-UI",
+        "command": "npm run dev:mock -- --host 127.0.0.1 --port 8084 --strictPort",
+        "checks": [
+          {
+            "path": "/draft-events",
+            "status": 200,
+            "marker": "id=\"app\""
+          },
+          {
+            "path": "/src/main.ts",
+            "status": 200,
+            "marker": "\"VITE_ENABLE_MOCKS\": \"true\""
+          },
+          {
+            "path": "/mockServiceWorker.js",
+            "status": 200,
+            "marker": "Mock Service Worker"
+          }
+        ]
+      },
+      "documentation": {
+        "prettier": "pass",
+        "gitDiffCheck": "pass",
+        "localLinksChecked": 30,
+        "oldGuideReferences": 0,
+        "naturalJapanese": "Lint and manual review completed. Sentence punctuation was normalized only in memory for supplemental lint. Two rhythm findings in existing README/conventions and one nominal-ending finding in the test design were retained because the existing instructional wording remains clear."
+      }
+    },
+    "manualBrowser": "pending-user",
+    "evidenceDirectory": "coverage/msw-root-20260918"
+  }
 }
