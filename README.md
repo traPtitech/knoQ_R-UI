@@ -15,7 +15,15 @@ npm run dev
 
 開発サーバーは標準で8080番ポートを使います．Viteが表示したURLをブラウザで開いてください．
 
-ここまでで起動するのはUIだけです．データ取得を含む画面を確認する場合は，knoQのバックエンドを別に起動し，`http://localhost:3000/api`へ接続できる状態にしてください．
+`npm run dev`は通常APIを使います．knoQのバックエンドを別に起動し，`http://localhost:3000/api`へ接続できる状態にしてください．
+
+バックエンドなしで日程調整を確認する場合は，リポジトリルートで次のコマンドを実行し，`/draft-events`を開きます．
+
+```bash
+npm run dev:mock
+```
+
+MSWとFakerによるモックの対象範囲，シナリオ，再現・リセット方法は，ルートの[モック開発ガイド](./MOCKS.md)を参照してください．Node.js 24で検証しています．
 
 ## 変更を検証する
 
@@ -24,6 +32,7 @@ npm run dev
 | 目的                       | コマンド                                         |
 | -------------------------- | ------------------------------------------------ |
 | 開発サーバーを起動する     | `npm run dev`                                    |
+| モックで起動する           | `npm run dev:mock`                               |
 | Lintを実行する             | `npm run lint`                                   |
 | Lintで直せる問題を修正する | `npm run lint:fix`                               |
 | 型を検査する               | `npm run type-check`                             |
@@ -41,6 +50,7 @@ npm run dev
 - `src/components/`には，複数の機能で使うUI部品を置きます．
 - `src/composables/`には，複数の機能で使うリアクティブなロジックを置きます．
 - `src/lib/`には，APIクライアントやドメイン横断の処理を置きます．
+- `src/mocks/`には，開発・テスト用の起動とシナリオを置きます．ドメイン別の生成・応答は`src/features/<feature>/mocks/`に置きます．
 
 詳しい責務とimport，型，UnoCSSの規約は，[コーディング規約](./docs/conventions.md)にまとめています．
 

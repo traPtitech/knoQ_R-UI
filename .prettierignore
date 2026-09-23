@@ -9,3 +9,4 @@ coverage
 # generated
 src/lib/api/schema.d.ts
 src/env.d.ts
+public/mockServiceWorker.js

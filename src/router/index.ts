@@ -7,10 +7,9 @@ import GroupList from '/@/pages/GroupList.vue'
 import MyPage from '/@/pages/MyPage.vue'
 import SearchPage from '/@/pages/SearchPage.vue'
 import ArrangementPage from '/@/pages/ArrangementPage.vue'
-import CreateRoom from '/@/pages/CreateRoom.vue'
 import CreateDraftEvent from '/@/pages/CreateDraftEvent.vue'
 
-const routes: RouteRecordRaw[] = [
+export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'Home', component: Home },
   {
     path: '/events/new',
@@ -20,7 +19,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/rooms/new',
     name: 'create_room',
-    component: CreateRoom
+    redirect: '/rooms/manage'
   },
   {
     path: '/events',
@@ -52,6 +51,11 @@ const routes: RouteRecordRaw[] = [
     path: '/rooms',
     name: 'rooms',
     component: () => import('../pages/RoomsCalendarPage.vue')
+  },
+  {
+    path: '/rooms/manage',
+    name: 'room_management',
+    component: () => import('/@/pages/RoomManagementPage.vue')
   },
   {
     path: '/callback',

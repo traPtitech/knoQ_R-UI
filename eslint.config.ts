@@ -10,7 +10,15 @@ import globals from 'globals'
 
 export default typescriptEslint.config(
   {
-    ignores: ['src/lib/api/schema.d.ts', '**/dist', 'src/env.d.ts']
+    ignores: [
+      'src/lib/api/schema.d.ts',
+      '**/dist',
+      'src/env.d.ts',
+      'public/mockServiceWorker.js',
+      '**/coverage',
+      '.agent-worktrees/**',
+      '.mission-worktrees/**'
+    ]
   },
   eslint.configs.recommended,
   typescriptEslint.configs.recommended,

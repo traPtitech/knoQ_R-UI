@@ -40,7 +40,9 @@ const clickLogout = async () => {
       <RouterLink h5 to="/events">探す</RouterLink>
     </div>
     <div v-if="me" grid grid-flow-col gap-4 grid-items-center>
-      <RouterLink btn-primary to="/rooms/new"> 進捗部屋作成 </RouterLink>
+      <RouterLink v-if="me.privileged" btn-primary to="/rooms/manage">
+        進捗部屋管理
+      </RouterLink>
       <RouterLink btn-primary to="/events/new"> イベント作成 </RouterLink>
       <DropdownMenu align="right">
         <template #trigger>

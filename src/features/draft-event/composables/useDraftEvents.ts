@@ -1,9 +1,10 @@
 import { ref } from 'vue'
 import type {
+  RequestDraftEvent,
   ResponseDraftEvent,
   ResponseDraftEventDetail
 } from '/@/features/draft-event/types'
-import { mockApi } from '/@/features/draft-event/mock'
+import { draftApiClient } from '/@/features/draft-event/api'
 
 export const useDraftEvents = () => {
   const draftEvents = ref<ResponseDraftEvent[]>([])
@@ -15,11 +16,16 @@ export const useDraftEvents = () => {
     isLoading.value = true
     error.value = null
     try {
-      // TODO: 本番APIに置き換え
-      const data = await mockApi.getDraftEvents()
-      draftEvents.value = data
+      const {
+        data,
+        error: apiError,
+        response
+      } = await draftApiClient.GET('/draft-events')
+      if (!response.ok)
+        throw new Error(apiError?.message ?? '通信に失敗しました')
+      draftEvents.value = data ?? []
     } catch (e) {
-      error.value = 'draftイベント一覧の取得に失敗しました'
+      error.value = '日程調整一覧の取得に失敗しました'
       console.error(e)
     } finally {
       isLoading.value = false
@@ -30,31 +36,40 @@ export const useDraftEvents = () => {
     isLoading.value = true
     error.value = null
     try {
-      // TODO: 本番APIに置き換え
-      const data = await mockApi.getDraftEvent(id)
-      currentDraftEvent.value = data
+      const {
+        data,
+        error: apiError,
+        response
+      } = await draftApiClient.GET('/draft-events/{id}', {
+        params: { path: { id } }
+      })
+      if (!response.ok)
+        throw new Error(apiError?.message ?? '通信に失敗しました')
+      currentDraftEvent.value = data ?? null
     } catch (e) {
-      error.value = 'draftイベントの取得に失敗しました'
+      currentDraftEvent.value = null
+      error.value = '日程調整の取得に失敗しました'
       console.error(e)
     } finally {
       isLoading.value = false
     }
   }
 
-  const createDraftEvent = async (
-    data: Omit<
-      ResponseDraftEventDetail,
-      'draftEventId' | 'status' | 'createdAt' | 'updatedAt'
-    >
-  ) => {
+  const createDraftEvent = async (data: RequestDraftEvent) => {
     isLoading.value = true
     error.value = null
     try {
-      // TODO: 本番APIに置き換え
-      const result = await mockApi.createDraftEvent(data)
+      const {
+        data: result,
+        error: apiError,
+        response
+      } = await draftApiClient.POST('/draft-events', { body: data })
+      if (!response.ok)
+        throw new Error(apiError?.message ?? '通信に失敗しました')
+      if (!result) throw new Error('日程調整の応答がありません')
       return result
     } catch (e) {
-      error.value = 'draftイベントの作成に失敗しました'
+      error.value = '日程調整の作成に失敗しました'
       console.error(e)
       throw e
     } finally {
@@ -66,10 +81,14 @@ export const useDraftEvents = () => {
     isLoading.value = true
     error.value = null
     try {
-      // TODO: 本番APIに置き換え
-      await mockApi.deleteDraftEvent(id)
+      const { error: apiError, response } = await draftApiClient.DELETE(
+        '/draft-events/{id}',
+        { params: { path: { id } } }
+      )
+      if (!response.ok)
+        throw new Error(apiError?.message ?? '通信に失敗しました')
     } catch (e) {
-      error.value = 'draftイベントの削除に失敗しました'
+      error.value = '日程調整の削除に失敗しました'
       console.error(e)
       throw e
     } finally {
@@ -85,12 +104,21 @@ export const useDraftEvents = () => {
     isLoading.value = true
     error.value = null
     try {
-      // TODO: 本番APIに置き換え
-      const result = await mockApi.confirmDraftEvent(id, timeStart, timeEnd)
-      if (result) currentDraftEvent.value = result
+      const {
+        data: result,
+        error: apiError,
+        response
+      } = await draftApiClient.POST('/draft-events/{id}/confirm', {
+        params: { path: { id } },
+        body: { timeStart, timeEnd }
+      })
+      if (!response.ok)
+        throw new Error(apiError?.message ?? '通信に失敗しました')
+      if (!result) throw new Error('日程調整の応答がありません')
+      currentDraftEvent.value = result
       return result
     } catch (e) {
-      error.value = 'draftイベントの確定に失敗しました'
+      error.value = '日程調整の確定に失敗しました'
       console.error(e)
       throw e
     } finally {

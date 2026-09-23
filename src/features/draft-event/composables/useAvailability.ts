@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import type { ResponseAvailability } from '/@/features/draft-event/types'
-import { mockApi } from '/@/features/draft-event/mock'
+import { draftApiClient } from '/@/features/draft-event/api'
 
 export const useAvailability = () => {
   const myAvailability = ref<ResponseAvailability | null>(null)
@@ -13,8 +13,16 @@ export const useAvailability = () => {
     isLoading.value = true
     error.value = null
     try {
-      const data = await mockApi.getMyAllAvailabilities(userId)
-      allAvailabilities.value = data
+      const {
+        data,
+        error: apiError,
+        response
+      } = await draftApiClient.GET('/users/{userId}/draft-availabilities', {
+        params: { path: { userId } }
+      })
+      if (!response.ok)
+        throw new Error(apiError?.message ?? '通信に失敗しました')
+      allAvailabilities.value = data ?? []
     } catch (e) {
       error.value = '回答一覧の取得に失敗しました'
       console.error(e)
@@ -27,9 +35,19 @@ export const useAvailability = () => {
     isLoading.value = true
     error.value = null
     try {
-      const data = await mockApi.getMyAvailability(draftEventId, userId)
-      myAvailability.value = data
+      const {
+        data,
+        error: apiError,
+        response
+      } = await draftApiClient.GET(
+        '/draft-events/{id}/availabilities/{userId}',
+        { params: { path: { id: draftEventId, userId } } }
+      )
+      if (!response.ok)
+        throw new Error(apiError?.message ?? '通信に失敗しました')
+      myAvailability.value = data ?? null
     } catch (e) {
+      myAvailability.value = null
       error.value = '回答の取得に失敗しました'
       console.error(e)
     } finally {
@@ -41,8 +59,16 @@ export const useAvailability = () => {
     isLoading.value = true
     error.value = null
     try {
-      const data = await mockApi.getAvailabilities(draftEventId)
-      allAvailabilities.value = data
+      const {
+        data,
+        error: apiError,
+        response
+      } = await draftApiClient.GET('/draft-events/{id}/availabilities', {
+        params: { path: { id: draftEventId } }
+      })
+      if (!response.ok)
+        throw new Error(apiError?.message ?? '通信に失敗しました')
+      allAvailabilities.value = data ?? []
     } catch (e) {
       error.value = '回答一覧の取得に失敗しました'
       console.error(e)
@@ -60,11 +86,21 @@ export const useAvailability = () => {
     isSaving.value = true
     error.value = null
     try {
-      const data = await mockApi.saveAvailability(draftEventId, userId, {
-        slotIds,
-        comment
-      })
-      myAvailability.value = data
+      const {
+        data,
+        error: apiError,
+        response
+      } = await draftApiClient.PUT(
+        '/draft-events/{id}/availabilities/{userId}',
+        {
+          params: { path: { id: draftEventId, userId } },
+          body: { slotIds, comment }
+        }
+      )
+      if (!response.ok)
+        throw new Error(apiError?.message ?? '通信に失敗しました')
+      if (!data) throw new Error('回答の応答がありません')
+      myAvailability.value = data ?? null
       return data
     } catch (e) {
       error.value = '回答の保存に失敗しました'

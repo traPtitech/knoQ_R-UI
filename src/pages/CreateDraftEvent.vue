@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import InputField from '/@/components/UI/Form/InputField.vue'
 import TextareaField from '/@/components/UI/Form/TextareaField.vue'
@@ -46,9 +46,6 @@ const form = ref({
 onMounted(async () => {
   try {
     await getGroups()
-    if (me.value?.userId && !form.value.admins.includes(me.value.userId)) {
-      form.value.admins.push(me.value.userId)
-    }
   } catch (e) {
     console.error(e)
     statusMessage.value = 'データの読み込みに失敗しました'
@@ -57,6 +54,15 @@ onMounted(async () => {
     isLoading.value = false
   }
 })
+
+watch(
+  () => me.value?.userId,
+  (userId) => {
+    if (userId && !form.value.admins.includes(userId))
+      form.value.admins.push(userId)
+  },
+  { immediate: true }
+)
 
 const adminItems = getUserSelectItems(computed(() => form.value.admins))
 const inviteeItems = getUserSelectItems(computed(() => form.value.invitees))
@@ -189,11 +195,7 @@ const onSubmit = async () => {
       open: form.value.open,
       admins: form.value.admins,
       invitees: form.value.invitees,
-      // TODO: 本番の形式とは若干異なるが，mock対応のため一旦これで
-      candidateSlots: candidateSlots.map((slot) => ({
-        ...slot,
-        slotId: `slot-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
-      })),
+      candidateSlots,
       tags: []
     })
 
