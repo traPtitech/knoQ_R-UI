@@ -41,7 +41,12 @@ const form = ref({
   timeEnd: '',
   sharedRoom: false,
   open: true,
-  admins: [] as string[]
+  admins: [] as string[],
+  tags: [] as {
+    tagId: string
+    name: string
+    locked?: boolean | undefined
+  }[]
 })
 
 watch(event, (loadedEvent) => {
@@ -56,7 +61,8 @@ watch(event, (loadedEvent) => {
     timeEnd: loadedEvent.timeEnd.slice(0, 16),
     sharedRoom: loadedEvent.sharedRoom,
     open: loadedEvent.open,
-    admins: loadedEvent.admins
+    admins: loadedEvent.admins,
+    tags: loadedEvent.tags
   }
 })
 
@@ -175,7 +181,7 @@ const onSubmit = async () => {
     sharedRoom: form.value.sharedRoom,
     open: form.value.open,
     admins: admins,
-    tags: []
+    tags: form.value.tags
   }
 
   let res
