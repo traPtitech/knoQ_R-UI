@@ -46,35 +46,17 @@ const form = ref({
 
 watch(event, (loadedEvent) => {
   if (!loadedEvent) return
-  if (loadedEvent.name != null) {
-    form.value.name = loadedEvent.name
-  }
-  if (loadedEvent.description != null) {
-    form.value.description = loadedEvent.description
-  }
-  if (loadedEvent.group?.groupId != null) {
-    form.value.groupId = loadedEvent.group.groupId
-  }
-  if (loadedEvent.place != null) {
-    form.value.place = loadedEvent.place
-  }
-  if (loadedEvent.room?.roomId != null) {
-    form.value.roomId = loadedEvent.room.roomId
-  }
-  if (loadedEvent.timeStart != null) {
-    form.value.timeStart = loadedEvent.timeStart.slice(0, 16)
-  }
-  if (loadedEvent.timeEnd != null) {
-    form.value.timeEnd = loadedEvent.timeEnd.slice(0, 16)
-  }
-  if (loadedEvent.sharedRoom != null) {
-    form.value.sharedRoom = loadedEvent.sharedRoom
-  }
-  if (loadedEvent.open != null) {
-    form.value.open = loadedEvent.open
-  }
-  if (loadedEvent.admins != null) {
-    form.value.admins = loadedEvent.admins
+  form.value = {
+    name: loadedEvent.name,
+    description: loadedEvent.description,
+    groupId: loadedEvent.group.groupId,
+    place: loadedEvent.place,
+    roomId: loadedEvent.room.roomId,
+    timeStart: loadedEvent.timeStart.slice(0, 16),
+    timeEnd: loadedEvent.timeEnd.slice(0, 16),
+    sharedRoom: loadedEvent.sharedRoom,
+    open: loadedEvent.open,
+    admins: loadedEvent.admins
   }
 })
 
