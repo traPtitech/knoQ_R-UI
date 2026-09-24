@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import AppHeader from '/@/components/AppHeader.vue'
 import InputField from '/@/components/UI/Form/InputField.vue'
 import TextareaField from '/@/components/UI/Form/TextareaField.vue'
 import MultiDatePicker from '/@/components/UI/Form/MultiDatePicker.vue'
@@ -211,7 +210,6 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <AppHeader />
   <div
     v-if="isLoading"
     class="mx-auto my-16 max-w-3xl p-4 text-center text-text-secondary"

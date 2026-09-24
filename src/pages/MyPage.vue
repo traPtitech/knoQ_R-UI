@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import AppHeader from '/@/components/AppHeader.vue'
 import { useMe } from '/@/features/user/composables/useMe'
 import { useApiFetch } from '/@/composables/useApiFetch'
 import DataFetchState from '/@/components/UI/DataFetchState.vue'
@@ -22,7 +21,6 @@ const { data: myGroups, state: myGroupsState } = useApiFetch(
 </script>
 
 <template>
-  <AppHeader />
   <div v-if="me" grid mx-auto my-8 max-w-3xl gap-4>
     <h2 hl>マイページ</h2>
     <div grid gap-6 card>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useApiFetch } from '/@/composables/useApiFetch'
-import AppHeader from '/@/components/AppHeader.vue'
 import EventCard from '/@/features/event/components/EventCard.vue'
 import InputField from '/@/components/UI/Form/InputField.vue'
 import DataFetchState from '/@/components/UI/DataFetchState.vue'
@@ -10,7 +9,6 @@ const modelValue = defineModel<string>('')
 </script>
 
 <template>
-  <AppHeader />
   <div grid mx-auto my-8 max-w-3xl gap-4>
     <h1 hl>イベント</h1>
     <div>
