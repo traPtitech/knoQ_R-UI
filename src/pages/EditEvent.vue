@@ -56,7 +56,7 @@ watch(event, (loadedEvent) => {
     description: loadedEvent.description,
     groupId: loadedEvent.group.groupId,
     place: loadedEvent.place,
-    roomId: loadedEvent.room.roomId,
+    roomId: loadedEvent.room.verified ? loadedEvent.room.roomId : undefined,
     timeStart: loadedEvent.timeStart.slice(0, 16),
     timeEnd: loadedEvent.timeEnd.slice(0, 16),
     sharedRoom: loadedEvent.sharedRoom,
@@ -187,6 +187,7 @@ const onSubmit = async () => {
   let res
   if (form.value.roomId) {
     // Stock Event
+    const room = rooms.value.find((r) => r.roomId === form.value.roomId)
     res = await apiClient.PUT('/events/{eventID}', {
       params: {
         path: {
@@ -195,7 +196,9 @@ const onSubmit = async () => {
       },
       body: {
         ...commonBody,
-        roomId: form.value.roomId
+        ...(room && room.verified
+          ? { roomId: form.value.roomId }
+          : { place: form.value.place })
       }
     })
   } else {
