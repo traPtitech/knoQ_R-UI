@@ -97,6 +97,34 @@ const addEvent = (context: MockContext, body: EventRequest): Response => {
 }
 
 export const createEventHandlers = (context: MockContext): RequestHandler[] => [
+  http.get(mockApiUrl('/users/me/events'), ({ request }) => {
+    const query = new URL(request.url).searchParams
+    if (query.get('relation') !== 'attendees')
+      return mockError('This mock supports relation=attendees only', 400)
+    const begin = query.get('dateBegin')
+    const end = query.get('dateEnd')
+    return HttpResponse.json(
+      context.state.events
+        .filter((event) =>
+          event.attendees.some(
+            (attendee) =>
+              attendee.userId === context.state.currentUserId &&
+              attendee.schedule !== 'absent'
+          )
+        )
+        .filter(
+          (event) => !begin || Date.parse(event.timeStart) >= Date.parse(begin)
+        )
+        .filter(
+          (event) => !end || Date.parse(event.timeStart) <= Date.parse(end)
+        )
+        .toSorted(
+          (left, right) =>
+            Date.parse(left.timeStart) - Date.parse(right.timeStart)
+        )
+        .map(toEventSummary)
+    )
+  }),
   http.get(mockApiUrl('/events'), ({ request }) => {
     const query = new URL(request.url).searchParams
     const begin = query.get('dateBegin')

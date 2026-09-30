@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import DropdownMenu from './DropdownMenu.vue'
+import DropdownMenu from '/@/components/UI/DropdownMenu.vue'
 
 interface Item {
   id: string
@@ -10,6 +10,9 @@ interface Item {
 const props = defineProps<{
   items: Item[]
   label: string
+  id?: string
+  invalid?: boolean
+  describedBy?: string
 }>()
 
 const emit = defineEmits<{
@@ -34,19 +37,33 @@ const handleSelect = (item: Item) => {
 </script>
 
 <template>
-  <DropdownMenu v-model:is-open="isOpen">
+  <DropdownMenu
+    v-model:is-open="isOpen"
+    :trigger-id="id"
+    :invalid="invalid"
+    :described-by="describedBy"
+    width-class="w-full min-w-48"
+  >
     <template #trigger>
-      <div
-        class="input-base w-auto flex items-center justify-between gap-2 px-3 py-2 text-sm transition-colors hover:bg-surface-secondary"
+      <span
+        class="input-base flex items-center justify-between gap-4"
+        :class="{ 'border-status-error': invalid }"
       >
         <span>{{ label }}</span>
-        <span i-mdi:chevron-down text-text-secondary />
-      </div>
+        <span
+          i-mdi:chevron-down
+          shrink-0
+          text-xl
+          text-text-secondary
+          aria-hidden="true"
+        />
+      </span>
     </template>
     <div class="border-b border-border-secondary p-2">
       <input
         v-model="searchQuery"
-        class="w-full rounded border-none bg-surface-secondary px-2 py-1 text-sm focus:outline-none"
+        class="input-base bg-surface-secondary"
+        aria-label="選択肢を検索"
         placeholder="検索..."
         @click.stop
       />
@@ -61,7 +78,8 @@ const handleSelect = (item: Item) => {
       <button
         v-for="item in filteredItems"
         :key="item.id"
-        class="block w-full px-4 py-2 text-left text-sm text-text-primary transition-colors hover:bg-surface-secondary"
+        type="button"
+        class="block min-h-12 w-full px-4 py-3 text-left text-base text-text-primary hover:bg-surface-accent-soft"
         @click.stop="handleSelect(item)"
       >
         {{ item.name }}

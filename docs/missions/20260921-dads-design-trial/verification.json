@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-09-21T12:27:10.692Z",
+  "results": [
+    "No horizontal overflow: 320px, both pages",
+    "No horizontal overflow: 390px, both pages",
+    "No horizontal overflow: 768px, both pages",
+    "No horizontal overflow: 1440px, both pages",
+    "Empty submit: visible errors, accessible description, focus on first invalid field",
+    "Select: Space opens, search filters, Escape closes and returns focus",
+    "Created one place event through mouse click; checkbox values and admin removal verified",
+    "Created one room event through Enter key; checkbox values and admin removal verified"
+  ],
+  "pageErrors": [],
+  "brandColorRevision": {
+    "palette": "All color definitions match base commit 17cc4f9c3c45dedaf17f02f5499c8e56819c1795 exactly",
+    "eslint": "pass for uno.config.ts and AlertBox.vue",
+    "typeCheck": "pass",
+    "build": "pass",
+    "visual": "Home and CreateEvent checked at desktop and mobile widths; no page errors",
+    "buildLog": "/private/tmp/dads-brand-build.log",
+    "previewLog": "/private/tmp/dads-brand-preview.log"
+  },
+  "copyRemovalRevision": {
+    "eslint": "pass for AppHeader.vue, HomePage.vue, CreateEvent.vue",
+    "prettier": "pass for changed Vue files",
+    "typeCheck": "pass",
+    "visual": "Home and CreateEvent checked at 1440px and 390px; no horizontal overflow or page errors",
+    "emptySubmit": "Error text and first-invalid-field focus work; aria-describedby references only the visible error",
+    "previewLog": "/private/tmp/dads-copy-preview.log",
+    "formLog": "/private/tmp/dads-copy-form-check.log",
+    "fullTestsAndBuild": "not rerun for copy removal"
+  },
+  "draftPrPreparation": {
+    "checkedDate": "2026-09-30",
+    "baseCommit": "17cc4f9c3c45dedaf17f02f5499c8e56819c1795",
+    "comparisonBranch": "feat/pages",
+    "comparisonCommit": "bd4f4f7735b49d65e54563f7662a9b6277f74e28",
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 9
+    },
+    "buildIncludingTypeCheck": "pass",
+    "tests": {
+      "filesPassed": 10,
+      "testsPassed": 91
+    },
+    "testWarning": "Google Fonts fetch blocked by sandbox; tests passed",
+    "palette": "Original theme definitions retained exactly",
+    "browserChecks": "Not rerun; September 21 evidence applies to unchanged application source",
+    "logs": [
+      "/private/tmp/dads-pr-lint.log",
+      "/private/tmp/dads-pr-build.log",
+      "/private/tmp/dads-pr-tests.log"
+    ]
+  }
+}

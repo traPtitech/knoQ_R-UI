@@ -11,7 +11,7 @@ source_pointer:
   - path: src/router/index.ts
     last_checked: 2026-09-15
   - path: src/layouts/MainLayout.vue
-    last_checked: 2026-09-15
+    last_checked: 2026-09-21
   - path: docs/conventions.md
     last_checked: 2026-09-15
   - path: vite.config.ts
@@ -33,5 +33,5 @@ access_notes: all-roles
 - 新しいルート画面は`src/pages/`のページコンポーネントとして作り，`src/router/index.ts`へ明示的に登録する．URLパラメーターはページ側で`useRoute`から読む既存パターンに合わせる．
 - 特定ドメインに閉じるコンポーネントやcomposableは`src/features/<feature>/`，横断UIは`src/components/`，横断的なリアクティブロジックは`src/composables/`に置く．
 - importには，`vite.config.ts`と`tsconfig.json`が定義する`/@`からの絶対エイリアスを使う．親相対importを新しく追加しない．
-- `MainLayout.vue`は存在するが，`App.vue`から全ページへ自動適用されていない．ヘッダーや外枠を変更するときは，対象ページが`AppHeader`を直接描画しているかも確認する．
+- `MainLayout.vue`は`wide` propでトップページ用の広い本文領域を選択できるが，`App.vue`から全ページへ自動適用されていない．ヘッダーや外枠を変更するときは，対象ページが`AppHeader`を直接描画しているかも確認する．
 - APIや取得状態へ触れる変更では，[[api-data-schema]]を追加でロードする．

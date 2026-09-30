@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '/@/components/AppHeader.vue'
 import InputField from '/@/components/UI/Form/InputField.vue'
 import TextareaField from '/@/components/UI/Form/TextareaField.vue'
+import CheckboxField from '/@/components/UI/Form/CheckboxField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
 import SelectMenu from '/@/components/UI/SelectMenu.vue'
 import UserIcon from '/@/components/UI/UserIcon.vue'
@@ -42,6 +43,7 @@ const createdEventId = ref<string | null>(null)
 const statusMessage = ref('')
 const isError = ref(false)
 const errors = ref<Record<string, string>>({})
+const formElement = ref<HTMLFormElement | null>(null)
 
 const form = ref({
   name: '',
@@ -184,6 +186,10 @@ const onSubmit = async () => {
   if (!validate()) {
     statusMessage.value = '入力内容を確認してください'
     isError.value = true
+    await nextTick()
+    formElement.value
+      ?.querySelector<HTMLElement>('[aria-invalid="true"]')
+      ?.focus()
     return
   }
 
@@ -240,195 +246,263 @@ const tryConfirmFromDraft = async () => {
 
 <template>
   <AppHeader />
-  <div
-    v-if="isLoading"
-    class="mx-auto my-16 max-w-3xl p-4 text-center text-text-secondary"
-  >
-    読み込み中...
-  </div>
-  <div v-else class="grid mx-auto my-8 max-w-3xl gap-8 p-4">
-    <h2 h2>イベントを作成する</h2>
-
-    <AlertBox v-if="pendingDraftEventId && fromDraftEventName" variant="info">
-      <p>
-        日程調整「<span class="font-bold">{{ fromDraftEventName }}</span
-        >」から作成中です。作成すると自動的に確定済みになります。
-      </p>
-    </AlertBox>
-
-    <div grid gap-6 card>
-      <h3 h3>基本情報</h3>
-      <div grid gap-1>
-        <InputField
-          id="event-name"
-          v-model="form.name"
-          label="イベント名"
-          placeholder="例: 第N回進捗会"
-          :class="{ 'border-red-500': errors.name }"
-        />
-        <p v-if="errors.name" class="text-xs text-red-500">{{ errors.name }}</p>
-      </div>
-
-      <div grid gap-1>
-        <h5 h5>主催グループ</h5>
-        <SelectMenu
-          :label="selectedGroupName || 'グループを選択'"
-          :items="groupSelectItems"
-          @select="selectGroup"
-        />
-        <p v-if="errors.groupId" class="text-xs text-red-500">
-          {{ errors.groupId }}
-        </p>
-      </div>
-
-      <TextareaField
-        id="event-desc"
-        v-model="form.description"
-        label="イベント概要"
-        rows="5"
-      />
-
-      <div class="flex items-center gap-4">
-        <label for="event-open" class="flex cursor-pointer items-center gap-2">
-          <input
-            id="event-open"
-            v-model="form.open"
-            type="checkbox"
-            class="h-4 w-4"
-          />
-          <span class="text-sm">誰でも参加可能にする</span>
-        </label>
-        <label
-          for="event-shared-room"
-          class="flex cursor-pointer items-center gap-2"
-        >
-          <input
-            id="event-shared-room"
-            v-model="form.sharedRoom"
-            type="checkbox"
-            class="h-4 w-4"
-          />
-          <span class="text-sm">部屋を共有可能にする</span>
-        </label>
-      </div>
-    </div>
-
-    <div grid gap-6 card>
-      <h3 h3>場所と日時</h3>
-
-      <div grid gap-1>
-        <h5 h5>場所</h5>
-        <div flex flex-col gap-2>
-          <div flex items-center gap-2>
-            <InputField
-              id="event-place"
-              v-model="form.place"
-              placeholder="場所を入力"
-              class="flex-1"
-            />
-            <span text-sm text-text-secondary>または</span>
-            <SelectMenu
-              label="部屋を選択"
-              :items="roomItems"
-              @select="selectRoom"
-            />
-          </div>
-          <p
-            v-if="form.roomId"
-            class="flex items-center gap-1 text-xs text-green-600"
-          >
-            <span i-mdi:check-circle /> 既存の部屋「{{
-              rooms.find((r) => r.roomId === form.roomId)?.place
-            }}」が選択されています
-          </p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div grid gap-1>
-          <InputField
-            id="time-start"
-            v-model="form.timeStart"
-            label="開始日時"
-            type="datetime-local"
-            :class="{ 'border-red-500': errors.timeStart }"
-          />
-          <p v-if="errors.timeStart" class="text-xs text-red-500">
-            {{ errors.timeStart }}
-          </p>
-        </div>
-        <div grid gap-1>
-          <InputField
-            id="time-end"
-            v-model="form.timeEnd"
-            label="終了日時"
-            type="datetime-local"
-            :class="{ 'border-red-500': errors.timeEnd }"
-          />
-          <p v-if="errors.timeEnd" class="text-xs text-red-500">
-            {{ errors.timeEnd }}
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div grid gap-6 card>
-      <h3 h3>管理者</h3>
-      <div grid gap-4>
-        <div v-if="form.admins.length > 0" class="flex flex-wrap gap-2">
-          <div
-            v-for="adminId in form.admins"
-            :key="adminId"
-            class="flex items-center gap-2 border border-border-secondary rounded-full bg-surface-secondary px-3 py-1"
-          >
-            <UserIcon :user-id="adminId" class="h-6 w-6" />
-            <span class="text-sm">{{
-              users?.find((u) => u.userId === adminId)?.name || adminId
-            }}</span>
-            <button
-              class="text-text-secondary transition-colors hover:text-red-500"
-              @click="removeAdmin(adminId)"
-            >
-              <span i-mdi:close class="block" />
-            </button>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <p
-            v-if="form.admins.length === 0"
-            class="text-sm text-text-secondary"
-          >
-            追加の管理者は選択されていません
-          </p>
-          <SelectMenu
-            label="管理者を追加"
-            :items="adminItems"
-            @select="addAdmin"
-          />
-        </div>
-      </div>
-    </div>
-
-    <div class="flex items-center gap-4">
-      <PrimaryButton
-        :disabled="isSubmitting || !!createdEventId || !me || !!draftError"
-        @click="onSubmit"
-        >イベントを作成</PrimaryButton
-      >
-      <RouterLink
-        v-if="createdEventId && isError"
-        :to="`/events/${createdEventId}`"
-        class="text-surface-accent-primary underline"
-        >作成したイベントを開く</RouterLink
-      >
+  <main class="page-shell pb-16 pt-6 sm:pt-8">
+    <nav aria-label="パンくず" class="mb-8 flex items-center gap-2 text-sm">
+      <RouterLink to="/" class="link">ホーム</RouterLink>
       <span
-        v-if="statusMessage"
-        role="status"
-        :class="isError ? 'text-red-500' : 'text-green-600'"
-        class="text-sm font-bold"
-      >
-        {{ statusMessage }}
-      </span>
+        class="i-mdi:chevron-right text-text-secondary"
+        aria-hidden="true"
+      />
+      <span aria-current="page">イベント作成</span>
+    </nav>
+    <h1 class="mb-10 h1">イベントを作成する</h1>
+    <div
+      v-if="isLoading"
+      role="status"
+      class="rounded-lg bg-surface-secondary p-8 text-text-secondary"
+    >
+      読み込み中...
     </div>
-  </div>
+    <div v-else class="grid items-start gap-10 lg:grid-cols-4 lg:gap-16">
+      <aside class="hidden lg:block">
+        <nav
+          aria-label="入力項目"
+          class="border-l-2 border-border-secondary pl-5"
+        >
+          <a
+            href="#event-basic"
+            class="mb-2 min-h-11 flex items-center gap-3 text-sm link"
+            ><span class="text-text-secondary">01</span>基本情報</a
+          >
+          <a
+            href="#event-datetime"
+            class="mb-2 min-h-11 flex items-center gap-3 text-sm link"
+            ><span class="text-text-secondary">02</span>場所と日時</a
+          >
+          <a
+            href="#event-admins"
+            class="min-h-11 flex items-center gap-3 text-sm link"
+            ><span class="text-text-secondary">03</span>管理者</a
+          >
+        </nav>
+        <RouterLink
+          to="/draft-events/new"
+          class="mt-8 inline-block text-sm link"
+          >日程調整を作成する</RouterLink
+        >
+      </aside>
+
+      <form
+        ref="formElement"
+        class="min-w-0 lg:col-span-3"
+        novalidate
+        @submit.prevent="onSubmit"
+      >
+        <AlertBox
+          v-if="pendingDraftEventId && fromDraftEventName"
+          variant="info"
+          class="mb-8"
+        >
+          <p>
+            日程調整「<span class="font-bold">{{ fromDraftEventName }}</span
+            >」から作成中です．作成すると自動的に確定済みになります．
+          </p>
+        </AlertBox>
+        <section
+          id="event-basic"
+          aria-labelledby="event-basic-heading"
+          class="form-section !border-t-2 !border-t-text-primary !pt-6"
+        >
+          <h2 id="event-basic-heading" class="mb-8 flex items-center gap-4 h2">
+            <span class="text-base text-text-secondary font-normal">01</span
+            >基本情報
+          </h2>
+          <div class="grid gap-7">
+            <InputField
+              id="event-name"
+              v-model="form.name"
+              label="イベント名"
+              placeholder="例：第12回 進捗会"
+              required
+              :error="errors.name"
+            />
+            <fieldset class="grid gap-2">
+              <legend class="mb-2 field-label">
+                主催グループ<span class="ml-2 field-required">※必須</span>
+              </legend>
+              <SelectMenu
+                id="event-group"
+                :label="selectedGroupName || 'グループを選択してください'"
+                :items="groupSelectItems"
+                :invalid="!!errors.groupId"
+                :described-by="errors.groupId ? 'event-group-error' : undefined"
+                @select="selectGroup"
+              />
+              <p
+                v-if="errors.groupId"
+                id="event-group-error"
+                class="field-error"
+              >
+                {{ errors.groupId }}
+              </p>
+            </fieldset>
+            <TextareaField
+              id="event-desc"
+              v-model="form.description"
+              label="イベント概要（任意）"
+              placeholder="イベントの内容を入力"
+              rows="5"
+            />
+            <fieldset class="grid gap-1 border-t border-border-secondary pt-5">
+              <legend class="sr-only">参加と部屋の設定</legend>
+              <CheckboxField
+                id="event-open"
+                v-model="form.open"
+                label="誰でも参加可能にする"
+              />
+              <CheckboxField
+                id="event-shared-room"
+                v-model="form.sharedRoom"
+                label="部屋を共有可能にする"
+              />
+            </fieldset>
+          </div>
+        </section>
+
+        <section
+          id="event-datetime"
+          aria-labelledby="event-datetime-heading"
+          class="form-section"
+        >
+          <h2
+            id="event-datetime-heading"
+            class="mb-8 flex items-center gap-4 h2"
+          >
+            <span class="text-base text-text-secondary font-normal">02</span
+            >場所と日時
+          </h2>
+          <div class="grid gap-7">
+            <div class="grid gap-3">
+              <InputField
+                id="event-place"
+                v-model="form.place"
+                label="場所"
+                placeholder="例：部室，オンライン"
+              />
+              <div class="flex flex-wrap items-center gap-3">
+                <span class="text-sm text-text-secondary">または</span>
+                <SelectMenu
+                  label="部屋を選択"
+                  :items="roomItems"
+                  @select="selectRoom"
+                />
+              </div>
+              <p
+                v-if="form.roomId"
+                class="flex items-start gap-2 text-sm text-status-success"
+              >
+                <span
+                  class="i-mdi:check-circle mt-1 shrink-0"
+                  aria-hidden="true"
+                />既存の部屋「{{
+                  rooms.find((r) => r.roomId === form.roomId)?.place
+                }}」が選択されています
+              </p>
+            </div>
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <InputField
+                id="time-start"
+                v-model="form.timeStart"
+                label="開始日時"
+                type="datetime-local"
+                required
+                :error="errors.timeStart"
+              />
+              <InputField
+                id="time-end"
+                v-model="form.timeEnd"
+                label="終了日時"
+                type="datetime-local"
+                required
+                :error="errors.timeEnd"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="event-admins"
+          aria-labelledby="event-admins-heading"
+          class="form-section"
+        >
+          <h2 id="event-admins-heading" class="mb-4 flex items-center gap-4 h2">
+            <span class="text-base text-text-secondary font-normal">03</span
+            >管理者
+          </h2>
+          <div class="grid gap-4">
+            <div v-if="form.admins.length > 0" class="flex flex-wrap gap-2">
+              <div
+                v-for="adminId in form.admins"
+                :key="adminId"
+                class="flex items-center gap-2 border border-border-secondary rounded-lg bg-surface-secondary pl-3"
+              >
+                <UserIcon :user-id="adminId" class="h-6 w-6" />
+                <span class="text-sm">{{
+                  users?.find((u) => u.userId === adminId)?.name || adminId
+                }}</span>
+                <button
+                  type="button"
+                  :aria-label="`${users?.find((u) => u.userId === adminId)?.name || adminId}を管理者から削除`"
+                  class="h-11 w-11 flex items-center justify-center rounded-lg text-text-secondary hover:text-status-error"
+                  @click="removeAdmin(adminId)"
+                >
+                  <span class="i-mdi:close" aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+            <SelectMenu
+              label="管理者を追加"
+              :items="adminItems"
+              class="justify-self-start"
+              @select="addAdmin"
+            />
+          </div>
+        </section>
+
+        <div class="grid gap-5 border-t-2 border-text-primary pt-8">
+          <AlertBox
+            v-if="statusMessage"
+            :variant="isError ? 'danger' : 'info'"
+            role="status"
+          >
+            <p>{{ statusMessage }}</p>
+            <RouterLink
+              v-if="createdEventId && isError"
+              :to="`/events/${createdEventId}`"
+              class="mt-2 inline-block link"
+              >作成したイベントを開く</RouterLink
+            >
+          </AlertBox>
+          <div
+            class="flex flex-col-reverse items-center justify-between gap-6 sm:flex-row"
+          >
+            <RouterLink
+              to="/"
+              class="min-h-12 inline-flex items-center text-sm link"
+              >キャンセル</RouterLink
+            >
+            <PrimaryButton
+              type="submit"
+              :loading="isSubmitting"
+              :disabled="
+                isSubmitting || !!createdEventId || !me || !!draftError
+              "
+              class="w-full sm:min-w-60 sm:w-auto"
+              >イベントを作成</PrimaryButton
+            >
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
 </template>

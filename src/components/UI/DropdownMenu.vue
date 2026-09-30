@@ -1,19 +1,47 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, useId, watch, nextTick, onMounted, onUnmounted } from 'vue'
 
 const isOpen = defineModel<boolean>('isOpen', { default: false })
 withDefaults(
   defineProps<{
     align?: 'left' | 'right'
     widthClass?: string
+    triggerId?: string
+    label?: string
+    invalid?: boolean
+    describedBy?: string
   }>(),
   {
     align: 'left',
-    widthClass: 'w-48'
+    widthClass: 'w-48',
+    triggerId: undefined,
+    label: undefined,
+    describedBy: undefined
   }
 )
 
 const dropdownRef = ref<HTMLElement | null>(null)
+const triggerRef = ref<HTMLButtonElement | null>(null)
+const panelId = useId()
+
+watch(isOpen, async (open) => {
+  if (open || !dropdownRef.value?.contains(document.activeElement)) return
+  // Keep keyboard navigation at the selector after its chosen option disappears.
+  await nextTick()
+  triggerRef.value?.focus()
+})
+
+const closeWithKeyboard = (event: KeyboardEvent) => {
+  if (
+    event.key !== 'Escape' ||
+    !dropdownRef.value?.contains(event.target as Node)
+  )
+    return
+  event.preventDefault()
+  event.stopPropagation()
+  isOpen.value = false
+  triggerRef.value?.focus()
+}
 
 const toggle = () => {
   isOpen.value = !isOpen.value
@@ -27,28 +55,35 @@ const handleClickOutside = (event: MouseEvent) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  document.addEventListener('keydown', closeWithKeyboard)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('keydown', closeWithKeyboard)
 })
 </script>
 
 <template>
-  <div ref="dropdownRef" class="relative inline-block">
-    <div
-      role="button"
-      tabindex="0"
-      class="cursor-pointer"
+  <div ref="dropdownRef" class="relative inline-block min-w-0">
+    <button
+      :id="triggerId"
+      ref="triggerRef"
+      type="button"
+      :aria-label="label"
+      :aria-expanded="isOpen"
+      :aria-controls="panelId"
+      :aria-invalid="invalid || undefined"
+      :aria-describedby="describedBy"
+      class="block min-h-11 w-full cursor-pointer rounded-lg bg-transparent text-left"
       @click="toggle"
-      @keydown.enter="toggle"
-      @keydown.space="toggle"
     >
       <slot name="trigger" />
-    </div>
+    </button>
     <div
       v-if="isOpen"
-      class="absolute z-10 mt-2 max-h-60 overflow-y-auto border border-border-secondary rounded-md bg-surface-primary shadow-lg"
+      :id="panelId"
+      class="absolute z-30 mt-2 max-h-80 max-w-screen overflow-y-auto border border-border-primary rounded-lg bg-surface-primary shadow-lg"
       :class="[widthClass, align === 'right' ? 'right-0' : 'left-0']"
     >
       <slot />

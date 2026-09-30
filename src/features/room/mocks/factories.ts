@@ -28,4 +28,7 @@ export const seedRooms = (context: MockContext): void => {
       timeEnd: `${date}T20:00:00+09:00`
     })
   })
+  // Keep a near-future room available to preview today's dashboard at any hour.
+  context.state.rooms[2].timeStart = mockDate(context, 0.25)
+  context.state.rooms[2].timeEnd = mockDate(context, 2.25)
 }

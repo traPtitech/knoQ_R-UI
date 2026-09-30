@@ -1,60 +1,70 @@
 <script setup lang="ts">
-import { computed, useAttrs, type HTMLAttributes, type StyleValue } from 'vue'
+import {
+  computed,
+  useAttrs,
+  useId,
+  type HTMLAttributes,
+  type StyleValue
+} from 'vue'
 
-defineOptions({
-  inheritAttrs: false
-})
-
+defineOptions({ inheritAttrs: false })
 const props = defineProps<{
   label?: string
   id?: string
-  error?: boolean
+  error?: boolean | string
+  hint?: string
+  required?: boolean
 }>()
 const model = defineModel<string>()
-
+const generatedId = useId()
+const fieldId = computed(() => props.id ?? generatedId)
 const attrs = useAttrs()
-
-// wrapper receives class and style (layout)
 const wrapperClass = computed(() => attrs.class as HTMLAttributes['class'])
 const wrapperStyle = computed(() => attrs.style as StyleValue)
-
-// input receives functional attributes (type, placeholder, etc.)
 const inputAttrs = computed(() => {
   const { class: c, style: s, ...rest } = attrs
   return rest
 })
-
-// Input styling
-const baseStyle =
-  'box-border px-4 py-3 b b-solid rd-1 w-full bg-surface-primary text-text-primary'
-const borderStyle = computed(() =>
-  props.error ? 'b-red-500' : 'b-border-primary'
+const describedBy = computed(
+  () =>
+    [
+      attrs['aria-describedby'],
+      props.hint ? `${fieldId.value}-hint` : undefined,
+      typeof props.error === 'string' && props.error
+        ? `${fieldId.value}-error`
+        : undefined
+    ]
+      .filter(Boolean)
+      .join(' ') || undefined
 )
 </script>
 
 <template>
-  <label
-    v-if="label"
-    grid
-    gap-1
-    :for="id"
-    :class="wrapperClass"
-    :style="wrapperStyle"
-  >
-    <p h5>{{ label }}</p>
-    <input
-      :id="id"
-      v-model="model"
-      :class="[baseStyle, borderStyle]"
-      v-bind="inputAttrs"
-    />
-  </label>
-  <input
-    v-else
-    :id="id"
-    v-model="model"
-    :class="[baseStyle, borderStyle, wrapperClass]"
-    :style="wrapperStyle"
-    v-bind="inputAttrs"
-  />
+  <div class="grid min-w-0 gap-2" :class="wrapperClass" :style="wrapperStyle">
+    <label :for="fieldId" class="grid gap-2">
+      <span v-if="label" class="field-label">
+        {{ label }}
+        <span v-if="required" class="ml-2 field-required">※必須</span>
+      </span>
+      <span v-if="hint" :id="`${fieldId}-hint`" class="field-hint">{{
+        hint
+      }}</span>
+      <input
+        :id="fieldId"
+        v-model="model"
+        v-bind="inputAttrs"
+        class="input-base"
+        :required="required"
+        :aria-invalid="error ? true : undefined"
+        :aria-describedby="describedBy"
+      />
+    </label>
+    <p
+      v-if="typeof error === 'string' && error"
+      :id="`${fieldId}-error`"
+      class="field-error"
+    >
+      {{ error }}
+    </p>
+  </div>
 </template>

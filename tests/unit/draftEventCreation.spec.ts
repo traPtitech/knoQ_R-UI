@@ -69,7 +69,7 @@ describe('draft to event creation through MSW', () => {
       const before = context.state.events.length
       const { wrapper, router, draft } = await prepareCreation(stock)
       try {
-        await clickButton(wrapper, 'イベントを作成')
+        await wrapper.get('form').trigger('submit')
         await vi.waitFor(() =>
           expect(router.currentRoute.value.path).toMatch(
             /^\/events\/[a-f\d-]+$/
@@ -106,7 +106,7 @@ describe('draft to event creation through MSW', () => {
     const before = context.state.events.length
     const { wrapper, draft } = await prepareCreation(false)
     try {
-      await clickButton(wrapper, 'イベントを作成')
+      await wrapper.get('form').trigger('submit')
       await vi.waitFor(() =>
         expect(wrapper.text()).toContain('イベントの作成に失敗しました')
       )
@@ -128,7 +128,7 @@ describe('draft to event creation through MSW', () => {
     const before = context.state.events.length
     const { wrapper, draft } = await prepareCreation(false)
     try {
-      await clickButton(wrapper, 'イベントを作成')
+      await wrapper.get('form').trigger('submit')
       await vi.waitFor(() =>
         expect(wrapper.text()).toContain('日程調整は未確定のままです')
       )

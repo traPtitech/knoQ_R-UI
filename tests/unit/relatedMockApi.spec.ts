@@ -64,6 +64,34 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 describe('related mock APIs over HTTP', () => {
+  it('filters personal events by date and excludes absent or unrelated users', async () => {
+    const [first, second] = context.state.events
+    const query = {
+      relation: 'attendees',
+      dateBegin: first.timeStart,
+      dateEnd: second.timeStart
+    }
+    const initial = await client.GET('/users/me/events', { params: { query } })
+    expect(initial.data?.map((event) => event.eventId)).toEqual([
+      first.eventId,
+      second.eventId
+    ])
+    first.attendees = [
+      { userId: context.state.currentUserId, schedule: 'absent' }
+    ]
+    second.attendees = [
+      { userId: context.state.currentUserId, schedule: 'pending' }
+    ]
+    const pending = await client.GET('/users/me/events', { params: { query } })
+    expect(pending.data?.map((event) => event.eventId)).toEqual([
+      second.eventId
+    ])
+    second.attendees = []
+    const unrelated = await client.GET('/users/me/events', {
+      params: { query }
+    })
+    expect(unrelated.data).toEqual([])
+  })
   it('returns a current user, groups and rooms whose references resolve', async () => {
     const [users, me, groups, rooms] = await Promise.all([
       client.GET('/users'),
