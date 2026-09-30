@@ -45,4 +45,6 @@ base_commit: 17cc4f9c3c45dedaf17f02f5499c8e56819c1795
 
 2026年9月30日に`npm run lint`，`npm run build`，`npm exec -- vitest run --coverage.enabled=true`を実行した．lintはエラー0件と既存警告9件，ビルドは型検査とWebフォント取得を含め成功，テストは10ファイル91件すべて成功した．テスト時にはネットワーク制限によるGoogle Fonts取得警告が出たが，テストの失敗はなかった．ログは`/private/tmp/dads-pr-lint.log`，`dads-pr-build.log`，`dads-pr-tests.log`にある．ブランドの色定義がbase commitと一致することも再確認した．
 
-比較先の`feat/pages`は`bd4f4f7735b49d65e54563f7662a9b6277f74e28`まで進み，ヘッダーを`App.vue`へ集約している．今回の依頼は試作の保存であるため，この変更は取り込まず，採用時の調整事項としてPRに記載する．
+比較先の`feat/pages`は`bd4f4f7735b49d65e54563f7662a9b6277f74e28`まで進み，ヘッダーを`App.vue`へ集約している．GitHubのマージ可否判定は`CONFLICTING`．今回の依頼は試作の保存であるため，この変更は取り込まず，配置の調整と競合解消を採用時の課題としてPRに記載した．
+
+試作の実装コミットは`5f92f79cf1420803dbe8c50928fe74eb2693909d`．`origin/mission/20260921-dads-design-trial`へpushし，[Draft PR #256](https://github.com/traPtitech/knoQ_R-UI/pull/256)を`feat/pages`向けに作成した．後続コミットは保存結果の文書更新のみである．

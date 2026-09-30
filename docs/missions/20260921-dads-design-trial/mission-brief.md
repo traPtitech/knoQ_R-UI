@@ -47,4 +47,4 @@ issue_status: not-applicable
 
 ## Current State
 
-試作と検証を完了し，Draft PRとして保存する．採用判断は未確定．比較先の`feat/pages`ではヘッダー配置の変更が進んでいるため，採用時に調整する．検証結果と確認手順は`handoff.md`と`merge-rationale.md`に記録した．
+試作と検証を完了し，[Draft PR #256](https://github.com/traPtitech/knoQ_R-UI/pull/256)として保存した．採用判断は未確定．比較先の`feat/pages`ではヘッダー配置の変更が進んでいるため，採用時に調整する．検証結果と確認手順は`handoff.md`と`merge-rationale.md`に記録した．

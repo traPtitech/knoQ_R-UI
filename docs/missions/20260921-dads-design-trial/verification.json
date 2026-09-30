@@ -51,6 +51,9 @@
       "/private/tmp/dads-pr-lint.log",
       "/private/tmp/dads-pr-build.log",
       "/private/tmp/dads-pr-tests.log"
-    ]
+    ],
+    "implementationCommit": "5f92f79cf1420803dbe8c50928fe74eb2693909d",
+    "pullRequest": "https://github.com/traPtitech/knoQ_R-UI/pull/256",
+    "mergeable": "CONFLICTING; reconcile newer header placement before adoption"
   }
 }
