@@ -14,7 +14,8 @@
     "analyze": "vite build --mode analyze",
     "test": "vitest --ui --coverage.enabled=true",
     "generate": "openapi-typescript https://raw.githubusercontent.com/traPtitech/knoQ/master/docs/swagger.yaml -o src/lib/api/schema.d.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev:mock": "vite --mode mock"
   },
   "lint-staged": {
     "*.{ts,vue,js,mjs,cjs}": [
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "^4.7.1",
     "@eslint/js": "^10.0.1",
+    "@faker-js/faker": "10.6.0",
     "@iconify-json/material-symbols": "^1.2.40",
     "@iconify-json/mdi": "^1.2.3",
     "@unocss/eslint-config": "^66.5.10",
@@ -55,6 +57,7 @@
     "jiti": "^2.6.1",
     "jsdom": "^26.1.0",
     "lint-staged": "^17.0.4",
+    "msw": "2.15.0",
     "openapi-typescript": "^7.9.1",
     "openapi-typescript-helpers": "^0.0.15",
     "prettier": "^3.6.2",
@@ -70,5 +73,10 @@
     "@redocly/openapi-core": {
       "js-yaml": "4.3.1"
     }
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

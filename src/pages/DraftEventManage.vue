@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import AppHeader from '/@/components/AppHeader.vue'
 import UserIcon from '/@/components/UI/UserIcon.vue'
 import InputField from '/@/components/UI/Form/InputField.vue'
 import PrimaryButton from '/@/components/UI/Button/PrimaryButton.vue'
@@ -14,11 +13,26 @@ import { useMe } from '/@/features/user/composables/useMe'
 
 const route = useRoute()
 const router = useRouter()
-const { currentDraftEvent, getDraftEvent, isLoading } = useDraftEvents()
-const { schedulingResults, getSchedulingResults } = useSchedulingResults()
+const {
+  currentDraftEvent,
+  getDraftEvent,
+  isLoading: draftLoading,
+  error: draftError
+} = useDraftEvents()
+const {
+  schedulingResults,
+  getSchedulingResults,
+  isLoading: resultsLoading,
+  error: resultsError
+} = useSchedulingResults()
 const pendingEventCreationStore = usePendingEventCreationStore()
 const { getUsersByIds } = useUsers()
-const { me } = useMe()
+const { me, isValidating: meLoading } = useMe()
+const isLoading = computed(
+  () =>
+    draftLoading.value || resultsLoading.value || (!me.value && meLoading.value)
+)
+const loadError = computed(() => draftError.value || resultsError.value)
 
 const draftEventId = route.params.id as string
 
@@ -154,10 +168,16 @@ const confirmedRangeLabel = computed(() => {
 </script>
 
 <template>
-  <AppHeader />
   <div class="mx-auto my-8 max-w-4xl p-4">
     <div v-if="isLoading" class="text-center text-text-secondary">
       読み込み中...
+    </div>
+    <div
+      v-else-if="loadError"
+      role="alert"
+      class="text-center text-status-error"
+    >
+      {{ loadError }}
     </div>
     <div v-else-if="!currentDraftEvent" class="text-center text-text-secondary">
       日程調整が見つかりません
