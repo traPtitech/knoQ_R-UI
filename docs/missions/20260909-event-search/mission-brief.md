@@ -4,7 +4,7 @@ branch: mission/20260909-event-search
 status: ready-for-review
 owner: quaran
 created: 2026-09-09
-last_updated: 2026-09-16
+last_updated: 2026-10-04
 github_issue: https://github.com/traPtitech/knoQ_R-UI/issues/213
 approvals:
   conceptual_plan: approved
@@ -32,8 +32,10 @@ approvals:
 - 両検索ルートで共通UIを使い，条件と結果が一致する．
 - 日付境界，複合条件，0件，失敗と再試行，古い応答の無視を単体テストで確認する．
 - ビルド・型検査・変更ファイルのLintを確認する．表示の検討は削除前の開発用sandboxで行った．
-- 方針・テスト設計は2026-09-09に承認済み．その後のUI変更は本タスク内の指示に基づく．2026-09-16にローカルコミットの再構成を依頼された．push・PRは未承認．
+- 方針・テスト設計は2026-09-09に承認済み．その後のUI変更は本タスク内の指示に基づく．2026-09-16にローカルコミットの再構成を依頼された．
 
 ## レビュー状況
 
-本人による差分レビューは完了．次のレビュアーによるレビュー待ち．push・PR作成は未実施．
+競合解消済み．競合解消分を含む本人確認・レビューは完了．次のレビュアーによるレビュー待ち．
+
+対象: [PR #267](https://github.com/traPtitech/knoQ_R-UI/pull/267)．

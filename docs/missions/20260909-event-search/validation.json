@@ -35,5 +35,17 @@
     "Validation used Vite 8.3.0 and Vitest 4.1.11 in the local environment; this was not a clean npm ci validation.",
     "Vite reports an existing configLoader warning about __dirname.",
     "Visual browser checks were not repeated during commit reorganization."
-  ]
+  ],
+  "conflict_resolution": {
+    "implementation_commit": "e58e18594125ea80832ed3b61ba0d52c2a465687",
+    "base_commit": "bd4f4f7",
+    "verified_at": "2026-10-04T17:22:27.257068+09:00",
+    "dependency_setup": "npm ci --ignore-scripts",
+    "checks": {
+      "npm run build": "pass (includes type-check)",
+      "npx vitest run": "pass: 13 files, 133 tests",
+      "eslint and prettier: EventList.vue, SearchPage.vue": "pass",
+      "git diff --cached --check": "pass"
+    }
+  }
 }
