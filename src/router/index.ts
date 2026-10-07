@@ -8,6 +8,7 @@ import MyPage from '/@/pages/MyPage.vue'
 import SearchPage from '/@/pages/SearchPage.vue'
 import ArrangementPage from '/@/pages/ArrangementPage.vue'
 import CreateDraftEvent from '/@/pages/CreateDraftEvent.vue'
+import EditEvent from '/@/pages/EditEvent.vue'
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'Home', component: Home },
@@ -15,6 +16,11 @@ export const routes: RouteRecordRaw[] = [
     path: '/events/new',
     name: 'create_event',
     component: CreateEvent
+  },
+  {
+    path: '/events/edit/:id',
+    name: 'edit_event',
+    component: EditEvent
   },
   {
     path: '/rooms/new',
