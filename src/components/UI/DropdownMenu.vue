@@ -41,8 +41,8 @@ onUnmounted(() => {
       tabindex="0"
       class="cursor-pointer"
       @click="toggle"
-      @keydown.enter="toggle"
-      @keydown.space="toggle"
+      @keydown.enter.prevent="toggle"
+      @keydown.space.prevent="toggle"
     >
       <slot name="trigger" />
     </div>
