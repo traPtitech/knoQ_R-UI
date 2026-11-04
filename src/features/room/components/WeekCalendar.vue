@@ -42,6 +42,7 @@ type LaidOutBlock = {
   height: number
   leftPct: number
   widthPct: number
+  zIndex: number
 }
 
 const blocksPerDay = computed<LaidOutBlock[][]>(() =>
@@ -49,17 +50,20 @@ const blocksPerDay = computed<LaidOutBlock[][]>(() =>
     const onDay = props.rooms.filter((r) =>
       isSameDay(parseISO(r.timeStart), day)
     )
-    return layoutDay(onDay).map((it) => {
+    const layouts = layoutDay(onDay)
+    const laneCount = Math.max(1, ...layouts.map((it) => it.right))
+    return layouts.map((it) => {
       const top = minutesToTop(it.startMin)
       const bottom = minutesToBottom(it.endMin)
-      const widthPct = 100 / it.lanes
+      const widthPct = ((it.right - it.left) / laneCount) * 100
       return {
         key: it.room.roomId,
         room: it.room,
         top,
         height: Math.max(30, bottom - top),
-        leftPct: widthPct * it.lane,
-        widthPct
+        leftPct: (it.left / laneCount) * 100 + 10*(it.zIndex-1),
+        widthPct: widthPct - 10*(it.zIndex-1),
+        zIndex: it.zIndex
       }
     })
   })
@@ -153,6 +157,7 @@ const dayClasses = (d: Date) => {
             :height="b.height"
             :left-pct="b.leftPct"
             :width-pct="b.widthPct"
+            :z-index="b.zIndex"
             @click="$emit('select', $event)"
           />
         </div>
