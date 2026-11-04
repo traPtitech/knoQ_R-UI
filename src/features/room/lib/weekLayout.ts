@@ -5,7 +5,8 @@ export const H_START = 9
 export const H_END = 22
 export const ROW_H = 52
 export const GRID_H = (H_END - H_START) * ROW_H
-const STACKING_START_THRESHOLD_MINUTES = 20
+// これより開始時間に差がないイベントはテキストが被らないように列を分けて表示する
+const STACKING_START_THRESHOLD_MINUTES = 40
 
 export type LaidOutRoom = {
   room: RoomWithEvents
