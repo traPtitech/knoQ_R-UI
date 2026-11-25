@@ -13,6 +13,7 @@ const props = defineProps<{
   height: number
   leftPct: number
   widthPct: number
+  zIndex: number
 }>()
 
 defineEmits<{
@@ -60,12 +61,13 @@ const segments = computed<Segment[]>(() => {
 <template>
   <button
     type="button"
-    class="absolute cursor-pointer overflow-hidden b-1 b-room-open-border rd-2 b-solid bg-surface-accent-soft transition-all duration-100 hover:z-50 hover:shadow-sm hover:brightness-98"
+    class="absolute z-[var(--room-layout-z-index)] cursor-pointer overflow-hidden b-1 b-room-open-border rd-2 b-solid bg-surface-accent-soft transition-all duration-100 hover:z-50 hover:shadow-sm hover:brightness-98"
     :style="{
       top: `${top}px`,
       height: `${height}px`,
       left: `calc(${leftPct}% + 2px)`,
-      width: `calc(${widthPct}% - 4px)`
+      width: `calc(${widthPct}% - 4px)`,
+      '--room-layout-z-index': zIndex
     }"
     @click="
       (e) => $emit('click', { room, anchorEl: e.currentTarget as HTMLElement })

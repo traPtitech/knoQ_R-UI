@@ -5,13 +5,16 @@ export const H_START = 9
 export const H_END = 22
 export const ROW_H = 52
 export const GRID_H = (H_END - H_START) * ROW_H
+// これより開始時間に差がないイベントはテキストが被らないように列を分けて表示する
+const STACKING_START_THRESHOLD_MINUTES = 40
 
 export type LaidOutRoom = {
   room: RoomWithEvents
   startMin: number
   endMin: number
-  lane: number
-  lanes: number
+  left: number
+  right: number
+  zIndex: number
 }
 
 const toMinOfDay = (iso: string): number => {
@@ -20,9 +23,7 @@ const toMinOfDay = (iso: string): number => {
 }
 
 /**
- * 時間区間を持つ items に対し、「時間が重なる cluster」単位で
- * lane (横並びの列) を割り当てる汎用ユーティリティ。
- * 同一 cluster 内で重ならない区間は同じ lane を再利用する。
+ * 時間が重なる items にレーンと重なり順を割り当てる。
  */
 export const assignLanes = <T>(
   items: T[],
@@ -65,8 +66,76 @@ export const assignLanes = <T>(
   return out
 }
 
+export const assignLayouts = <T>(
+  items: T[],
+  startOf: (it: T) => number,
+  endOf: (it: T) => number
+): Array<T & { left: number; right: number; zIndex: number }> => {
+  const sorted = [...items].sort(
+    (a, b) => startOf(a) - startOf(b) || endOf(a) - endOf(b)
+  )
+
+  const out: Array<
+    T & { left: number; right: number | undefined; zIndex: number }
+  > = []
+  for (const item of sorted) {
+    const layout: T & {
+      left: number
+      right: number | undefined
+      zIndex: number
+    } = {
+      ...item,
+      left: 0,
+      right: undefined,
+      zIndex: 1
+    }
+    const overlapsInTime = (previous: (typeof out)[number]) =>
+      startOf(item) < endOf(previous) && startOf(previous) < endOf(item)
+    const overlapsInCalendar = () => out.filter(overlapsInTime)
+    const overlapsInLane = () =>
+      overlapsInCalendar().filter((previous) => previous.left === layout.left)
+
+    let sameLaneOverlaps = overlapsInLane()
+    while (sameLaneOverlaps.length > 0) {
+      const recentOverlaps = sameLaneOverlaps.filter(
+        (previous) =>
+          startOf(item) - startOf(previous) < STACKING_START_THRESHOLD_MINUTES
+      )
+      if (recentOverlaps.length === 0) {
+        layout.zIndex =
+          Math.max(...overlapsInCalendar().map((previous) => previous.zIndex)) +
+          1
+        break
+      }
+
+      layout.left++
+      sameLaneOverlaps.forEach((previous) => {
+        previous.right = layout.left
+      })
+      sameLaneOverlaps = overlapsInLane()
+    }
+    const higherLaneOverlaps = out.filter(
+      (previous) =>
+        previous.left > layout.left &&
+        startOf(item) - startOf(previous) >= STACKING_START_THRESHOLD_MINUTES &&
+        overlapsInTime(previous)
+    )
+    if (higherLaneOverlaps.length > 0) {
+      layout.right = Math.min(...higherLaneOverlaps.map((it) => it.left))
+    }
+
+    out.push(layout)
+  }
+
+  const finalRight = Math.max(0, ...out.map((layout) => layout.left)) + 1
+  return out.map((layout) => ({
+    ...layout,
+    right: layout.right ?? finalRight
+  }))
+}
+
 /**
- * 同一日内の rooms に lane を割り当てる。
+ * 同一日内の rooms にレイアウトを割り当てる。
  */
 export const layoutDay = (rooms: RoomWithEvents[]): LaidOutRoom[] => {
   const items = rooms.map((r) => ({
@@ -74,7 +143,7 @@ export const layoutDay = (rooms: RoomWithEvents[]): LaidOutRoom[] => {
     startMin: toMinOfDay(r.timeStart),
     endMin: toMinOfDay(r.timeEnd)
   }))
-  return assignLanes(
+  return assignLayouts(
     items,
     (it) => it.startMin,
     (it) => it.endMin
